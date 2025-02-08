@@ -534,6 +534,12 @@ var exampleConfig = {
                         thumbnail: "2.4.5、模型插值运动.jpg",
                         fileName: "2.4.5、模型插值运动"
                     },
+                    {
+                        name: "2.4.6、点击获取子节点",
+                        name_en: "2.4.6、点击获取子节点",
+                        thumbnail: "2.4.6、点击获取子节点.jpg",
+                        fileName: "2.4.6、点击获取子节点"
+                    },
                 ]
             },
         }
