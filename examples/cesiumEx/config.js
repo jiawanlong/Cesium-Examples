@@ -50,6 +50,12 @@ var exampleConfig = {
                     //     fileName: "3"
                     // },
                     {
+                        name: "双屏联动",
+                        name_en: "双屏联动",
+                        thumbnail: "10.1、双屏联动.jpg",
+                        fileName: "10.1、双屏联动"
+                    },
+                    {
                         name: "GUI",
                         name_en: "GUI",
                         thumbnail: "4.jpg",
@@ -67,6 +73,12 @@ var exampleConfig = {
                         thumbnail: "Cesium融合Three.jpg",
                         fileName: "Cesium融合Three"
                     },
+                    // {
+                    //     name: "楼栋分层",
+                    //     name_en: "楼栋分层",
+                    //     thumbnail: "楼栋分层.jpg",
+                    //     fileName: "楼栋分层"
+                    // },
                     // {
                     //     name: "韩国空难",
                     //     name_en: "韩国空难",
