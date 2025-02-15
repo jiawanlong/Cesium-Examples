@@ -79,6 +79,7 @@ var exampleConfig = {
                         thumbnail: "楼栋分层.jpg",
                         fileName: "楼栋分层"
                     },
+                    
                     // {
                     //     name: "韩国空难",
                     //     name_en: "韩国空难",
