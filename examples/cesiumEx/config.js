@@ -61,7 +61,6 @@ var exampleConfig = {
                         thumbnail: "4.jpg",
                         fileName: "4"
                     },
-                    
                     {
                         name: "GUI视锥体",
                         name_en: "GUI视锥体",
