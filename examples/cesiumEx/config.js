@@ -1015,7 +1015,7 @@ var exampleConfig = {
                         name: "7.2.1、简易入门",
                         name_en: "7.2.1、简易入门",
                         thumbnail: "7.2.1、简易入门.jpg",
-                        
+
                         fileName: "7.2.1、简易入门"
                     },
 
