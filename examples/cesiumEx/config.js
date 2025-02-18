@@ -1055,6 +1055,12 @@ var exampleConfig = {
                         thumbnail: "8.1.4、风场.jpg",
                         fileName: "8.1.4、风场"
                     },
+                    {
+                        name: "8.1.5、等值面",
+                        name_en: "8.1.5、等值面",
+                        thumbnail: "8.1.5、等值面.jpg",
+                        fileName: "8.1.5、等值面"
+                    },
                 ]
             },
         }
