@@ -34,7 +34,13 @@ const authorizeCode = [
         'id': '9f989d38fe9200769b0acdec6b7fcfa7',
         'endTime': '2025-01-03 24:00:00',
         'name': 'wx-wh-lucky',
+    },
+    {
+        'id': '821955fa8f6c9dc387239efb339fbd87',
+        'endTime': '2025-03-04 24:00:00',
+        'name': 'wx-wh-bre',
     }
+    
 ]
 
 
