@@ -8,12 +8,14 @@
  ![Stars](https://img.shields.io/github/stars/jiawanlong/Cesium-Examples.svg?) ![Forks](https://img.shields.io/github/forks/jiawanlong/Cesium-Examples.svg?style=social) ![Contributors](https://img.shields.io/github/contributors/jiawanlong/Cesium-Examples.svg)![Release](https://img.shields.io/github/v/release/jiawanlong/Cesium-Examples.svg)
 
 
-## Cesium2025年最新的学习示例demos，每一个全是**原生**的示例。
+## Cesium2025年最新的学习示例demos，每一个都是**原生**示例。
 
 ## 优势
-### 1、突出原生，无任何插件。
-### 2、本网站相比 superMap、火星mars3d等的优势：均为原生cesium，无任何插件！每一个示例是一个单独的文件。
-### 3、免费、无任何收费、无需找我授权，直接用即可！
+### 1、突出原生，无任何插件、不封装！。
+### 2、免费、无任何收费、无需找我授权，直接用即可！
+### 3、本网站相比 superMap、火星mars3d等的优势：均为原生cesium，无任何插件！每一个示例是一个单独的文件。
+### 4、适合新手入门学习、通用也适合中高级开发在项目上应用
+### 5、持续更新，基本每天、每周都有新的案例
 
 
 
