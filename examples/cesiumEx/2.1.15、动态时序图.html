@@ -1,0 +1,124 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div style="position: absolute; left: 20px; top: 20px; z-index: 1000">
+        <button onclick="openTimeMap()">开启</button>
+        <button onclick="closeTimeMap()">关闭</button>
+    </div>
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(110.511154, 29.362943, 5531517.4),
+            duration: 2,
+            orientation: {
+                heading: Cesium.Math.toRadians(348.3), // 水平旋转，围绕Y轴，0为正北方向
+                pitch: Cesium.Math.toRadians(-89.8),     // 上下旋转，围绕X轴，-90为俯视地面
+                roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
+            },
+            complete: () => {
+               
+            }
+        });
+
+        const arrTileLayer = [];
+        let mapTimer = null;
+        let currentTimeMapIndex = 0;
+
+        initTimeMap();
+
+
+        function openTimeMap() {
+            let _this = this;
+            closeTimeMap();
+            mapTimer = setInterval(() => {
+                if (currentTimeMapIndex > arrTileLayer.length) {
+                    currentTimeMapIndex = 0;
+                }
+                currentTimeMapIndex++;
+
+                const layer1 = arrTileLayer[currentTimeMapIndex - 1];
+                if (layer1) {
+                    layer1.alpha = 0;
+                }
+                const layer2 = arrTileLayer[currentTimeMapIndex];
+                if (layer2) {
+                    layer2.alpha = 1;
+                }
+            }, 300);
+        }
+        function closeTimeMap() {
+            clearInterval(mapTimer);
+            try {
+                arrTileLayer[currentTimeMapIndex].alpha = 0;
+                currentTimeMapIndex = 0;
+            } catch (error) { }
+        }
+        function initTimeMap() {
+            const urlArr = [
+                "./timeMap/20200522145400_20200522145400_0c972b7abe4f4b4fbdbe909f5c1ca17a.png",
+                "./timeMap/20200522145400_20200522150000_55c4adac7ac8460db3d893866897bd6d.png",
+                "./timeMap/20200522145400_20200522150600_ca075253d90e40049f069d22a1a3ce3d.png",
+                "./timeMap/20200522145400_20200522151200_afe188f5892d4dd8a4d09d94c746ce1f.png",
+                "./timeMap/20200522145400_20200522151800_b10b132f2d52424e9ab55a61896e86b0.png",
+                "./timeMap/20200522145400_20200522152400_4ad54289d6f64f5aaa160f453a99b14a.png",
+                "./timeMap/20200522145400_20200522153000_cf72453eba0b4b33966f69899771ba16.png",
+                "./timeMap/20200522145400_20200522153600_c3aac59805ec433bae08bc8d77d25d20.png",
+                "./timeMap/20200522145400_20200522154200_42a885bb66144e698190c38d02b3be96.png",
+                "./timeMap/20200522145400_20200522154800_4564689c557e43ff993ad0113363bd6d.png",
+                "./timeMap/20200522145400_20200522155400_4742e31563464542a533a43d5414a7ae.png",
+                "./timeMap/20200522145400_20200522160000_487da64a0f384795848e60f2ed343500.png",
+                "./timeMap/20200522145400_20200522160600_9a1cf5da2f2c46158f113c057b9bb079.png",
+                "./timeMap/20200522145400_20200522161200_76861453df20413fa1eff57c8c938758.png",
+                "./timeMap/20200522145400_20200522161800_767d25a128e94d968522badfaf071a66.png",
+                "./timeMap/20200522145400_20200522162400_8b949a9d47fd4f289bd51afe9e009ab9.png",
+                "./timeMap/20200522145400_20200522163000_9f234335ae2c42ac91d5dfc62b72f3db.png",
+                "./timeMap/20200522145400_20200522163600_a808919c4a5a4142b188520a74dacf75.png",
+                "./timeMap/20200522145400_20200522164200_248688f96cfd438eb5229812dfb748c3.png",
+                "./timeMap/20200522145400_20200522164800_797dd13e0a304fbe934fee1902b7fc21.png",
+                "./timeMap/20200522145400_20200522165400_0be5ef511d6c467288ec9f7b961821bd.png",
+                "./timeMap/20200522145400_20200522170000_a1820b8d4527467a85db7fee3b352bbb.png",
+                "./timeMap/20200522145400_20200522170600_964ada943fcf4a13aa59364b1efd0b1b.png",
+            ];
+
+            for (let i = 0, len = urlArr.length; i < len; i++) {
+                var imageryProvider = new Cesium.SingleTileImageryProvider({
+                    url: urlArr[i],
+                    rectangle: Cesium.Rectangle.fromDegrees(63.8148899733, 12.7700338517, 143.536486117, 56.3833398551),
+                });
+
+                let options = {
+                    alpha: 0
+                }
+                var imageryLayer = new Cesium.ImageryLayer(imageryProvider, options);
+                viewer.imageryLayers.add(imageryLayer)
+
+                arrTileLayer.push(imageryLayer);
+            }
+        }
+    </script>
+</body>
+
+</html>

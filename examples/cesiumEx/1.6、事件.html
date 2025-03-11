@@ -1,0 +1,129 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 加载离线地形
+        // viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+        //     url: 'http://localhost/dem_30m/',
+        // });
+
+        // 0、取消默认的单击和双击事件，右上角弹窗很丑
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+        // https://blog.csdn.net/u010358183/article/details/121610901
+
+        // 1、屏幕空间事件（鼠标和键盘输入相关的事件）
+        // 鼠标事件
+        // 键盘事件
+        // 2、相机事件
+        // 3、场景触发事件
+
+        // 1、-----------屏幕空间事件（鼠标和键盘输入相关的事件）-----------------------
+        // 左单击
+        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function (event) {
+            console.log('左键单击', event.position);
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        // shift + 左单击
+        handler.setInputAction(function (event) {
+            console.log('shift + 左键单击', event.position);
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK, Cesium.KeyboardEventModifier.SHIFT);
+        handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK, Cesium.KeyboardEventModifier.SHIFT);
+
+
+        // 2、--------------相机事件（更改默认操作）----------
+        viewer.scene.screenSpaceCameraController.tiltEventTypes = [
+            Cesium.CameraEventType.RIGHT_DRAG,
+            Cesium.CameraEventType.PINCH,
+            {
+                eventType: Cesium.CameraEventType.LEFT_DRAG,
+                modifier: Cesium.KeyboardEventModifier.CTRL,
+            },
+            {
+                eventType: Cesium.CameraEventType.RIGHT_DRAG,
+                modifier: Cesium.KeyboardEventModifier.CTRL,
+            },
+        ];
+        viewer.scene.screenSpaceCameraController.zoomEventTypes = [
+            Cesium.CameraEventType.MIDDLE_DRAG,
+            Cesium.CameraEventType.WHEEL,
+            Cesium.CameraEventType.PINCH,
+        ];
+
+        //----------- 3、场景触发事件(相机停止移动时触发，二三维联动)-------------------------
+        function callbackFunc(event) {
+            console.log(event)
+        }
+        viewer.camera.moveEnd.addEventListener(callbackFunc);
+        // viewer.camera.moveEnd.removeEventListender(callbackFunc);
+
+
+        // 常见的应用
+        const redPolygon = viewer.entities.add({
+            name: "贴地面",
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray([
+                    -115.0,
+                    37.0,
+                    -115.0,
+                    32.0,
+                    -107.0,
+                    33.0,
+                    -102.0,
+                    31.0,
+                    -102.0,
+                    35.0,
+                ]),
+                material: Cesium.Color.RED.withAlpha(0.5),
+            },
+            data: {
+                name: 'hello'
+            }
+        });
+
+
+
+        handler.setInputAction(function (clickEvent) {
+
+            // 经纬度坐标
+            var position = viewer.scene.camera.pickEllipsoid(clickEvent.position, viewer.scene.globe.ellipsoid);
+            var cartesian3 = new Cesium.Cartesian3(position.x, position.y, position.z)
+            var cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian3);
+            var lat = Cesium.Math.toDegrees(cartographic.latitude);
+            var lng = Cesium.Math.toDegrees(cartographic.longitude);
+            console.log(lng, lat)
+            console.log(cartesian3)
+
+            // 获取被点击的实体
+            var ray1 = viewer.camera.getPickRay(clickEvent.position);
+            var cartesian = viewer.scene.globe.pick(ray1, viewer.scene);
+            var pick = viewer.scene.pickPosition(clickEvent.position);
+            var pickEd = viewer.scene.pick(clickEvent.position);
+            if (pickEd && pick) {
+                console.log(pickEd.id.data)
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    </script>
+</body>
+
+</html>

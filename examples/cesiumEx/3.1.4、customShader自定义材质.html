@@ -1,0 +1,179 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+  <script src="./cesium.map.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div style="position: absolute; z-index: 1000; left: 0;top: 0;">
+        <button onclick="customShader1()">纯渐变色</button>
+        <button onclick="customShader2()">纯渐变色+动态光圈</button>
+        <button onclick="customShader3()">清除</button>
+    </div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 清除默认底图
+        viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+        // 清除默认地形
+        viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+
+        var options = {
+            crs: "WGS84", // 使用84坐标系，默认为：GCJ02
+            style: 4,
+        };
+        viewer.imageryLayers.add(
+            new Cesium.ImageryLayer(new Cesium.TencentImageryProvider(options))
+        );
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        // 纯渐变色
+        function customShader1() {
+            let customShader = new Cesium.CustomShader({
+                //片元着色器
+                fragmentShaderText: `
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                        vec3 positionMC = fsInput.attributes.positionMC;
+                        material.diffuse = vec3(0.0, 1.0-positionMC.y*0.005, 1.0-positionMC.y*0.0015);
+                    }`
+            })
+            tileset.customShader = customShader
+        }
+
+        // 纯渐变色+动态光圈
+        function customShader2() {
+            let customShader = new Cesium.CustomShader({
+                //片元着色器
+                fragmentShaderText: `
+                        void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                            vec3 positionMC = fsInput.attributes.positionMC;
+                            material.diffuse = vec3(0.0, 1.0-positionMC.y*0.005, 1.0-positionMC.y*0.0015);
+
+                            float _baseHeight = 18.0; // 物体的基础高度，需要修改成一个合适的建筑基础高度
+                            float _heightRange = 60.0; // 高亮的范围(_baseHeight ~ _baseHeight + _heightRange) 默认是 0-60米
+                            float _glowRange = 120.0; // 光环的移动范围(高度)
+
+                            float vtxf_height = fsInput.attributes.positionMC.y - _baseHeight;
+                            float vtxf_a11 = fract(czm_frameNumber / 360.0) * 3.14159265 * 2.0; //此处括号内分母为移动速度
+                            float vtxf_a12 = vtxf_height / _heightRange + sin(vtxf_a11) * 0.1;
+                            material.diffuse *= vec3(vtxf_a12, vtxf_a12, vtxf_a12);
+
+                            float vtxf_a13 = fract(czm_frameNumber / 360.0); //此处括号内分母为移动速度，数值越大，速度越慢
+                            float vtxf_h = clamp(vtxf_height / _glowRange, 0.0, 1.0);
+                            vtxf_a13 = abs(vtxf_a13 - 0.5) * 2.0;
+                            float vtxf_diff = step(0.01, abs(vtxf_h - vtxf_a13)); // 0.1 为高亮光条的范围（粗细）
+                            material.diffuse += material.diffuse * (1.0 - vtxf_diff);
+                        }`
+            })
+            tileset.customShader = customShader
+        }
+
+        function customShader3() {
+            let customShader = new Cesium.CustomShader({
+
+            })
+            tileset.customShader = customShader
+
+        }
+
+
+        /*
+        
+            CustomShader用法
+
+        */
+        const customShaders = new Cesium.CustomShader({
+            // 用户想要添加到着色器的任何自定义uniform。
+            //Uniform是一种在着色器程序中定义的全局变量，它们可以在着色器程序的任何地方使用，但它们的值在每个渲染周期中都是不变的。
+            // 这些可以在运行时通过以下方式 更改 customShader.setUniform()
+            uniforms: {
+                u_time: {
+                    value: 0, // 初始值
+                    type: Cesium.UniformType.FLOAT
+                },
+                // Textures can be loaded from a URL, a Resource, or a TypedArray.//纹理可以从 URL、资源或类型数组加载
+                // 有关更多详细信息，请参阅Uniforms部分
+                u_externalTexture: {
+                    value: new Cesium.TextureUniform({
+                        url: "http://example.com/image.png"
+                    }),
+                    type: Cesium.UniformType.SAMPLER_2D
+                },
+                // 将出现在自定义顶点和片段着色器文本中的自定义变化。
+                varyings: {
+                    v_customTexCoords: Cesium.VaryingType.VEC2
+                },
+                // configure where in the fragment shader's materials/lighting pipeline the custom shader goes. More on this below.
+                //配置自定义着色器在片段着色器的材质/光照管线中的位置。更多内容见下文。
+                mode: Cesium.CustomShaderMode.MODIFY_MATERIAL,
+                // either PBR (physically-based rendering) or UNLIT depending on the desired results.
+                //PBR（基于物理的渲染）或 UNLIT，具体取决于所需的结果。
+                lightingModel: Cesium.LightingModel.PBR,
+                // Force the shader to render as transparent, even if the primitive had an opaque material
+                //强制着色器渲染为透明，即使基元具有不透明材质
+                translucencyMode: Cesium.CustomShaderTranslucencyMode.TRANSLUCENT,
+                // Custom vertex shader. This is a function from model space -> model space.VertexInput is documented below
+                // 自定义顶点着色器。这是模型空间 ->模型空间的函数.VertexInput输入记录如下
+                vertexShaderText: `
+                    // IMPORTANT: the function signature must use these parameter names. This
+                    // makes it easier for the runtime to generate the shader and make optimizations.
+                    //重要说明：函数签名必须使用这些参数名称。这使运行时更容易生成着色器并进行优化。
+                    void vertexMain(VertexInput vsInput, inout czm_modelVertexOutput vsOutput) {
+                        // code goes here. An empty body is a no-op.
+                        //代码在这里……空的内容是无操作的。
+                    }
+                `,
+                // Custom fragment shader.
+                // FragmentInput will be documented below
+                // Regardless of the mode, this always takes in a material and modifies it in place.
+                //自定义片元着色器
+                //FragmentInput（片元）输入将被记录在下面 
+                //无论模式如何，这里需要一个material（材质）并将其modifies（位置）放到位                                           
+                fragmentShaderText: `
+                    // IMPORTANT: the function signature must use these parameter names. This
+                    // makes it easier for the runtime to generate the shader and make optimizations.
+                    // 重要提示：函数签名必须使用这些参数名称。这
+                    // 使运行时更容易生成着色器并进行优化。
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                        // code goes here. e.g. to set the diffuse color to a translucent red:
+                        //代码在这里。例如将漫反射颜色设置为半透明的红色：
+                        material.diffuse = vec3(1.0, 0.0, 0.0);
+                        material.alpha = 0.5;
+                    }
+                `,
+            }
+        });
+
+
+
+    </script>
+</body>
+
+</html>

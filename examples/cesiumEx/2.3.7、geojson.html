@@ -1,0 +1,50 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // Cesium地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水体效果所需要的海岸线数据
+            requestVertexNormals: true// 请求地形照明数据
+        });
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        var promise = Cesium.GeoJsonDataSource.load('./geojson_mian.json', {
+            clampToGround: true,   //贴地
+            fill: Cesium.Color.PINK.withAlpha(0.6),
+        });
+        promise.then(function (dataSource) {
+            viewer.dataSources.add(dataSource);
+            var entities = dataSource.entities.values;
+            for (var o = 0; o < entities.length; o++) {
+                var r = entities[o];
+
+                r.polygon.extrudedHeight = Number(r._properties._nums._value) * 100  // 拉伸高度
+                r.polygon.outlineColor = Cesium.Color.BLUE.withAlpha(0.9)  //只有自身有高度才会显示边
+            }
+        });
+        viewer.flyTo(promise);
+
+
+    </script>
+</body>
+
+</html>

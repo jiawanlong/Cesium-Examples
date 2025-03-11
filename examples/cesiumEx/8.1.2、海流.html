@@ -1,0 +1,48 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="module">
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 加载底图
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": './ocean/SeaSpeed_202307271200/{z}/{x}/{y}.png'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+
+        // 加载洋流
+        import LayerOceanCurrent from "./ocean/layers/LayerOceanCurrent/LayerOceanCurrent.js"
+        console.log(LayerOceanCurrent)
+
+        let seaWave = new LayerOceanCurrent({});
+        axios({
+            method: "get",
+            url: "./ocean/SeawaveDirection_202307251200_0200.json",
+        }).then((res) => {
+            seaWave.load(res.data.data);
+            seaWave.addToMap(viewer);
+        });
+
+        // seaWave.clean();
+
+    </script>
+
+</body>
+
+</html>

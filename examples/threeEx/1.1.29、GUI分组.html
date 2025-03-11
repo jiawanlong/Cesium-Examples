@@ -1,0 +1,109 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        .box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS3DRenderer, CSS3DObject, CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        // 实例化一个gui对象
+        const gui = new GUI();
+        const obj = {
+            yd: 300,
+            dx: 5,
+            color: 0x00ffff,
+            scale: 0,
+            bool: false
+        };
+
+        // 创建场景
+        const scene = new THREE.Scene();
+        let box = document.getElementById("box")
+
+        // 创建渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        box.appendChild(renderer.domElement)
+
+        // 光源
+        var ambient = new THREE.AmbientLight(0x888888, 2);
+        scene.add(ambient);
+
+        // 创建材质子菜单
+        const matFolder1 = gui.addFolder('分组1');
+        matFolder1.close();
+
+        // 环境光强度
+        matFolder1.add(ambient, 'intensity', 0, 5.0).name('环境光强度').step(0.1);
+
+        // GUI控制雨滴
+        matFolder1.add(obj, 'yd', 0, 18000).name('雨滴多少').onChange(function (value) {
+        });
+
+        // 颜色
+        matFolder1.addColor(obj, 'color').name('颜色').onChange(function (value) {
+        });
+
+        // 创建材质子菜单
+        const matFolder2 = gui.addFolder('分组2');
+        matFolder2.open();
+        // 下拉菜单
+        matFolder2.add(obj, 'scale', [-100, 0, 100]).name('下拉菜单').onChange(function (value) {
+        });
+
+        // 下拉菜单
+        matFolder2.add(obj, 'scale', { left: -100, center: 0, right: 100 }).name('下拉菜单').onChange(function (value) {
+        });
+
+        // 布尔值
+        matFolder2.add(obj, 'bool').name('布尔值').onChange(function (value) {
+        });
+
+
+        function render() {
+            renderer.render(scene, camera)
+            requestAnimationFrame(render);
+        }
+        render();
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+    </script>
+
+</body>
+
+</html>

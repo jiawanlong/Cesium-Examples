@@ -1,0 +1,75 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        //------------------------- 示例1:直接改变，无需要回调------------------------------
+        let position1 = new Cesium.Cartesian3.fromDegrees(-100, 25, 10000);
+        let outline = true;
+        let color1 = new Cesium.Color(1, 1, 0, 1);
+        let point1 = viewer.entities.add({
+            name: "point1",
+            position: position1,
+            point: {
+                show: true,
+                pixelSize: 20,
+                color: color1,
+            }
+        })
+        let i = 0;
+        setInterval(() => {
+            if (i == 1) {
+                i = 0
+            } else {
+                i = 1
+            }
+            point1.point.color = new Cesium.Color(1, 1, 0, i);
+        }, 100)
+
+
+        // -----------------------------示例2--------------------------------
+        let x = -120;
+        let y = 30;
+        let position2 = new Cesium.Cartesian3.fromDegrees(x, y, 100000);
+        let color2 = new Cesium.Color(1, 0, 0, 1);
+        let point2 = viewer.entities.add({
+            name: "point2",
+            position: new Cesium.CallbackProperty(() => {
+                return position2;
+            }, false),
+            point: {
+                pixelSize: 20,
+                color: new Cesium.CallbackProperty(() => {
+                    return color2;
+                }, false),
+            },
+        })
+        // 修改位置
+        setInterval(() => {
+            x = x + 1;
+            y = y + 1
+            position2 = new Cesium.Cartesian3.fromDegrees(x, y, 100000);
+        }, 400)
+
+    </script>
+</body>
+
+</html>

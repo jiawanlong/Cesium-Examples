@@ -1,0 +1,286 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>麻点图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar"></div>
+<script src="js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+<div id='container' class='container'>
+<div class='page-header'>
+<h1>麻点图专题</h1>
+<hr/>
+<h2>一、引言</h2>
+<p>
+目前在客户端绘制POI（Point of Interest，兴趣点）的方式主要是div（Marker的形式）、svg、canvas、VML（后边三种就是Vector Layer）几种方式，这几种方式中只有canvas的效率是最高的，但是canvas只有一些最新的浏览器才支持。虽然div、svg、VML跨浏览器要好一些，但是这几种的效率不够高，最多只能绘制几千个POI。
+</p>
+<p>
+为了展现出大数据量的POI，我们也可以考虑将POI数据集通过iServer发布为临时图层，然后在客户端使用动态图层展现出来，这样解决了数据量大和跨浏览器的问题，但是这些POI没法响应鼠标事件。
+</p>
+<p>
+于是麻点图应运而生。
+</p>
+<h2>二、简介</h2>
+<p>
+SuperMap iClient for JavaScript 提供了麻点图功能，这是一种很高效的web端大数据量渲染解决方案。该功能支持大数据量、跨浏览器、事件响应，并且效率高。
+在大部分主流浏览器下都能快速渲染，且轻松漫游地图。
+</p>
+<div class="pageImage"><img src="./images/goisTopic2.png"/></div>
+<br>
+<p>
+该功能实际上是先调用SuperMap.REST.GetLayersInfoService获取到服务端图层信息，然后修改图层信息，使用SuperMap.REST.SetLayersInfoService设置图层信息创建临时图层，再使用SuperMap.Layer.TiledDynamicRESTLayer将该临时图层在客户端渲染出来。到这一步，大数据量的点就通过瓦片图片的方式在客户端渲染出来了。
+</p>
+<p>
+然后我们再创建SuperMap.Layer.UTFGrid对象，来让这些POI有鼠标事件响应。然后在最上层叠加一个SuperMap.Layer.Markers，当鼠标移动到某个POI上时，就会在相应位置添加一个Marker，高亮该点。
+</p>
+<h2>三、性能</h2>
+<div class="pageImage"><img src="./images/goisTopic3.png"/></div>
+<br>
+<p>
+以上报告为服务端存在临时图层缓存的情况下，渲染POI点所用的时间，当初次使用麻点图功能时渲染会比较慢（大数据量下服务端动态切图是一个比较耗时的操作），初次使用之后（服务端已经存在缓存）渲染POI就要快很多了。
+</p>
+<h2>四、使用说明</h2>
+<br>
+<p>下面我们来详细介绍一下如何使用麻点图。</p>
+<br>
+<h4>
+首先创建一个麻点图对象。
+</h4>
+<p>
+    <pre>
+var url = "http://localhost:8090/iserver/services/map-china400/rest/maps/China";
+var myGOIs = new SuperMap.GOIs({
+    "url":url,
+    "datasetName":"China_Town_P@China400",
+    "style":new SuperMap.REST.ServerStyle({
+        "markerSymbolID":907941,
+        "markerSize":8
+    }),
+    "pixcell": 16
+});
+    </pre>
+</p>
+<p>
+    以上代码片段中创建麻点图需要传入一些参数:url为所使用的地图服务的url（通常和TiledDynamicRESTLayer使用的url相同），datasetName为数据对应的子图层名称，
+    style为要素的样式风格，这里需要传入SuperMap.REST.ServerStyle类型的对象。
+</p>
+<br>
+<h4>
+然后给麻点图对象绑定 initialized 事件，麻点图初始化完成后会触发该事件。
+</h4>
+<pre>
+myGOIs.events.on({
+    "initialized":GOIsInitialized
+});
+
+function GOIsInitialized(){
+    //获取麻点图内部创建的图层对象，并添加到map上
+    var layers = myGOIs.getLayers();
+    map.addLayers(layers);
+    //创建麻点图事件控件，该控件用于实现麻点图的事件响应。
+    control = new SuperMap.Control.GOIs(layers,{
+        onClick:function(evt){  //定义click事件
+            //code
+        },
+        highlightIcon:new SuperMap.Icon('images/circle.png',  new SuperMap.Size(16,16), new SuperMap.Pixel(-8, -8)),//高亮状态下的点样式
+        isHighlight:true
+    });
+    map.addControl(control);    //将控件添加到map上
+}
+</pre>
+<br>
+<div>
+    <h5>这里给麻点图绑定初始化完成事件，初始化完成后需要完成如下步骤：</h5>
+    <ul style="list-style-type:disc;margin-left:68px;">
+        <li>获取麻点图内部创建的图层对象，并添加到map上，这里你会得到三个图层对象，
+            它们分别是：临时图层（TiledDynamicRESTLayer）、utfgrid图层、marker图层（用于实现高亮效果）。</li>
+        <li>创建麻点图事件控件，该控件用于实现麻点图的事件响应，将该控件添加到map上。</li>
+    </ul>
+	<br>
+    <h5>用户需要自己制作一张要素高亮风格的图片，并将该图片设置到控件的highlightIcon属性中</h5>
+    <pre>
+       highlightIcon:new SuperMap.Icon('images/circle.png',  new SuperMap.Size(16,16), new SuperMap.Pixel(-8, -8)),//高亮状态下的点样式
+    </pre>
+	<br>
+	<h5>用户可以通过SuperMap.Control.GOIs给麻点图添加鼠标事件</h5>
+	<p>可以通过初始化该控件时，以传参数的方式定义事件。</p>
+	<pre>
+    var control = new SuperMap.Control.GOIs(layers,{
+        onClick:function(evt){  //定义click事件
+            //code
+        }
+    });
+    </pre>
+	<p>也可以通过事件绑定的方式，给麻点图定义事件。</p>
+	<pre>
+    control.events.on("mouseover",function(){
+        //code
+    });
+    </pre>
+	<p>麻点图提供了丰富的鼠标事件类型：</p>
+    <ul style="list-style-type:disc;margin-left:68px;">
+        <li>onMouseover</li>
+        <li>onMouseout</li>
+		<li>onMousemove</li>
+		<li>onMousedown</li>
+		<li>onMouseup</li>
+		<li>onClick</li>
+		<li>onDblclick</li>
+    </ul>
+</div>
+<h4>
+以下是完整的范例代码：
+</h4>
+<pre>
+&#60;!DOCTYPE&#62;
+&#60;html&#62;
+&#60;head&#62;
+    &#60;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&#62;
+    &#60;title&#62;麻点图&#60;/title&#62;
+    &#60;style type="text/css"&#62;
+        body{
+            margin: 0;
+            overflow: hidden;
+            background: #fff;
+        }
+        #map{
+            position: relative;
+            height: 520px;
+            border:1px solid #3473b7;
+        }
+        #toolbar {
+            position: relative;
+            padding-top: 5px;
+            padding-bottom: 10px;
+        }
+    &#60;/style&#62;
+    &#60;script src='../libs/SuperMap.Include.js'&#62;&#60;/script&#62;
+    &#60;script type="text/javascript"&#62;
+        var map,datasetName,popup,myGOIs,control,
+                host = document.location.toString().match(/file:\/\//)?"http://localhost:8090":'http://' + document.location.host,
+                url=host+"/iserver/services/map-china400/rest/maps/China";
+        function init(){
+            map = new SuperMap.Map("map",{controls: [
+                new SuperMap.Control.LayerSwitcher(),
+                new SuperMap.Control.ScaleLine(),
+                new SuperMap.Control.Zoom(),
+                new SuperMap.Control.Navigation({
+                    dragPanOptions: {
+                        enableKinetic: true
+                    }
+                })],allOverlays: true,projection: "EPSG:3857"
+            });
+            layer = new SuperMap.Layer.TiledDynamicRESTLayer("china", url, {transparent: true, cacheEnabled: true}, {maxResolution:"auto"});
+            layer.events.on({"layerInitialized":addLayer});
+        }
+        function addLayer() {
+            map.addLayers([layer]);
+            map.setCenter(new SuperMap.LonLat(11782422.179601, 4717749.8315665), 3);
+        }
+
+        function createLayer(){
+            datasetName = "China_Town_P@China400";
+
+            //创建一个麻点图对象
+            myGOIs = new SuperMap.GOIs({
+                "url":url,
+                "datasetName":datasetName,
+                "style":new SuperMap.REST.ServerStyle({
+                    "markerSymbolID":907942,
+                    "markerSize":4
+                }),
+                "pixcell": 16
+            });
+
+            myGOIs.events.on({
+                "initialized":GOIsInitialized
+            });
+        }
+
+        function clearLayer(){
+            closeInfoWin();
+
+            var layers = myGOIs.getLayers();
+            for(var i=0;i&#60;layers.length;i++){
+                map.removeLayer(layers[i]);
+            }
+            myGOIs.destroy();
+            myGOIs = null;
+
+            control.destroy();
+            control = null;
+        }
+
+        function GOIsInitialized(){
+            var layers = myGOIs.getLayers();
+            map.addLayers(layers);
+
+            control = new SuperMap.Control.GOIs(layers,{
+                onClick:function(evt){
+                    var lonlat = evt.loc;
+                    var name = evt.data.NAME;
+
+                    openInfoWin(lonlat,name);
+                },
+                highlightIcon:new SuperMap.Icon('images/circle.png',  new SuperMap.Size(16,16), new SuperMap.Pixel(-8, -8)),
+                isHighlight:true
+            });
+            map.addControl(control);
+        }
+
+        function openInfoWin(lonlat,name){
+            closeInfoWin();
+            var contentHTML = "&#60;div style=\'font-size:.8em; opacity: 0.8; overflow-y:hidden;\'&#62;";
+            contentHTML += "&#60;div&#62;"+name+"&#60;/div&#62;&#60;/div&#62;";
+
+            popup = new SuperMap.Popup.FramedCloud("popwin",new SuperMap.LonLat(lonlat.lon,lonlat.lat),null,contentHTML,null,true,function(){
+                closeInfoWin();
+                control.removeClickedMarker();
+            });
+            map.addPopup(popup);
+        }
+
+        function closeInfoWin() {
+            if (popup) {
+                try {
+                    map.removePopup(popup);
+                }
+                catch (e) {
+                }
+            }
+        }
+    &#60;/script&#62;
+&#60;/head&#62;
+&#60;body onload="init()"&#62;
+&#60;div id="toolbar"&#62;
+    &#60;input type="button" value="渲染麻点图" onclick="createLayer()" /&#62;
+    &#60;input type="button" value="清除" onclick="clearLayer()" /&#62;
+&#60;/div&#62;
+&#60;div id="map"&#62;&#60;/div&#62;
+&#60;/body&#62;
+&#60;/html&#62;
+
+</pre>
+<div class="pageImage"><img src="./images/goisTopic1.png"/></div>
+<br />
+<p>
+    这样我们就可以使用麻点图功能了，完整范例请见 示范程序->可视化->可视化图层->麻点图。
+</p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+</body>
+</html>

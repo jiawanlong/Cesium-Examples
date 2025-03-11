@@ -1,0 +1,181 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./excavateTerrain.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(114.415272, 30.485, 700),
+            orientation: {
+                heading: Cesium.Math.toRadians(7.7), // east, default value is 0.0 (north)
+                pitch: Cesium.Math.toRadians(-67.7),    // default value (looking down)
+                roll: 0.0                             // default value
+            }
+        });
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 加载xyz
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "mapbox",
+            "url": 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?sku=1016Ab1dNMw2X&access_token=pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+
+        let geojson = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                114.41590411442616,
+                                30.491263456276485
+                            ],
+                            [
+                                114.4157678353975,
+                                30.487695318148326
+                            ],
+                            [
+                                114.41545409524053,
+                                30.48417053675408
+                            ]
+                        ],
+                        "type": "LineString"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                114.41636045569362,
+                                30.49119994579833
+                            ],
+                            [
+                                114.41624425563532,
+                                30.4875451169996
+                            ],
+                            [
+                                114.41593051547841,
+                                30.483970261251812
+                            ]
+                        ],
+                        "type": "LineString"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                114.40924731721879,
+                                30.48936988464135
+                            ],
+                            [
+                                114.41566276862312,
+                                30.48867449297252
+                            ],
+                            [
+                                114.416631138647,
+                                30.48853541404233
+                            ],
+                            [
+                                114.42003052091678,
+                                30.48770962880097
+                            ],
+                            [
+                                114.42165455814347,
+                                30.487553163439472
+                            ]
+                        ],
+                        "type": "LineString"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "coordinates": [
+                            [
+                                114.40931792753275,
+                                30.48966542459584
+                            ],
+                            [
+                                114.41583425081467,
+                                30.488952650236655
+                            ],
+                            [
+                                114.41665131302221,
+                                30.48888311099482
+                            ],
+                            [
+                                114.41995991060276,
+                                30.488118176059075
+                            ],
+                            [
+                                114.42169490689389,
+                                30.487909556396957
+                            ]
+                        ],
+                        "type": "LineString"
+                    }
+                }
+            ]
+        }
+
+        var mr = [{
+            x: -2409728.6420393116,
+            y: 4694838.793290997,
+            z: 3570221.295666795
+        },
+        {
+            x: -2409788.2788523836,
+            y: 4694808.716559992,
+            z: 3570220.598452356
+        },
+        {
+            x: -2409813.389689466,
+            y: 4694859.279606352,
+            z: 3570137.7191554685
+        },
+        {
+            x: -2409755.7791936737,
+            y: 4694886.737790491,
+            z: 3570140.4776008143
+        }
+        ];
+
+        // new excavateTerrain(viewer, {
+        //     positions: mr,
+        //     height: 30,
+        //     bottom: "./ter_analysis/excavationregion_side.jpg",
+        //     side: "./ter_analysis/excavationregion_top.jpg",
+        // })
+
+    </script>
+</body>
+
+</html>

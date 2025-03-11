@@ -1,0 +1,118 @@
+<!--********************************************************************
+* by jiawanlong
+ 原作者：https://github.com/sxguojf/three-tile
+ https://github.com/sxguojf/three-tile-example/blob/master/src/step1.1/main.ts
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <script type="text/javascript" src="./../../three/three.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/",
+                "three-tile": "./three-tile.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from "three";
+        import * as tt from "three-tile";
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+
+        const MAPBOXKEY =
+            "pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w";
+
+        // mapbox影像数据源
+        const mapBoxImgSource = new tt.plugin.MapBoxSource({
+            token: MAPBOXKEY,
+            dataType: "image",
+            style: "mapbox.satellite",
+        });
+        // mapbox地形数据源
+        const mapBoxDemSource = new tt.plugin.MapBoxSource({
+            token: MAPBOXKEY,
+            dataType: "terrain-rgb",
+            style: "mapbox.terrain-rgb",
+            maxLevel: 15,
+        });
+
+        // 创建地图
+        const map = tt.TileMap.create({
+            // 影像数据源
+            imgSource: mapBoxImgSource,
+            // 地形数据源
+            demSource: mapBoxDemSource,
+            // 地图投影中心经度
+            lon0: 90,
+            // 最小缩放级别
+            minLevel: 2,
+            // 最大缩放级别
+            maxLevel: 18,
+        });
+        // 地图旋转到xz平面
+        map.rotateX(-Math.PI / 2);
+
+        // 地图中心坐标(经度，纬度，高度)
+        const centerGeo = new THREE.Vector3(105, 30, 0);
+        // 摄像坐标(经度，纬度，高度)
+        const camersGeo = new THREE.Vector3(105, 0, 5000);
+        // 地图中心转为世界坐标
+        const centerPostion = map.localToWorld(map.geo2pos(centerGeo));
+        // 摄像机转为世界坐标
+        const cameraPosition = map.localToWorld(map.geo2pos(camersGeo));
+        // 初始化场景
+        const viewer = new tt.plugin.GLViewer("#map", { centerPostion, cameraPosition });
+
+        // 地图添加到场景
+        viewer.scene.add(map);
+
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const geoGroup = new THREE.Group();
+
+        // 正方形
+        const pos = map.geo2pos(new THREE.Vector3(120, 40));
+        const geo = new THREE.BoxGeometry(500, 500, 300);
+        const mesh = new THREE.Mesh(geo, material);
+        mesh.position.set(pos.x, pos.y, 150);
+        geoGroup.add(mesh);
+
+
+        const pos2 = map.geo2pos(new THREE.Vector3(90, 20));
+        const loader = new GLTFLoader()
+        loader.load('./zhanji.glb', (gltf) => {
+            viewer.scene.add(gltf.scene)
+            gltf.scene.position.set(pos2.x, pos2.y, 0)
+        })
+
+
+        map.add(geoGroup);
+
+
+    </script>
+
+</body>
+
+</html>

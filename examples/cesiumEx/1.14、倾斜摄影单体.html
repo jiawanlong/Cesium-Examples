@@ -1,0 +1,99 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        // 0、取消默认的单击和双击事件，右上角弹窗很丑
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+
+        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        // handler.setInputAction(function (clickEvent) {
+
+        //     // 经纬度坐标
+        //     var position = viewer.scene.camera.pickEllipsoid(clickEvent.position, viewer.scene.globe.ellipsoid);
+        //     var cartesian3 = new Cesium.Cartesian3(position.x, position.y, position.z)
+        //     var cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian3);
+        //     var lat = Cesium.Math.toDegrees(cartographic.latitude);
+        //     var lng = Cesium.Math.toDegrees(cartographic.longitude);
+
+        //     // 获取被点击的实体
+        //     var ray1 = viewer.camera.getPickRay(clickEvent.position);
+        //     var cartesian = viewer.scene.globe.pick(ray1, viewer.scene);
+        //     var pick = viewer.scene.pickPosition(clickEvent.position);
+        //     var pickEd = viewer.scene.pick(clickEvent.position);
+        //     if (pickEd && pick) {
+        //         // console.log(pickEd)
+        //         var r = 255;
+        //         var g = 255;
+        //         var b = 255;
+        //         var a = 0.99;
+        //         tileset.style = new Cesium.Cesium3DTileStyle({ color: "color('rgba(" + r + "," + g + "," + b + ", " + a + ")')" })
+        //     }
+        // }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+
+        /*鼠标移动选择开始*/
+        var silhouetteBlue = Cesium.PostProcessStageLibrary.createEdgeDetectionStage();
+        silhouetteBlue.uniforms.color = Cesium.Color.BLUE;
+        silhouetteBlue.uniforms.length = 0.01;
+        silhouetteBlue.selected = [];
+
+        var silhouetteGreen = Cesium.PostProcessStageLibrary.createEdgeDetectionStage();
+        silhouetteGreen.uniforms.color = Cesium.Color.LIME;
+        silhouetteGreen.uniforms.length = 0.01;
+        silhouetteGreen.selected = [];
+        viewer.scene.postProcessStages.add(Cesium.PostProcessStageLibrary.createSilhouetteStage([silhouetteBlue, silhouetteGreen]));
+
+        viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
+            var pickedFeature = viewer.scene.pick(movement.endPosition);
+            if (Cesium.defined(pickedFeature)) {
+                if (pickedFeature == silhouetteGreen.selected[0]) {
+                    silhouetteBlue.selected = [];
+                } else {
+                    silhouetteBlue.selected = [pickedFeature];
+                }
+            }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+        viewer.screenSpaceEventHandler.setInputAction(function leftClick(movement) {
+            var pickedFeature = viewer.scene.pick(movement.position);
+            if (Cesium.defined(pickedFeature)) {
+                silhouetteGreen.selected = [pickedFeature];
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        /*鼠标移动选择结束*/
+    </script>
+</body>
+
+</html>

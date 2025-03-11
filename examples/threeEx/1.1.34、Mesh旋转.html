@@ -1,0 +1,85 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+
+        const camera = new THREE.PerspectiveCamera();  //相机
+        camera.position.set(50, 100, 50); //相机位置
+        camera.lookAt(10, 0, 10); //相机位置
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        scene.add(new THREE.AmbientLight(0xffffff, 4))
+        scene.add(new THREE.AxesHelper(1000))
+
+        // 加载模型 gltf/ glb 
+        const loader = new GLTFLoader()
+        loader.load('./zhanji.glb', (gltf) => {
+            scene.add(gltf.scene)
+            gltf.scene.scale.set(0.015, 0.015, 0.015)
+
+            // --------------------通过欧拉对象Euler设置----------------------
+            let euler = new THREE.Euler(Math.PI / 4, Math.PI / 6, Math.PI / 3, 'XYZ');
+            gltf.scene.rotation.copy(euler);
+            // mesh.rotation.copy(euler);   //普通mesh的话这样设置
+
+
+            // ------------------------------直接设置--------------------------------
+            //Math.PI为180度
+            // gltf.scene.rotateZ(Math.PI / 4);
+            // gltf.scene.rotateY(Math.PI / 2);
+
+        })
+
+
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+        new OrbitControls(camera, renderer.domElement)
+
+        animate()
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+        }
+
+    </script>
+
+</body>
+
+</html>

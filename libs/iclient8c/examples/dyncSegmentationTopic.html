@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>动态分段</title>
+        <link href='./css/bootstrap.min.css' rel='stylesheet' />
+        <link href='./css/bootstrap-responsive.min.css' rel='stylesheet' />
+        <link href='./css/sm-extend.css' rel='stylesheet' />
+        <link href='./css/sm-doc.css' rel='stylesheet' />
+    </head>
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+        <!--导航条-->
+        <div class="navbar navbar-fixed-top" id="navbar">
+
+        </div>
+        <div id='container' class='container'>
+            <div class='page-header'>
+                <h1>动态分段专题</h1>
+                <hr/>
+                <h2>一、动态分段专题介绍</h2>
+                <h3>1.1 定义</h3>
+				<p><strong>1、线性参考</strong></p>
+				<p>线性参考是一种采用沿具有测量值的线性要素的相对位置来描述和存储地理位置的方法，
+				即使用距离来定位沿线的事件。这里的距离表示一个度量值，可以是长度，也可以是时间、费用等。</p>
+                <p>图1是线性参考的简单示意，图中底部的线是一条具有测量值的线段（比如公路、管道等），线上方的点和线段是发生在该线段上的事件（如公路上的交通事故、一段道路的路面材料等）。线性参考技术将图中沿线的点和线从左至右分别描述为：距离线段起始位置12个单位的点，沿线段第35个单位开始至第76个单位结束的线段，沿线段第84.3个单位的点。</p>
+				<div class="pageImage"> <img src="./images/linearRef.png"/>
+                    <br>图1 线性参考示意图</div>
+				<p> 在很多实际应用中，使用线性参考进行定位比传统的通过精确的 X、Y 坐标来定位更符合人们的习惯，从而能够更加有效地处理问题。比如在某某路口东300米处发生交通事故，比描述为发生在（6570.3876,3589.6082）坐标处更容易定位。</p>
+				<p><strong>2、动态分段技术简介</p></strong>
+				<p>动态分段思想最早由美国威斯康星交通厅戴维.弗莱特于1987年提出，旨在实现线性特征的动态显示和分析。</p>	
+				<p>动态分段技术是基于线性参考技术发展起来的。它主要使用两种数据结构：路由数据集和事件表数据集。
+				路由数据集中的路由对象就是线性参考中“具有测量值的线性要素”，它与普通线对象的区别是
+				除X、Y坐标外还存储有第三维信息，即用于度量的测量值；而事件表是一个属性表，
+				它必须包含路由标识字段和刻度字段（点事件包含刻度字段，线事件包含起始刻度字段和终止刻度字段）。
+				事件表数据集还可以存事件的具体信息（如交通事故发生地的天气状况、驾驶者的酒精含量、
+				当时的车速、路面宽度、 铺设材料等）属性。路由标识字段的值用于将事件对应的点或线定位到正确的路由上，
+				刻度字段的值使事件对应的点或线最终正确定位。事件表中的路由标识字段、
+				刻度字段及其他描述事件的属性，都会写入生成的空间数据的属性表中。</p>
+				<p> 动态分段结束后事件表中的事件被定位到空间上，生成相应的点或者线图层。其中点事件对应生成点数据集，线事件表对应生成的线数据为路由数据集。生成空间数据后可以与原始路由数据（或原始线数据）叠加显示，或者制作专题图显示，并叠加于原始路由之上。图2展现了动态分段生成矢量点和线 （路由）数据后，根据其某一属性制作专题图，并叠加于原始路由之上的效果。其中淡紫色的线是原始路由数据。</p>
+				<div class="pageImage"> <img src="./images/generate.png"/>
+                    <br>图2 动态分段结果展示</div>
+				
+                <p>
+                动态分段技术是在传统 GIS 数据模型的基础上，利用线性参考技术，根据属性数据的空间位置，
+                实现属性数据地图上动态地显示、分析及输出等。该技术可以在不改变线数据原有空间数据结构的前提下，
+                建立线对象的任意部分与一个或多个属性之间的关联关系，极大地增强了线性特征的处理功能，
+                可应用于公路、铁路、河流、管线等具有线性特征的地物的模拟和分析，广泛应用于公共交通管理、
+                路面质量管理、航海线路模拟、通讯网络管理、电网管理等诸多领域。
+                </p>
+                <h3>1.2 一些基本概念</h3>
+                <p>
+                <strong>1. 路由:</strong>使用唯一 ID 标识，并具有度量值的线对象。除有X、Y坐标外，每个节点还有一个用于度量的值（称为刻度值），
+                是路由与一般线对象的根本区别。
+                </p>
+                <p>
+                <strong>2. 刻度值:</strong>路由的节点信息由（X、Y、M）表达，如图1所示。刻度值即M值，代表该节点到路由起点的度量值，该值可以是距离、时间或其他任何值。M值独立于路由数据的坐标系统，其单位可以不与（X，Y）的坐标单位相同。
+                </p>
+                <div class="pageImage"> <img src="./images/route.png"/>
+                    <br>图3 一条路由及其节点信息</div>
+                <p>
+                <strong>3. 路由标识字段:</strong>路由数据集中的一个字段，存储了路由 ID，是路由对象的唯一标识字段。路由数据集、事件表和通过事件表生成的空间数据中均包含该字段，它将事件与路由或空间数据对应起来。
+                </p>
+                <p>
+                <strong>4. 路由数据集:</strong>
+                存储事件发生的地点，也就是路由的数据集，是一个矢量数据集。
+                </p>
+                <p>
+                <strong>5. 路由位置:</strong>
+                路由的一个点或路由上一部分的位置，简称位置。分为点路由位置和线路由位置。
+                点路由位置使用一个刻度值描述沿路由的一个位置，如某某路500米处；
+                线路由位置使用起始刻度值和终止刻度值来描述路由上一部分，如某某路200到1000米处。
+                </p>
+                <p>
+                <strong>6. 事件: </strong>
+                包含路由位置及相关属性的一条记录称为路由事件，简称事件。
+                与路由位置对应，事件也分为点事件和线事件。存储了路由事件集合的属性表称为事件表(图4)。
+                </p>
+                <div class="pageImage"> <img src="./images/EventTab.png"/><br>
+                    图4 点事件表和线事件表</div>
+
+                <h2>二、动态分段使用说明</h2>
+                <h3>2.1 使用方法介绍</h3>
+                <p>
+                动态分段的使用方法：一，制作动态分段空间数据并在服务端发布以供客户端调用；
+                二，在客户端设置用于向服务端发送的动态分段各参数，包括数据返回选项(DataReturnOption)、
+                动态分段参数(GenerateSpatialDataParameters)；
+                三，定义动态分段服务(GenerateSpatialDataService)，用于向服务端发送请求，
+                从服务端获得动态分段数据，并在客户端进行单值专题渲染。
+                </p>
+                <p>
+                本专题将以长春市道路的数据为例，根据某一时刻的某些道路路段出现拥堵和车辆较多现象，
+                利用动态分段技术在客户端实时动态显示出道路的路况(拥挤/缓行/畅通)，
+                以提示驾驶人员避免进入拥堵路段，选择合适的行驶路线。
+                </p>
+
+                <h3>2.2 示例说明</h3>
+                <h4>2.2.1 数据制作与发布</h4>
+                <p>
+                本节以长春示范数据为例演示动态分段数据生成过程，整个过程分为数据制作和数据发布两个阶段，
+				其中数据制作在 SuperMap iDesktop产品中完成，制作的数据包括事件表与路由数据集，然后将制作得到的数据保存并发布到iServer 服务。
+				</p>
+				<p>具体操作流程图如下：
+                </p>
+                <div class="pageImage"> <img src="./images/generalSaptiaDataProl.png"/>
+                    <br>图5 动态分段数据制作与发布流程</div>
+                <p><strong>
+                    （1）由点/线数据集生成路由数据集</strong>
+                </p>
+                <p>
+                首先导入原始线数据表，给此数据表添加新的字段路由 ID（RouteID）,利用新的线数据表生成路由数据集。
+                </p>
+                <p>
+                操作方法：“分析-动态分段-点/线数据集->路由数据集”，各参数设置如下图所示：
+                </p>
+                <div class="pageImage"> <img src="./images/new_route.png"/>
+				<br>图6 生成路由数据集</div>
+                <p><strong>
+                    （2）生成点/线事件表</strong>
+                </p>
+                <p>
+                利用（1）生成的路由数据集制作相应的事件表。
+                </p>
+                <p>
+                其中，生成事件表有两种方式。一种是人工建立一个属性表，添加路由标识字段和其他属性字段，
+                并输入相应的属性信息来生成事件表。这种方式虽然简单但往往需要耗费较多的人力物力。
+                另一种方式是通过点或线空间数据和路由数据来自动生成事件表。本示例采用的是第二种方式，方法如下：
+                </p>
+                <p>
+                点击”分析-动态分段-创建事件表”功能创建线事件表，参数设置如下：
+                </p>
+                <div class="pageImage"> <img src="./images/new_event.png"/>
+				<br>图7 创建事件表</div>
+                <p>
+                这个步骤会根据提供的线事件数据集生成事件表，系统会根据事件的位置，
+                自动计算出这些事件位于哪条路段上，以及起止 M 值等信息，
+                即结果事件属性表中会有 RouteID、LineMeasureFrom、LineMeasureTo 等字段；
+                另外，可以自己手动建立事件类型字段。
+                </p>
+                <p>
+                本示例在创建事件表完成之后，手动创建一个文本字段(TrafficStatus)，
+                描述事件类型字段，其属性值有：拥堵/畅通/缓行。
+                </p>
+                <p><strong>
+                    （3）设置事件表</strong>
+                </p>
+                <p>
+                对生成的线事件表中的字段进行设置，用户通过自己设置事件表参数，
+                可以将事件表中的属性，通过创建的线事件，添加到地图窗口，具体设置进行如下:
+                </p>
+                <div class="pageImage"> <img src="./images/set_event.png"/>
+				<br>图8 动态分段数据制作与发布流程</div>
+                <p><strong>
+                    （4）由事件表/路由数据集生成空间数据</strong>
+                </p>
+                <p>
+                用户可以根据已有的事件表数据集，并指定一个字段（或新建一个字段）来存储错误信息，
+                生成空间线数据集，具体设置如下图所示：
+                </p>
+                <div class="pageImage"> <img src="./images/new_generalSaptiaData.png"/>
+				<br>图9 设置事件表</div>
+				<p>至此数据制作结束，保存工作空间。</p>
+                <p><strong>
+                    (5) 发布空间服务</strong>
+                </p>
+                <p>
+                将保存的工作空间发布成空间分析服务，本专题使用的服务为 SuperMap iServer 6R，这里需要注意的是 SuperMap iServer 版本需在6.1.2 及其以上，
+                具体发布方法请参见 iServer Java 6R 的帮助文档。
+                </p>
+                <h4>2.2.2 利用示例说明接口的使用</h4><br />
+                <p><strong>
+                    1. 设置动态分段需要的各个参数</strong>
+                </p>
+                <p>
+                包括数据返回选项(Option)、动态分段参数(Parameters)，
+                </p>
+                <p>
+                (1) 设置数据返回选项,需要设置的属性属性包括 expectCount、dataset、deleteExistResultDataset、dataReturnMode。
+                </p>
+<pre>
+var option = new SuperMap.REST.DataReturnOption({
+    //设置返回的最大记录数
+    expectCount: 1000,
+    //如果用户命名的结果数据集名称与已有的数据集重名, 则删除已有的数据集
+    deleteExistResultDataset: true, 
+    //设置数据返回模式为DATASET_ONLY
+    dataReturnMode: SuperMap.REST.DataReturnMode.DATASET_ONLY,
+    //设置结果数据集标识, 由于dataReturnMode设置
+    //为 SuperMap.REST.DataReturnMode.DATASET_ONLY,则返回数据集的名称
+    dataset: "generateSpatialData"
+});
+</pre>
+                <p>
+                (2) 设置动态分段参数，需要设置的属性包括 routeTable、routeIDField、eventTable、eventRouteIDField、
+                measureField、measureStartField、measureEndField、measureOffsetField、errorInfoField、dataReturnOption。
+                </p>
+<pre>
+//配置动态分段Parameters
+var parameters = new SuperMap.REST.GenerateSpatialDataParameters({
+    routeTable: "RouteDT_road@Changchun",//路由数据集
+    routeIDField: "RouteID",//路由数据集的标识字段,即路由ID
+    eventTable: "LinearEventTabDT@Changchun",//用于生成空间数据的事件表名
+    eventRouteIDField: "RouteID",//用于生成空间数据的事件表的路由标识字段
+    measureField: "",//用于生成空间数据的事件表的刻度字段
+    measureStartField: "LineMeasureFrom",//事件表的起始刻度字段
+    measureEndField: "LineMeasureTo",//事件表的终止刻度字段
+    measureOffsetField: "",//刻度偏移量字段
+    errorInfoField: "",//错误信息字段
+    dataReturnOption: option //设置数据返回的选项
+});
+</pre>
+                <p><strong>
+                    2. 定义动态分段服务(GenerateSpatialDataService)</strong>
+                </p>
+                <p>
+                定义动态分段服务对象，用于将客户端设置的动态分段分析服务参数(parameters)传递给服务端，
+                并接收服务端返回的动态分段分析结果数据,该对象监听了 processCompleted 和 processFailed 两个事件, 当向服务端发送请求(processAsync)并且服务端成功返回结果时触发 processCompleted 事件，
+                此时将会从服务端获得动态分段空间数据，并在客户端将空间数据中的路况信息以专题图的形式展现给用户。
+                </p>
+<pre>
+//配置动态分段服务
+var iService = new SuperMap.REST.GenerateSpatialDataService(Changchun_spatialanalyst, {
+    eventListeners: {
+        processCompleted: generateCompleted,// 服务端成功返回动态数据时触发该事件
+        processFailed: generateFailded  // 服务端返回动态数据失败时触发该事件
+    }
+});
+//该事件被触发，服务端将成功返回动态分段空间数据,
+//数据返回之后，会在客户端以单值专题图形式展现
+function generateCompleted(generateSpatialDataEventArgs) {
+    //配置专题样式
+    var style1, style2, style3;
+    style1 = new SuperMap.REST.ServerStyle({
+        fillForeColor: new SuperMap.REST.ServerColor(242, 48, 48),
+        lineColor: new SuperMap.REST.ServerColor(242, 48, 48),
+        lineWidth: 1
+    });
+    style2 = new SuperMap.REST.ServerStyle({
+        fillForeColor: new SuperMap.REST.ServerColor(255, 159, 25),
+        lineColor: new SuperMap.REST.ServerColor(255, 159, 25),
+        lineWidth: 1
+    });
+    style3 = new SuperMap.REST.ServerStyle({
+        fillForeColor: new SuperMap.REST.ServerColor(91, 195, 69),
+        lineColor: new SuperMap.REST.ServerColor(91, 195, 69),
+        lineWidth: 1
+    });
+
+    //配置专题项
+    var themeUniqueIteme1, themeUniqueIteme2, themeUniqueIteme3;
+        themeUniqueIteme1 = new SuperMap.REST.ThemeUniqueItem({
+        unique: "拥挤",
+        style: style1
+    });
+    themeUniqueIteme2 = new SuperMap.REST.ThemeUniqueItem({
+        unique: "缓行",
+        style: style2
+    });
+    themeUniqueIteme3 = new SuperMap.REST.ThemeUniqueItem({
+        unique: "畅通",
+        style: style3
+    });
+    var themeUniqueItemes=[themeUniqueIteme1, themeUniqueIteme2, themeUniqueIteme3];  
+    var themeUnique = new SuperMap.REST.ThemeUnique({
+        uniqueExpression: "TrafficStatus",
+        items: themeUniqueItemes,
+        defaultStyle: new SuperMap.REST.ServerStyle({
+            fillForeColor: new SuperMap.REST.ServerColor(48, 89, 14),
+            lineColor: new SuperMap.REST.ServerColor(48, 89, 14)
+            })
+    });
+    var themeParameters = new SuperMap.REST.ThemeParameters({
+        themes: [themeUnique],
+        datasetNames: ["generateSpatialData"],
+        dataSourceNames: ["Changchun"],
+        types:['REGION']
+    });
+    var themeService = new SuperMap.REST.ThemeService(ChangChun_Map, {
+        eventListeners:{
+        processCompleted: themeCompleted, 
+        processFailed: themeFailed
+        }
+    });
+
+    themeService.processAsync(themeParameters);
+
+    function themeCompleted(themeEventArgs) {
+        if(themeEventArgs.result.resourceInfo.id) {
+            themeLayer = new SuperMap.Layer.TiledDynamicRESTLayer("道路交通状况_专题图", ChangChun_Map, {
+                cacheEnabled:false,
+                transparent: true,
+                layersID: themeEventArgs.result.resourceInfo.id}, 
+                {"maxResolution": "auto"}
+            );  
+            themeLayer.events.on({"layerInitialized": addThemeLayer});                
+        }
+    }
+    function addThemeLayer() {
+        map.addLayer(themeLayer);
+    }
+    function themeFailed(e) {
+        alert(e.error.errorMsg);
+    }  
+}
+//服务端返回动态分段空间数据失败
+function generateFailded(e) {
+    alert(e.error.errorMsg);
+}
+
+//向服务端发送请求(processAsync),此时会触发generateCompleted、generateFailded 事件
+iService.processAsync(parameters);        
+</pre>
+                <h4>2.2.3 示例效果图的展示</h4><br />
+                <p>
+                从服务端获取数据之后，客户端会对获得的空间数据的路况信息进行单值专题渲染并叠加在地图上显示，
+                效果图如下，其中红色代表“拥堵”、黄色代表“缓行”、绿色代表“畅通”。
+                </p>
+                <div class="pageImage"> <img src="./images/generalSaptiaData.png"/></div>
+
+                <h2>三、专题小结</h2>
+                <p>以上基于动态分段技术的长春市某一时刻的路况信息动态显示实例，
+                动态完成了属性数据的分段显示，解决了传统地理信息系统中线性特征的动态分析与显示问题，
+                提高数据制作效率和降低数据存储空间, 降低数据维护的复杂度。
+                </p>
+            </div>
+            <div class='footer'>
+                <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+            </div>
+        </div>
+        <script src='./js/jquery.js'></script>
+        <script src='./js/bootstrap.js'></script>
+        <script src="./js/navbar.js"></script>
+        <script src="./js/GoTop.js" id="js_gotop"></script>
+    </body>
+</html>

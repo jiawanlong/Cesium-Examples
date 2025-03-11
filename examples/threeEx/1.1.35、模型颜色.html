@@ -1,0 +1,94 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 创建场景
+        const scene = new THREE.Scene();
+
+        // 创建相机
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // 创建渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 创建一个立方体几何体
+        const geometry = new THREE.BoxGeometry();
+
+        // 使用不同的颜色表示方式创建材质
+        const material1 = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // 十六进制
+        const material2 = new THREE.MeshBasicMaterial({ color: '#00ff00' }); // 十六进制字符串
+        const material3 = new THREE.MeshBasicMaterial({ color: 'blue' }); // CSS 颜色字符串
+        const material4 = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, 1, 0) }); // RGB
+        const material5 = new THREE.MeshBasicMaterial({ color: new THREE.Color('rgb(255, 100, 0)') }); // RGB
+        // 带透明度的方式
+        const material6 = new THREE.MeshBasicMaterial({
+            color: 0xff0000, // 红色
+            transparent: true, // 启用透明度
+            opacity: 0.3 // 设置透明度
+        });
+
+        // 创建多个立方体
+        const cube1 = new THREE.Mesh(geometry, material1);
+        const cube2 = new THREE.Mesh(geometry, material2);
+        const cube3 = new THREE.Mesh(geometry, material3);
+        const cube4 = new THREE.Mesh(geometry, material4);
+        const cube5 = new THREE.Mesh(geometry, material5);
+        const cube6 = new THREE.Mesh(geometry, material6);
+
+        // 将立方体添加到场景中，并调整位置
+        cube1.position.x = -2;
+        cube2.position.x = -1;
+        cube3.position.x = 1;
+        cube4.position.x = 2;
+        cube5.position.x = -3;
+        cube6.position.x = 3;
+
+        scene.add(cube1, cube2, cube3, cube4, cube5, cube6);
+
+        // 添加轨道控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+
+        // 渲染函数
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // 开始动画循环
+        animate();
+    </script>
+
+</body>
+
+</html>

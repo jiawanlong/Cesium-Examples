@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>客户端统计专题图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar"></div>
+<script src="js/navbar.js"></script>
+<div id='container' class='container'>
+<div class='page-header'>
+
+<h1>客户端统计专题图专题</h1>
+<hr/>
+
+
+<h2>一、简介</h2>
+<p>
+    客户端统计专题图。统计专题图通过为每个要素绘制统计图表来反映其对应的专题值的大小。
+    它可同时表示多个字段属性信息，在区域本身与各区域之间形成横向和纵向的对比。
+    客户端统计专题图多用于具有相关数量特征的地图上，
+    比如表示不同地区多年的粮食产量、GDP、人口等，不同时段客运量、地铁流量等。
+    允许一次分析多个数值型变量，即可以将多个变量的值绘制在一个统计图上。客户端专题图具有两个重要特征：
+</p>
+<p>
+    1.专题要素可交互
+</p>
+<p>
+    客户端统计专题图图层提供了六个专题要素事件click、mousedown、mousemove、mouseout、mouseover和mouseup，
+    如果这些事件的事件对象为 e，则e.target就是可交互图形（事件处理函数通常需要首先判断e.target以表明作用到了可交互对象上）。
+    e.target 上有两个重要属性与交互有关 refDataID （e.target.refDataID） 和 dataInfo（e.target.dataInfo）。
+    refDataID 是图表所关联数据的 ID，它标识当前图形所属图表是由哪个 feature 数据制作而来，
+    数据是指添加到统计专题图图层的 feature 数据。dataInfo 是图形携带的数据信息对象，
+    这个信息对象有两个属性 field 和 value，分别表示数据字段名称和数据值。
+</p>
+<p>
+    2.图表类型自定义扩展
+</p>
+<p>
+    客户端统计专题图支持图表类型扩展，SuperMap iClient for JavaScript 产品库中提供了一个通用的统计专题图图层（SuperMap.Layer.Graph）
+    和一个统计图表抽象模型（SuperMap.Feature.Theme.Graph）。
+    SuperMap.Layer.Graph 图层支持各种统计图表类型的绘制，SuperMap.Feature.Theme.Graph是统计图表的抽象模型，
+    具体的图表类是实现 SuperMap.Feature.Theme.Graph 类抽象方法 assembleShapes() 的子类。
+    图表类没有加入到 SuperMap iClient for JavaScript 产品的库文件中，所以使用客户端统计专题图需要单独引用相应的图表类文件。
+</p>
+
+
+<h2>二、结构</h2>
+<p>
+    客户端统计专题图采用了数据驱动的可视化策略，对使用者来说，只需要关注自己需要展示的数据和图表的样式两部分内容。
+    使用者将自己的 feature 数据添加到统计专题图图层，图层按照图表配置对象 chartSetting 将用户feature数据制作为统计图表，然后在图层中把图表绘制出来。
+</p>
+<div class="pageImage"><img src="./images/themeLayerGraphTopic1.png"/></div>
+
+
+<h2>三、统计专题要素模型-图表</h2>
+<p>
+    客户端统计专题图的核心思想是"数据驱动图表"，统计专题图图层（SuperMap.Layer.Graph）是这种思想的实践者，
+    它承担着管理feature数据、将feature数据制作为统计图表、绘制统计图表、管理图表交互的重任。
+    统计专题图图层使用feature数据制作统计图表的过程中必须要依赖于统计专题要素模型（SuperMap.Feature.Theme.Graph）的可实例化子类，
+    统计专题要素模型又称为图表模型或图表类）。
+</p>
+<p>
+    SuperMap.Feature.Theme.Graph 是统计专题要素模型的基础抽象模型，它不可被实例化，它的可实例化子类（图表模型/图表类）必须实现 assembleShapes() 接口。
+    SuperMap.Feature.Theme.Graph 定义的抽象模型如下图，它定义好了统计图表模型的一些基础属性：
+</p>
+<div class="pageImage"><img src="./images/themeLayerGraphTopic2.png"/></div>
+<p>
+    1.	width 是图表宽度。
+</p>
+<p>
+    2.	height 是图表高度。
+</p>
+<p>
+    3.	lonlat 是指图表在图层中的地理位置，location 是与此位置对于的像素位置。
+</p>
+<p>
+    4.	lonlat（location）、width、height是最基本的三个参数，他们共同决定图表的位置和大小，由这三个参数可以确定图表范围框chartBox，
+    chartBox用一个长度为4的一维数组表示，数组的4个元素依次表示图表框左端 x 坐标值、
+    下端 y坐标值、 右端 x坐标值、 上端 y 坐标值。lonlat（location）的位置是图表框的中心点。
+</p>
+<p>
+    5.	origonPoint 是图表原点，是图表框chartBox的左上角点。
+</p>
+<p>
+    6.	图表模型中的另一个重要的范围框是数据视图框dataViewBox（数据视图框相关的属性以" DVB "为前缀）。
+    数据视图框的范围由数据视图框参数 DVBParameter 决定，DVBParameter 也是一个长度为 4 的一维数组，
+    它的元素是 chartBox 在四个方向上的内偏距，图表框作用内偏距后的范围就是数据视图框的范围。
+    dataViewBox 是统计专题要素最核心的内容，它负责解释用户数据在一个像素区域里的含义。
+</p>
+<p>
+    7.	DVBOrigonPoint 是数据视图框原点，它是数据视图框的左上角点。
+</p>
+<p>
+    8.	DVBCenterPoint是数据视图框中心点。
+</p>
+<p>
+    9.	DVBWidth 是数据视图框宽度。
+</p>
+<p>
+    10.	DVBHeight 是数据视图框高度。
+</p>
+<p>
+    SuperMap.Feature.Theme.Graph 是一个抽象模型，它定义了统计图表的结构，两个范围框：图表框 chartBox 和数据视图框 dataViewBox。
+    具体的图表模型是实现 SuperMap.Feature.Theme.Graph抽象方法 assembleShapes() 的子类，
+    assembleShapes() 必须把抽象的图表模型用可视化图形对象表达出来，形成可视化的图表对象。
+    目前客户端统计专题图提供的统计图类型有：
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>图表名称</th>
+        <th>图表类型</th>
+        <th>类名</th>
+        <th>文件名</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>柱状图</td>
+        <td>Bar</td>
+        <td>SuperMap.Feature.Theme.Bar</td>
+        <td>Bar.js</td>
+    </tr>
+    <tr>
+        <td>折线图</td>
+        <td>Line</td>
+        <td>SuperMap.Feature.Theme.Line</td>
+        <td>Line.js</td>
+    </tr>
+    <tr>
+        <td>饼图</td>
+        <td>Pie</td>
+        <td>SuperMap.Feature.Theme.Pie</td>
+        <td>Pie.js</td>
+    </tr>
+    <tr>
+        <td>三维柱状图</td>
+        <td>Bar3D</td>
+        <td>SuperMap.Feature.Theme.Bar3D</td>
+        <td>Bar3D.js</td>
+    </tr>
+    <tr>
+        <td>点状图</td>
+        <td>Point</td>
+        <td>SuperMap.Feature.Theme.Point</td>
+        <td>Point.js</td>
+    </tr>
+    <tr>
+        <td>环状图</td>
+        <td>Ring</td>
+        <td>SuperMap.Feature.Theme.Ring</td>
+        <td>Ring.js</td>
+    </tr>
+    </tbody>
+</table>
+
+
+<h2>四、使用说明</h2>
+<p>下面以三维柱状图为例介绍客户端统计专题图的使用。</p>
+
+<br>
+<h4>
+    1.引用所需的图表类文件
+</h4>
+<p>
+    SuperMap iClient for JavaScript的库文件不包含图表类文件，在使用客户端统计专题图时需要单独引入所需的图表类文件。
+    SuperMap iClient for JavaScript产品包中提供的图表类文件所在目录是："产品包根目录/examples/js/graph"。
+    引用图表类文件的代码如下：
+</p>
+<pre>
+    // 先引入 SuperMap iClient for JavaScript 库文件
+    &lt;script src='../libs/SuperMap.Include.js'&gt;&lt;/script&gt;
+    // 后引入三维柱状图图表类文件
+    &lt;script src='./js/graph/Bar3D.js'&gt;&lt;/script&gt;
+</pre>
+
+<br>
+<h4>
+    2.创建客户端统计专题图图层，并将其添加到地图中
+</h4>
+<p>
+    客户端统计专题图提供了一个可以绘制各种图表类型的统计专题图图层 SuperMap.Layer.Graph，
+    在构造函数的第二个参数中指定其渲染的图表类型，如果要切换图表类型，使用 setChartsType 接口即可。
+    （注意：切换图表类型前，需要将图表配置 chartsSetting 的相关属性设置为目标图表类型的图表配置）
+</p>
+<pre>
+    themeLayer = new SuperMap.Layer.Graph("ThemeLayer", "Bar3D");
+    map.addLayers([ themeLayer]);
+</pre>
+
+<br>
+<h4>
+    3.设置统计图表配置对象 chartsSetting
+</h4>
+<p>
+    图表配置对象 chartsSetting 控制统计专题图图层中图表的可视化表达，通过 chartsSetting 可以控制图表的显示效果。
+    chartsSetting 对象的可设属性根据图表类型的不同具有较大差异，各类型图表的 chartsSetting 对象可设属性请参考图表类的注释中对 chartsSetting 对象可设属性的描述。
+    （图表配置对象 chartsSetting 的属性发生改变后需要图层重绘后才能看到效果）
+</p>
+<pre>
+    // 图表配置对象参数
+    themeLayer.chartsSetting = {
+        width: 60,		// 图表宽度，必设配置项
+        height: 100, 		// 图表高度，必设配置项
+        codomain: [0, 14000000],        // 允许图表展示的值域范围，此范围外的数据将不制作图表，必设配置项
+        YOffset: -50,         // 向上偏移 50 像素
+        useAxis: false,       // 不显示坐标轴
+        useBackground: false       // 不显示背景框
+    };
+</pre>
+
+<br>
+<h4>
+    4.指定用于统计图表制作的字段并向专题图层中添加数据
+</h4>
+<p>
+    客户端统计专题图图层只接受 feature （SuperMap.Feature.Vector）数据，addFeatures()是向图层添加数据的唯一接口。
+    themeFields 用于指定用统计图表制作的字段名称，这些字段名称必须是 feature. attributes 上的字段名称，且这些字段对应的属性值数据类型必须为数值型。
+</p>
+<p>
+    指定用于专题图制作的属性字段，下面的代码指明将首都人口用于统计图表制作
+</p>
+<pre>
+    themeLayer.themeFields = ["CAP_POP"];
+</pre>
+<p>
+    下面一段代码展示从服务器查询数据并将这些数据添加到统计专题图图层
+</p>
+<pre>
+        // 获取 feature 数据, 专题图的数据必须是 SuperMap.Feature.Vector
+        function addThemeLayer() {
+            clearThemeLayer();
+            var queryParam, queryBySQLParams, queryBySQLService;
+            queryParam = new SuperMap.REST.FilterParameter({
+                name: "Capitals@World#1",
+                // 只查询人口 > 1000000 的首都城市
+                attributeFilter: "CAP_POP > 1000000"
+            });
+            queryBySQLParams = new SuperMap.REST.QueryBySQLParameters({
+                queryParams: [queryParam]
+            });
+            queryBySQLService = new SuperMap.REST.QueryBySQLService(url, {
+                eventListeners: {"processCompleted": processCompleted, "processFailed": processFailed}});
+            queryBySQLService.processAsync(queryBySQLParams);
+        }
+        function processCompleted(queryEventArgs) {
+            var i, result = queryEventArgs.result;
+            if (result && result.recordsets) {
+                for (i=0; i < result.recordsets.length; i++) {
+                    if (result.recordsets[i].features) {
+                        // 向统计专题图层添加用于制作专题图的feature数据
+                        themeLayer.addFeatures(result.recordsets[i].features);
+                    }
+                }
+            }
+        }
+</pre>
+<p>
+    添加完数据后，可以看到专题图图层中绘制的专题要素(图表)：
+</p>
+<div class="pageImage"><img src="./images/themeLayerGraphTopic3.png"/></div>
+
+<br>
+<h4>
+    5.专题要素交互
+</h4>
+<p>
+    在统计专题图图层中注册事件，可以实现与图表中的可交互图形进行交互。
+    （专题要素可交互是客户端统计图的重要特性，参见文档“简介”部分）。
+    统计专题图图层的专题要素事件通过 on 函数注册，使用 un 函数取消。
+</p>
+<pre>
+    // 注册 click 事件
+    themeLayer.on("click", clickHandle)
+
+    function clickHandle(e){
+        if(e.target){  // 对 e.target 的判断时必要的，这个判断证明作用在了图层的可交互对象上
+            // 与图表交互的相关代码
+        }
+    }
+</pre>
+
+<br>
+<h4>
+    6.客户端统计专题图使用过程小结
+</h4>
+<p>
+    使用客户端统计专题图首先需要在"产品包根目录/examples/js/graph"目录下找到需要使用的图表类文件，
+    在引入SuperMap iClient for JavaScript产品库文件后引用该图表类文件；然后创建一个统计专题图图层，并将它添加到地图中；
+    根据图表类型设置图表配置对象的相关属性，最后指定用于统计图表制作的字段并向专题图层中添加 feature 数据；
+    在图层上注册专题要素事件可实现与图表的交互。
+</p>
+
+
+<br>
+<div>
+    <strong>
+完整的范例代码参考：示范程序->专题图->客户端专题图-><a target="_blank" href="./ctl_worldCapitalsGraphBar.html">世界首都人口统计</a>
+    </strong>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+    <script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

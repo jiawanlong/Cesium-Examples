@@ -1,0 +1,53 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./weatherEffects2.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+        });
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(-95.166493, 39.9060534, 2000000)
+        });
+
+        var skyBox;
+        function weatherEffectssss(a, b) {
+            if (skyBox != undefined) {
+                skyBox.removePostProcessStage();
+                skyBox = undefined;
+            }
+            skyBox = new weatherEffects(viewer, {
+                name: a,
+                type: b
+            });
+        }
+
+        // 注意封装库的引用
+
+        weatherEffectssss('雨', 'rain');
+        // weatherEffectssss('雪','snow')
+        // weatherEffectssss('雾','fog')
+
+        // skyBox.removePostProcessStage();
+
+
+    </script>
+</body>
+
+</html>

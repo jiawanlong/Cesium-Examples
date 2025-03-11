@@ -1,0 +1,94 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        .box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS3DRenderer, CSS3DObject, CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js';
+        // 创建场景
+        const scene = new THREE.Scene();
+
+        // 坐标轴
+        const axes = new THREE.AxesHelper(500)
+        scene.add(axes)
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera();
+        camera.position.set(400, 400, 400);
+        camera.lookAt(0, 0, 0);
+
+        // 创建渲染器
+        let box = document.getElementById("box")
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        box.appendChild(renderer.domElement)
+
+        // 加载纹理
+        const textureLoader = new THREE.TextureLoader();
+        const spriteTexture = textureLoader.load('./砖墙.jpg');
+
+        // 创建精灵材质
+        const spriteMaterial = new THREE.SpriteMaterial({
+            map: spriteTexture,
+            useScreenCoordinates: false,
+            color: 0xffffff // 可以设置颜色
+        });
+
+        // 创建精灵
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(100, 100, 100); // 设置精灵的大小
+        sprite.position.set(100, 100, 100); // 设置精灵的位置
+
+        // 将精灵添加到场景中
+        scene.add(sprite);
+
+
+        function render() {
+            // 更新精灵的位置，运动，，，
+            sprite.position.y += 0.05;
+            renderer.render(scene, camera)
+            requestAnimationFrame(render);
+        }
+        render();
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+    </script>
+
+</body>
+
+</html>

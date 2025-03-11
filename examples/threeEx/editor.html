@@ -1,0 +1,69 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="resources.title_editorLeaflet"></title>
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script type="text/javascript"  include="jquery,bootstrap,template,admin-lte,ace,i18n,theme"
+            src="../js/include-web.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/sideBar.css">
+    <link rel="stylesheet" href="../css/editor.css">
+    <script type="text/javascript" src="../js/utils.js"></script>
+    <style>
+        body{
+          overflow: hidden;
+        }
+      </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+
+<!-- ./wrapper -->
+<div class="wrapper"></div>
+<script>
+    $('.wrapper').load("../template/editor.html", function () {
+        var navigation = {
+            nav: {
+                title: "11i(2023)",
+                path: "../../web/",
+                isLocal: window.isLocal
+            }
+        };
+        utils.loadTemplate(".icl-header", "../template/header.html", navigation);
+
+        $body = $('body');
+       
+        $body.append("<script type='text/javascript' src='./config.js'><\/script>");
+        $body.append("<script type='text/javascript' src='../js/localization.js'><\/script>");
+        $body.append("<script type='text/javascript' src='../js/common.js'><\/script>");
+        $body.append("<script type='text/javascript' src='../js/sidebar.js'><\/script>");
+        $body.append("<script type='text/javascript' src='../js/editor.js'><\/script>");
+
+            setTimeout(function () {
+                var now = getNow();
+                watermark({
+                    "watermark_txt": "贾宛龙 \n（wx：trampjwl） " + now
+                });
+            }, 3000);
+    })
+    
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?e5ab8649289fd056f54428c62a8e0368";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+    
+<!-- ./wrapper end-->
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url("../images/glyphicons-halflings-regular.eot");
+    src: url("../images/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"),
+    url("../images/glyphicons-halflings-regular.woff") format("woff"),
+    url("../images/glyphicons-halflings-regular.ttf") format("truetype"),
+    url("../images/glyphicons-halflings-regular.svg#fontcustom") format("svg");
+}
+
+.plotting-menu .notification-count {
+    display: block;
+    background: #555;
+    box-shadow: 0 0 3px #999;
+    color: #f0f0f0;
+    cursor: default;
+    font-size: 20px;
+    /* line-height: 12px; */
+    /* text-indent: 3px; */
+    position: absolute;
+    /* top: 2px; */
+    left: 200px;
+    z-index: 96;
+}
+
+.plotting-menu,
+.plotting-menu * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 32px;
+    color: #000;
+    vertical-align: baseline;
+    list-style-type: none;
+}
+
+.plotting-menu {
+    position: fixed;
+    top: 40%;
+    left: 0;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    box-shadow: none;
+    width: 32px;
+    overflow: visible;
+    /* box-shadow: 0 1px 5px rgba(0,0,0,0.65); */
+    border-radius: 4px;
+    z-index: 90;
+}
+
+.plotting-menu > li {
+    position: relative;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    float:left;
+    /* overflow: hidden; */
+}
+
+.plotting-menu > li,
+.plotting-menu > li:hover {
+	background-color: #fff;
+	border-bottom: 0px solid #ccc;
+	width: 32px;
+	height: 32px;
+	/* line-height: 18px; */
+	display: block;
+	/* text-align: center; */
+	text-decoration: none;
+	color: black;
+	}
+
+.plotting-menu > li:hover {
+	background-color: #f4f4f4;
+}
+
+.plotting-menu > li:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+.plotting-menu > li:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+}
+
+/* .plotting-menu > li:last-child {
+    border-bottom: none;
+} */
+
+.plotting-menu > li > span{
+    display: block;
+    /* background-position: 4px 4px; */
+    background-repeat: no-repeat;
+    display: block;
+    padding: 0px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+/*    background-position: 8px;
+    background-repeat: no-repeat; */
+    color: #000;
+    font-size: 20px;
+    font-weight: normal;
+    /* min-height: 20px; */
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent !ie;
+}
+
+.plotting-menu > li > span:hover{
+    background-color: #eaeaea;
+    color:#0077AA;
+    cursor: pointer;
+}
+
+.plotting-menu > li > span:right{
+    /*border: 1px solid #868686;*/
+    /*box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+    /*-moz-box-shadow:0px 0px 2px 2px  #ccc inset ;*/
+    /*-webkit-box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+    cursor: pointer;
+}
+
+.plotting-menu > li > ul {
+    display: none;
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    width: 64px;
+    height: 32px;
+    /* overflow: hidden; */
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    border: 2px solid #b7b7b7;
+    border-radius: 4px;
+    z-index: 95;
+
+}
+
+.plotting-menu > li:hover > ul {
+    display: block;
+}
+
+.plotting-menu > li > ul > li {
+    width: 32px;
+    padding: 0px;
+    /* vertical-align: baseline; */
+    float: left;
+}
+
+.plotting-menu > li > ul > li:hover {
+    background-color: #e6e6e6;
+}
+
+/* .plotting-menu > li > ul > li:first-child {
+    border-top: 1px solid #f7f7f7;
+    padding:0px;
+    margin: 0px;
+} */
+
+/* .plotting-menu > li > ul > li:last-child {
+    border-bottom: 1px solid #f7f7f7;
+} */
+
+.plotting-menu > li > ul > li > ul > li {
+  float: left;
+}
+.plotting-menu > li > ul > li > span {
+    cursor: default;
+    font-weight: normal;
+
+}
+
+.plotting-menu > li > ul > li > span:hover {
+    background-color: #e6e6e6;
+    background-color: transparent !ie;
+}

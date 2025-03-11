@@ -1,0 +1,252 @@
+
+.main-sidebar {
+    position: fixed;
+    z-index: 900;
+    height: 100%;
+}
+.sidebar-menu{
+    overflow: visible;
+}
+.sidebar {
+    height: 100% !important;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.skin-blue .main-sidebar {
+    background-color: var(--sidebar-background-color);
+}
+
+.skin-blue .sidebar-menu > li.treeview:hover > a {
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.skin-blue .sidebar-menu > li.treeview.active > a {
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.skin-blue .sidebar .second-menu,
+.skin-blue .sidebar .third-menu {
+    padding-left: 0;
+}
+
+.skin-blue .sidebar .third-menu a {
+    padding-left: 30px;
+}
+
+.skin-blue .sidebar a {
+    color: #000000;
+}
+
+/*侧边栏滚动设置 start*/
+#sidebar-menu > li:hover .sidebar-title-bar {
+    position: static;
+}
+
+.sidebar-collapse #sidebar-menu > li:hover .sidebar-title-bar {
+    position: fixed;
+}
+
+#sidebar-menu > li:hover > ul {
+    position: static;
+    height: auto;
+}
+
+.sidebar-collapse #sidebar-menu > li:hover > ul {
+    position: fixed;
+    overflow-y: auto;
+}
+
+a.sidebar-toggle {
+    width: 100%;;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    background-color: var(--sidebar-background-color);
+    color: var(--text-color) !important;
+    display: block;
+}
+
+.sidebar-collapse a.sidebar-toggle div.fold {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+    transition: transform .5s;
+}
+.sidebar-collapse a.sidebar-toggle #suffix-title{
+  display: none;
+}
+
+/*侧边栏滚动设置 end*/
+
+.skin-blue .sidebar-menu > li.treeview.active > a span,
+.skin-blue .sidebar-menu > li.treeview.active > a .iconName {
+  color: var(--active-color);
+}
+.skin-blue .treeview-menu li > a {
+    border-left: 3px solid var(--sidebar-background-color);
+}
+  
+.skin-blue .treeview-menu li > a:hover,
+.skin-blue .treeview-menu li.active > a {
+    color: var(--active-color);
+    background-color: var(--active-background-color);
+    border-left-color: var(--active-color);
+}
+.skin-blue .treeview-menu li > a:hover > span,
+.skin-blue .treeview-menu li.active > a > span{
+  color: var(--active-color);
+}
+
+.skin-blue .treeview-menu > li > a {
+    color: var(--text-color-secondary);
+    padding: 10px 40px;
+}
+
+.skin-blue .sidebar-menu > li > .treeview-menu {
+    margin: 0;
+    background: var(--sidebar-background-color);
+}
+
+.sidebar-menu li.active > .treeview-menu {
+    background: var(--sidebar-background-color);
+}
+
+.sidebar-title-bar .fa-angle-down,
+.sidebar-title-bar .pull-right-container > .fa-angle-down {
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin-right: 10px;
+}
+
+/*侧边栏收起后向右展开的边框宽度*/
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+    border-radius: 0;
+    width: 230px;
+}
+
+/*侧边栏收起后向右展开时一级菜单箭头的位置*/
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+    left: 230px !important;
+}
+
+.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0;
+}
+
+.skin-blue .sidebar-menu > li:hover > a,
+.skin-blue .sidebar-menu > li.active > a {
+    color: var(--text-color);
+    background: var(--sidebar-background-color);
+}
+
+.skin-blue .treeview-menu > li.active > a,
+.skin-blue .treeview-menu > li > a:hover {
+    color: var(--text-color);
+}
+
+.main-sidebar .iconName {
+    margin-right: 4px;
+    color: var(--text-color);
+}
+
+.menuTitle a.active {
+    color: #f8f8f8;
+}
+
+.sidebar-menu span {
+    color: var(--text-color);
+}
+
+li.menuTitle a {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 20px !important;
+}
+
+.main-sidebar .secondMenuTitle {
+    font-weight: 400;
+    color: var(--text-color-secondary);
+}
+
+.main-sidebar .thirdMenuTitle {
+    font-size: 12px;
+    padding-left: 32px;
+    color: var(--text-color-secondary);
+}
+
+.main-sidebar .pull-right {
+    color: var(--text-color-secondary)
+}
+
+@media screen and (max-width: 768px) {
+    a.sidebar-toggle {
+        position: absolute;
+        top: 50%;
+        width: 26px;
+        height: 36px;
+        left: 100%;
+    }
+    #suffix-title{
+      display: none;
+    }
+    /*侧边栏滚动设置 start*/
+    #sidebar-menu > li:hover .sidebar-title-bar {
+        position: static;
+    }
+
+    .sidebar-collapse #sidebar-menu > li:hover .sidebar-title-bar {
+        position: static;
+    }
+
+    #sidebar-menu > li:hover > ul {
+        position: static;
+        height: auto;
+    }
+
+    .sidebar-collapse #sidebar-menu > li:hover > ul {
+        position: static;
+        overflow-y: auto;
+    }
+}
+
+/*侧边栏滚动条*/
+.sidebar {
+    -ms-scroll-chaining: chained;
+    -ms-overflow-style: none;
+    -ms-content-zooming: zoom;
+    -ms-scroll-rails: none;
+    -ms-content-zoom-limit-min: 100%;
+    -ms-content-zoom-limit-max: 500%;
+    -ms-scroll-snap-type: proximity;
+    -ms-scroll-snap-points-x: snapList(100%, 200%, 300%, 400%, 500%);
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+/*侧边栏二级菜单滚动条*/
+.scroll-list {
+    -ms-scroll-chaining: chained;
+    -ms-overflow-style: none;
+    -ms-content-zooming: zoom;
+    -ms-scroll-rails: none;
+    -ms-content-zoom-limit-min: 100%;
+    -ms-content-zoom-limit-max: 500%;
+    -ms-scroll-snap-type: proximity;
+    -ms-scroll-snap-points-x: snapList(100%, 200%, 300%, 400%, 500%);
+}
+
+.scroll-list::-webkit-scrollbar {
+    width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}

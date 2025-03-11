@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>时空数据专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+    <style type="text/css">
+
+
+        .tabel1{
+            width: 450px;;
+        }
+        .div1{
+            background-color: #000000;
+        }
+        .img1{
+            margin: 2px;
+        }
+
+    </style>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>时空数据专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+        <ul style="list-style-type:disc;">
+            <li>概念：同时具有时间和空间维度的数据称为时空数据</li>
+            <li>原理：应用HTML5新特性----帧，来实现动态地渲染矢量数据。</li>
+            <li>特点：打破了传统静态数据的限制，能有效的展现空间数据在时间上的变化</li>
+            <li>应用场景：可应用于所有在时间节点上有变化的空间数据，如车辆监控、气象监控、等温线/面变化、人口迁移、道路变迁等等行业</li>
+        </ul>
+    <h2>二、设计结构</h2>
+    <div class="pageImage"><img src="images/animatorStructure.png"/></div>
+
+    <h4>1、数据格式</h4>
+    <p></p>
+    <p>
+        据调研，发现各行业在时空数据上使用的数据格式不统一，千奇百怪，如下图的有文本形式、excel表格形式、各种数据库方式、也有使用我们原有的supermap格式等
+    </p>
+    <div class="pageImage"><img src="images/animatorDataStructure.png"/></div>
+    <p>
+        虽然数据存在多样性，不能统一，但是我们不难发现他们都有三个共同点：
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>id：每一条数据都存在一个用于代表具体实物的id</li>
+        <li>时间：当前数据的时间</li>
+        <li>位置：当前数据的空间位置</li>
+    </ul>
+    <p>
+        只要存在这三个属性的数据就可以在我们的产品里面进行展示
+    </p>
+    <p>
+        为了降低用户学习成本，我们客户端渲染时的数据保持现有的格式，也就是feature，只是需要多出两个属性，以点为例，如下图：
+    </p>
+    <div class="pageImage"><img src="images/animatorDataPoint.png"/></div>
+    <p>
+        这是点时空数据在桌面软件打开的表，每一横排都是一条数据，也就是一个点
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>左边的红框内部是超图原始的点数据结构，包括SmID以及坐标位置</li>
+        <li>中间的红框代表的是时间，即某物体在某时间的数据，这里时间使用的是1970年1月1日开始计时的毫秒数，
+            这里的时间没有限制，只要是数字格式就行。这里使用的TIME字段用户可以自定义，
+            只需要当数据通过查询在客户端展示时，在客户端需要设置此字段名称，这样客户端才能识别，从而找到数据</li>
+        <li>右边的红框代表的是id，即具体物体的识别号，这里的id和系统id以及SmID都不一样，系统的id和SmID是用于唯一标识
+            一条数据的，不能重复，而这里的id是代表具体物体，一个物体可能会有很多条数据，这样id就会重复出现，比如smid=1和
+            SmID=6的数据都是代表 featureid=0的物体在两个时间的不同数据，这里的字段使用 featureid ，和 TIME 一样不固定，可自定义，
+            在客户端需要设置</li>
+    </ul>
+    <p>
+        例如下面这张表总共有5个实物形成的，代表五辆火车同时从成都出发，分别开往西安、兰州、拉萨、昆明和重庆，在不同时刻记录下的数据
+    </p>
+    <div class="pageImage"><img src="images/animatorDataMap.png"/></div>
+
+    <h4>2、动画管理</h4>
+    <p>SuperMap.Animator</p>
+    <p>
+        此类独立于时空数据之外，只负责使用浏览器帧的概念进行时间管理，可以应用于其他时间控制的场景，不局限于时空数据
+    </p>
+    <p>
+        <pre>
+var animator;
+//初始化动画管理类
+function init()
+{
+    //初始化动画管理类
+    animator = new SuperMap.Animator(callbackFunction,{
+        speed:11,//设置速度
+        startTime:0,//设置开始时间
+        endTime:100//设置结束时间
+    });
+}
+function callbackFunction()
+{
+    //每一帧具体需要实现的动画效果
+}
+//开始播放
+function startAnimator()
+{
+   animator.start();
+}
+//停止播放
+function startAnimator()
+{
+   animator.stop();
+}
+        </pre>
+    </p>
+    <p>
+        动画管理类提供了很多方法，如开始、暂停、结束、回放等，详情查看帮助文档
+    </p>
+    <h4>3、图层管理</h4>
+    <p>SuperMap.Layer.AnimatorVector</p>
+
+    <p>
+        用于管理时空数据的增删改查等操作,接口和我们现有的vectorlayer基本一样。主要负责对数据的管理，并在渲染时进行数据查找
+    </p>
+    <p>
+        <pre>
+//初始化矢量动画图层
+var animatorVector = new SuperMap.Layer.AnimatorVector("animatorVectorLayer", {},{
+    //设置速度为每帧播放0.2时间的数据
+    speed:0.2,
+    //设置开始时间为0
+    startTime:0,
+    //设置结束时间为100
+    endTime:100
+});
+//将图层添加进地图
+map.addLayers([animatorVector]);
+//给图层添加数据
+animatorVector.addFeatures([feature1,feature2...]);
+//开始播放
+animatorVector.animator.start();
+        </pre>
+    </p>
+    <p>
+       矢量动画图层提供了对数据的增加删除查找等方法，详见帮助文档。
+    </p>
+
+    <h4>4、底层渲染</h4>
+    <p>SuperMap.Renderer.AnimatorCanvas</p>
+    <p>基于浏览器的canvas进行的渲染，所以浏览器必须支持canvas才能够使用时空数据</p>
+    <p>目前时空数据底层渲染支持如下：</p>
+    <ul style="list-style-type:disc;">
+        <li>点渐变</li>
+        <li>线渐变</li>
+        <li>面渐变</li>
+        <li>点闪烁、尾巴</li>
+        <li>点发射</li>
+        <li>线伸缩</li>
+    </ul>
+
+    <h2>三、使用方式</h2>
+    <p>这里以一个点的简单例子举例如何使用时空数据</p>
+    <h4>1、准备数据</h4>
+    <p>数据来源有很多，这里就使用最简单的方式，假设一个点（id为"point1"）0时刻时位置在(0,0)，
+        在1时刻时位置到了(20000000,0)，这里需要动画的渲染它的运动轨迹。那么数据创建如下：
+    </p>
+    <p>
+        <pre>
+//初始化数据
+features = [
+    new SuperMap.Feature.Vector(
+            new SuperMap.Geometry.Point(0,0),//设置第一个位置
+            {
+                FEATUREID:"point1",//设置为点的id
+                TIME:0//设置第一个时间
+            }
+    ),
+    new SuperMap.Feature.Vector(
+            new SuperMap.Geometry.Point(20000000,0),//设置第二个位置
+            {
+                FEATUREID:"point1",
+                TIME:1
+            }
+    )
+];
+        </pre>
+    </p>
+    <h4>2、初始化图层</h4>
+    <p>
+        <pre>
+//初始化矢量动态图层
+animatorVector = new SuperMap.Layer.AnimatorVector("layer", {},{
+    speed:0.01,//设置速度为每一帧播放0.01小时的数据
+    startTime:0,//设置开始时间为0时刻
+    endTime:1//设置结束时间为1时刻
+});
+        </pre>
+    </p>
+    <h4>3、添加图层</h4>
+    <p>
+        <pre>
+//添加进地图
+map.addLayers([animatorVector]);
+        </pre>
+    </p>
+    <h4>4、添加数据</h4>
+    <p>
+        <pre>
+animatorVector.addFeatures(features);
+        </pre>
+    </p>
+    <h4>5、开始播放</h4>
+    <p>
+        <pre>
+//开始播放
+animatorVector.animator.start();
+        </pre>
+    </p>
+    <p>数据只有两个时间点的位置，默认开启了平滑播放效果，效果如下：</p>
+    <div class="pageImage"><img src="images/animatorPoint.gif"/></div>
+
+    <h2>四、其他效果</h2>
+
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+                1、模拟火车监控
+            <div class="div1">
+                <img class="img1" src="images/animationTrain.gif"/>
+            </div>
+            <br />
+        </p>
+    </div>
+
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+                2、模拟汽车监控
+            <div class="div1">
+                <img class="img1" src="images/animationCar.gif"/>
+            </div>
+            <br />
+        </p>
+    </div>
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            3、模拟地铁修建
+        <div class="div1">
+            <img class="img1" src="images/animationMetro.gif"/>
+        </div>
+        <br />
+        </p>
+    </div>
+
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            4、模拟春运
+        <div class="div1">
+            <img class="img1" src="images/animationMigrate.gif"/>
+        </div>
+        <br />
+        </p>
+    </div>
+
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

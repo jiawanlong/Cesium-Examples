@@ -1,0 +1,154 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="./tween.umd.js"></script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+        import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+
+        const camera = new THREE.PerspectiveCamera();  //相机
+        camera.position.set(50, 20, 100); //相机位置
+        camera.lookAt(150, 0, 10); //相机位置
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        scene.add(new THREE.AmbientLight(0xffffff, 4))
+        scene.add(new THREE.AxesHelper(1000))
+
+        // 加载模型 gltf/ glb 
+        const loader = new GLTFLoader()
+        loader.load('./zhanji.glb', (gltf) => {
+            scene.add(gltf.scene)
+            gltf.scene.scale.set(0.005, 0.005, 0.005)
+
+            //绕x轴旋转π/4
+            gltf.scene.rotateY(Math.PI / 4);
+
+            new TWEEN.Tween(camera.position)
+                .to({ x: 0, y: 10, z: 0 }, 3000)
+                .start()
+                .onStart(function (obj) {
+                    console.log(obj)
+                })
+                .onUpdate(function (obj) {
+                    console.log(obj)
+                    camera.lookAt(0, 0, 0);
+                })
+                .onComplete(function (obj) {
+                    console.log(obj)
+                })
+
+
+            // 调用封装的函数，效果等于上面的
+            // createCameraTween(
+            //     {x: 0, y: 10, z: 0},
+            //     {x: 0, y: 0, z: 0},
+            // )
+
+
+            /*
+                绕模型运动
+            */
+            // const R = 100; 
+            // new TWEEN.Tween({ angle: 0 })
+            //     .to({ angle: Math.PI * 2 }, 10000)
+            //     .onUpdate(function (obj) {
+            //         camera.position.x = R * Math.cos(obj.angle);
+            //         camera.position.z = R * Math.sin(obj.angle);
+            //         camera.lookAt(0, 0, 0);
+            //     })
+            //     .start()
+
+
+        })
+
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+        let controls = new OrbitControls(camera, renderer.domElement)
+
+        animate()
+        function animate() {
+            TWEEN.update();
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+        }
+
+
+        /*
+            相机动画函数，从A点飞行到B点
+            pos: 三维向量Vector3，表示动画结束相机位置
+            target: 三维向量Vector3，表示相机动画结束lookAt指向的目标观察点
+        */
+        function createCameraTween(endPos, endTarget) {
+            new TWEEN.Tween({
+                // 不管相机此刻处于什么状态，直接读取当前的位置和目标观察点
+                x: camera.position.x,
+                y: camera.position.y,
+                z: camera.position.z,
+                tx: controls.target.x,
+                ty: controls.target.y,
+                tz: controls.target.z,
+            })
+                .to({
+                    // 动画结束相机位置坐标
+                    x: endPos.x,
+                    y: endPos.y,
+                    z: endPos.z,
+                    // 动画结束相机指向的目标观察点
+                    tx: endTarget.x,
+                    ty: endTarget.y,
+                    tz: endTarget.z,
+                }, 2000)
+                .onUpdate(function (obj) {
+                    // 动态改变相机位置
+                    camera.position.set(obj.x, obj.y, obj.z);
+                    // 动态计算相机视线
+                    // camera.lookAt(obj.tx, obj.ty, obj.tz);
+                    controls.target.set(obj.tx, obj.ty, obj.tz);
+                    controls.update();//内部会执行.lookAt()
+                })
+                .start();
+        }
+
+
+    </script>
+
+</body>
+
+</html>

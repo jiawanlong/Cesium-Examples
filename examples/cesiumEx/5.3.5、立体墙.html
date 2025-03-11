@@ -1,0 +1,115 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {
+      contextOptions: {
+        requestWebgl1: true,
+      },
+    });
+    viewer.scene.debugShowFramesPerSecond = true;
+
+    var PolylineTrailLinkType = 'PolylineTrailLink';
+    var PolylineTrailLinkImage = "";
+    var PolylineTrailLinkSource = "czm_material czm_getMaterial(czm_materialInput materialInput)\n\
+                                {\n\
+                                    czm_material material = czm_getDefaultMaterial(materialInput);\n\
+                                    vec2 st = materialInput.st;\n\
+                                    vec4 colorImage = texture2D(image, vec2(fract(st.s - time), st.t));\n\
+                                    material.alpha = colorImage.a * color.a;\n\
+                                    material.diffuse = (colorImage.rgb+color.rgb)/2.0;\n\
+                                    return material;\n\
+    }";
+
+    let PolylineTrailLinkMaterialProperty = function (color, duration, img) {
+      this._definitionChanged = new Cesium.Event();
+      this._color = undefined;
+      this._colorSubscription = undefined;
+      this.color = color;
+      this.duration = duration;
+      this._time = (new Date()).getTime();
+      PolylineTrailLinkImage = img;
+    }
+    Object.defineProperties(PolylineTrailLinkMaterialProperty.prototype, {
+      isConstant: {
+        get: function () {
+          return false;
+        }
+      },
+      definitionChanged: {
+        get: function () {
+          return this._definitionChanged;
+        }
+      },
+      color: Cesium.createPropertyDescriptor('color')
+    });
+    PolylineTrailLinkMaterialProperty.prototype.getType = function (time) {
+      return 'PolylineTrailLink';
+    }
+    PolylineTrailLinkMaterialProperty.prototype.getValue = function (time, result) {
+      if (!Cesium.defined(result)) {
+        result = {};
+      }
+      result.color = Cesium.Property.getValueOrClonedDefault(this._color, time, Cesium.Color.WHITE, result.color);
+      result.image = PolylineTrailLinkImage;
+      result.time = (((new Date()).getTime() - this._time) % this.duration) / this.duration;
+      return result;
+    }
+    PolylineTrailLinkMaterialProperty.prototype.equals = function (other) {
+      return this === other ||
+        (other instanceof PolylineTrailLinkMaterialProperty &&
+          Property.equals(this._color, other._color))
+    }
+
+    Cesium.Material._materialCache.addMaterial(PolylineTrailLinkType, {
+      fabric: {
+        type: PolylineTrailLinkType,
+        uniforms: {
+          color: new Cesium.Color(1.0, 0.0, 0.0, 0.5),
+          image: PolylineTrailLinkImage,
+          time: 4
+        },
+        source: PolylineTrailLinkSource
+      },
+      translucent: function (material) {
+        return true;
+      }
+    });
+
+    viewer.entities.add({
+      name: "动态立体墙",
+      wall: {
+        positions: Cesium.Cartesian3.fromDegreesArray([117.154815, 31.853495, 117.151215, 31.844734, 117.154457, 31.848152, 117.154815, 31.853495]),
+        maximumHeights: [60, 60, 60, 60],
+        minimumHeights: [10, 10, 10, 10],
+        material: new PolylineTrailLinkMaterialProperty(Cesium.Color.ORANGE, 3000, "./buildings-colors.png")
+      }
+    })
+
+    viewer.zoomTo(viewer.entities);
+  </script>
+</body>
+
+</html>

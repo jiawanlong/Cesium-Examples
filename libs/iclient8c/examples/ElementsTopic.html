@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>扩展图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+    <style type="text/css">
+
+        .table{
+            display: inline-block;
+            float: left;
+            vertical-align: top;
+            width:450px;
+            margin: 2px;
+        }
+ 
+    </style>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar"></div>
+<script src="js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+<div id='container' class='container'>
+<div class='page-header'>
+     <h1>扩展图专题</h1>
+     <hr/>
+     <h2>一、简介</h2>
+        <p>SuperMap iClient for JavaScript 提供了Elements图层，其自身是一个div，用户可以在该图层上添加任意dom对象，并且支持第三方扩展应用。</p>
+        <p>调用Elements图层的 getDiv方法获得该图层的div后，将dom对象添加到该div中，便可拓展应用。</p>
+     <h2>二、使用说明</h2>
+        <br>
+        <p>下面我们来详细介绍一下如何使用Elements图层扩展应用</p>
+        <h4> 1.首先创建一个Elements图层，将其添加到地图中，并获取该图层的div。 </h4>
+        <p>
+        <pre>
+  //创建Elements的实例，获得其div
+  var elementsLayer = new SuperMap.Layer.Elements("elementsLayer");
+  map.addLayers([elementsLayer]);
+  var elementsDiv = elementsLayer.getDiv()
+       </pre>
+    </p>
+    <br>
+    <h5> 可设置Elements图层的div的大小，如下代码片段中，设置该div的大小为地图大小</h5>
+    <p>
+    <pre>
+ //设置Elements实例的div为地图大小
+ var size = map.getSize
+ elementsDiv.style.width = size.w;
+ elementsDiv.style.height = size.h;
+    </pre>
+    </p>
+    <br>
+    <h4> 2.获取了该图层的div后，用户可以在该图层上添加任意dom对象，无论是用户自己的Dom对象，还是第三方扩展中的Dom对象。 </h4>
+    <br>
+    <p>         例如：添加简单DOM对象    </p>
+    <p>
+    <pre>
+ //创建一个图片对象并添加到Elements的实例中
+ myDom = document.createElement("img");
+ myDom.src = "images/china.png";
+ elementsDiv.appendChild(myDom);
+  </pre>
+    </p>
+ <p>以上代码片段中，调用document.createElement()方法创建一个dom对象，并调用Dom函数的appendChild方法将其添加到Elements图层的div上。</p>
+    <br>
+    <h4> 3.其次，用户可调用getLayerPxFromLonLat方法，将Dom对象关联到地图中。  </h4>
+    <p>  该方法把地理坐标转换为Elements图层的像素坐标。</p>
+     <p>
+         <pre>
+ function setDom(){
+     var bounds = new SuperMap.Bounds(73.620048522949, 3.8537260781999, 134.76846313477, 53.553741455078);
+     var lonlatLeftTop = new SuperMap.LonLat(bounds.left, bounds.top);
+     var lonlatRightBottom = new SuperMap.LonLat(bounds.right, bounds.bottom);
+
+     //然后分别将左上右下点转换为像素点
+     var pxLeftTop = elementsLayer.getLayerPxFromLonLat(lonlatLeftTop);
+     var pxRightBottom = elementsLayer.getLayerPxFromLonLat(lonlatRightBottom);
+
+     //设置图片的大小
+     myDom.style.width = pxRightBottom.x -  pxLeftTop.x +"px";
+     myDom.style.height = pxRightBottom.y -  pxLeftTop.y + "px";
+
+     //设置图片的位置
+     myDom.style.position = "absolute";
+     myDom.style.left = pxLeftTop.x  + "px";
+     myDom.style.top = pxLeftTop.y + "px";
+ }
+  </pre>
+     </p>
+    <p>以上代码片段中，将图片DOM的范围设置为一地理范围转换的像素范围中，并且将图片DOM的中心位置也设置为某一地理位置转换的像素位置中，从而将DOM对象关联到地图中,且可使其随着地图缩放和平移。</p>
+    <br>
+    <h4>4.然后，用户可通过监听map的事件，来实现Dom对象随着地图缩放、移动及其他行为。</h4>
+        <br>
+         <p>例如：监听map的moveend事件</p>
+         <p>
+    <pre>
+  //监听地图的moveend事件
+  map.events.on({moveend: function (evt) {
+                //判断是否缩放
+                if(evt.zoomChanged){
+                    //可在此实现Dom对象随着地图缩放的其他行为
+                }
+                //重置图片的大小和位置，让图片可以随地图缩放和平移(具体代码如3中所示)
+                setDom();
+              }});
+         </pre>
+    </p>
+    <p>
+        以上代码片段，可实现Dom对象随着地图缩放、移动及其他行为。
+    </p>
+    <br>
+<div class="pageImage"><img src="./images/elements.png" /></div>
+<br>
+ <p>此完整范例请见 示范程序->可视化->可视化图层->Elements Layer 扩展。</p>
+    <br>
+<P style="color:red"> 用户可以在Elements图层上添加任意dom对象,以上范例说明是其一简单示范。</p>
+<br>
+<h2>三、其他拓展示例</h2>
+    <br>
+ <div style="width: 100%;height: 380px" >
+ <div class="table">
+     <h4>&nbsp&nbsp1、风向图</h4>
+     <div> <img class="img" src="./images/elementsTopic_winmap.png"/></div>
+     <br>
+     <p>
+         基于d3js制作风向图图层，将风向图图层绘制在Elements图层的div上，从而将风向图图层与地图关联，在地图上演示风向动态。
+     </p>
+ </div>
+ <div  class="table">
+ <h4>&nbsp&nbsp2、文字云图</h4>
+     <div> <img class="img" class="img" src="./images/elementsTopic1.png"/> </div>
+     <br>
+     <p>
+         基于d3js制作文字云图层，将文字云图层绘制在Elements图层的div上，从而将文字云图层与地图关联，通过文字（首都名称）快速定位其所指定的国家。
+     </p>
+ </div>
+ </div>
+ <div style="width: 100%;height: 350px">
+    <h4 align="center">3、Twaver拓展</h4>
+ <div class="table">
+        <div> <img class="img" class="img" src="./images/elementsTopic_Twaver1.png"/> </div>
+         <br>
+         <p>
+         将Twaver提供的Chart组件中的饼图DOM对象，绑定到Elements图层的div中，从而将饼图与地图关联，实现高效交互，动态展示数据。
+         </p>
+ </div>
+    <div  class="table">
+        <div> <img class="img" class="img" src="./images/elementsTopic.png"/> </div>
+        <br>
+        <p>
+            将Twaver提供的network组件的DOM对象，绑定到Elements图层的div中，从而将Network与地图关联，实现高效交互，动态展示数据。
+        </p>
+    </div>
+ </div>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+</body>
+</html>

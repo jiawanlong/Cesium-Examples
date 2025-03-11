@@ -1,0 +1,85 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 场景
+        const scene = new THREE.Scene();// 创建场景
+
+        const geometry1 = new THREE.BoxGeometry(100, 100, 5);
+        const geometry2 = new THREE.BoxGeometry(5, 100, 200);
+
+        const texLoader = new THREE.TextureLoader();
+        const texture = texLoader.load('./砖墙.jpg');
+
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+        const material = new THREE.MeshLambertMaterial({
+            map: texture,
+        });
+
+        const mesh1 = new THREE.Mesh(geometry1, material);
+        const mesh2 = new THREE.Mesh(geometry2, material);
+        mesh1.position.set(50, 50, 0);
+        mesh2.position.set(0, 50, 97.5);
+        scene.add(mesh1);
+        scene.add(mesh2);
+
+
+        // 光源
+        const directionalLight = new THREE.AmbientLight(0xffffff, 4);
+        scene.add(directionalLight);
+        // 相机
+        const camera = new THREE.PerspectiveCamera();
+        camera.position.set(400, 300, 500);
+        camera.lookAt(0, 50, 40);
+        // GridHelper
+        const GridHelper = new THREE.GridHelper(500);
+        scene.add(GridHelper);
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+        document.body.appendChild(renderer.domElement);
+        // 旋转
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+        setTimeout(function () {
+            renderer.render(scene, camera);
+        }, 500);
+
+    </script>
+
+</body>
+
+</html>

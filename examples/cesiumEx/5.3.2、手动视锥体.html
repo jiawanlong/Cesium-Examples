@@ -1,0 +1,136 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // Cesium地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水体效果所需要的海岸线数据
+            requestVertexNormals: true// 请求地形照明数据
+        });
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+
+        // extrudedHeight是本身高度
+        // height是离地高度
+        // --------注意：贴地时候，没extrudedHeight，所以outline不会生效---------------
+        let p1 = { x: -90, y: 40, z: 0 }
+        let p2 = { x: -90, y: 30, z: 0 }
+        let p3 = { x: -100, y: 30, z: 0 }
+        let p4 = { x: -100, y: 40, z: 0 }
+        let p5 = { x: -95, y: 35, z: 2000000 }
+
+        let c1 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+            p1.x, p1.y, p1.z,
+            p2.x, p2.y, p2.z,
+            p5.x, p5.y, p5.z
+        ]))
+        let c2 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+            p3.x, p3.y, p3.z,
+            p2.x, p2.y, p2.z,
+            p5.x, p5.y, p5.z
+        ]))
+        let c3 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+            p3.x, p3.y, p3.z,
+            p4.x, p4.y, p4.z,
+            p5.x, p5.y, p5.z
+        ]))
+        let c4 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+            p1.x, p1.y, p1.z,
+            p4.x, p4.y, p4.z,
+            p5.x, p5.y, p5.z
+        ]))
+
+        const cyanPolygon = viewer.entities.add({
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return c1;
+                }, false),
+                perPositionHeight: true,
+                material: Cesium.Color.CYAN.withAlpha(0.5),
+                outline: true,
+                outlineColor: Cesium.Color.BLACK,
+            },
+        });
+        let i = 0;
+        setInterval(() => {
+            i = i + 0.01
+            c1 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+                p1.x + i, p1.y + i, p1.z,
+                p2.x + i, p2.y + i, p2.z,
+                p5.x + i, p5.y + i, p5.z
+            ]))
+            c2 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+                p3.x + i, p3.y + i, p3.z,
+                p2.x + i, p2.y + i, p2.z,
+                p5.x + i, p5.y + i, p5.z
+            ]))
+            c3 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+                p3.x + i, p3.y + i, p3.z,
+                p4.x + i, p4.y + i, p4.z,
+                p5.x + i, p5.y + i, p5.z
+            ]))
+            c4 = new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArrayHeights([
+                p1.x + i, p1.y + i, p1.z,
+                p4.x + i, p4.y + i, p4.z,
+                p5.x + i, p5.y + i, p5.z
+            ]))
+        }, 20)
+
+        const cyanPolygon1 = viewer.entities.add({
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return c2;
+                }, false),
+                perPositionHeight: true,
+                material: Cesium.Color.CYAN.withAlpha(0.5),
+                outline: true,
+                outlineColor: Cesium.Color.BLACK,
+            },
+        });
+
+        const cyanPolygon2 = viewer.entities.add({
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return c3;
+                }, false),
+                perPositionHeight: true,
+                material: Cesium.Color.CYAN.withAlpha(0.5),
+                outline: true,
+                outlineColor: Cesium.Color.BLACK,
+            },
+        });
+        const cyanPolygon3 = viewer.entities.add({
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return c4;
+                }, false),
+                perPositionHeight: true,
+                material: Cesium.Color.CYAN.withAlpha(0.5),
+                outline: true,
+                outlineColor: Cesium.Color.BLACK,
+            },
+        });
+
+
+
+        viewer.zoomTo(viewer.entities);
+    </script>
+</body>
+
+</html>

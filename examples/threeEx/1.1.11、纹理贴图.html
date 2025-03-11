@@ -1,0 +1,79 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 场景
+        const scene = new THREE.Scene();// 创建场景
+
+        const geometry = new THREE.BoxGeometry(100, 100, 100);
+
+        const texLoader = new THREE.TextureLoader();
+        const texture = texLoader.load('./word.jpg');
+        const material = new THREE.MeshLambertMaterial({
+            // transparent: true, //使用背景透明的png贴图，注意开启透明计算
+            // color: 0xFF0032,
+            map: texture,
+        });
+
+        const mesh1 = new THREE.Mesh(geometry, material);
+        mesh1.position.set(50, 50, 50);
+        scene.add(mesh1);
+        
+
+        // 光源
+        const directionalLight = new THREE.AmbientLight(0xffffff, 4); 
+        scene.add(directionalLight);
+        // 相机
+        const camera = new THREE.PerspectiveCamera();  
+        camera.position.set(400, 300, 500); 
+        camera.lookAt(0, 50, 40);   
+        // AxesHelper
+        const axesHelper = new THREE.AxesHelper(150);
+        scene.add(axesHelper);
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera); 
+        document.body.appendChild(renderer.domElement);
+        // 旋转
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+        setTimeout(function () {
+            renderer.render(scene, camera);
+        }, 500);
+
+    </script>
+
+</body>
+
+</html>

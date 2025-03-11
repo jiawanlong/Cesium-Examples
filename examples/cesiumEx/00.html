@@ -1,0 +1,37 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        // -----------------------重要---------------------
+        // 截至2024，官方底图时长会加载不出来，导致底图卡顿，影像操作。
+        // 所以需要绕过defaultAccessToken，避免勇官网底图。
+
+        const viewer = new Cesium.Viewer('map', {
+            // 添加这两行，就不会找烦人的defaultAccessToken了，也不会找在线底图了
+            imageryProvider:false,
+            baseLayerPicker: false,
+        });
+
+        // 自定义底图
+        var imageryProvider = new Cesium.SingleTileImageryProvider({
+            "url": "./_.png",
+        })
+        viewer.imageryLayers.addImageryProvider(imageryProvider)
+
+
+    </script>
+</body>
+
+</html>

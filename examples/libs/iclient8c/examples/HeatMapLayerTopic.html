@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>热点图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>热点图专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+    <p>SuperMap iClient for JavaScript提供了热点图（HeatMapLayer），用于渲染数据衰减趋势、颜色渐变的效果。</p>
+    <ul style="list-style-type:disc;">
+        <li>原理：在客户端直接渲染的栅格图，热点图的渲染需要三大要素：1、热点数据，热点数据需要点数据，每一个热点数据需要有地理位置以及权重值
+            （能够明显的表现某位置某事件发生频率或事物分布密度等，如可以为温度的高低、人口密集度等等）；2、热点衰减渐变填充色集合，
+            用于渲染每一个热点从中心向外衰减时的渐变色；3、热点半径，也就是衰减半径。每一个热点需要从中心点外四周根据半径计算衰减度，
+            对在热点衰减区内的每一个像素计算需要渲染的颜色值，然后进行客户端渲染。</li>
+        <li>特点：可以通过颜色用图示化方法来表达二维离散数据的分布，并且可以呈现每一个离散点的权重值的衰减趋势和离散点之间的衰减叠加。</li>
+        <li>应用场景：由于热点图的衰减是像素级别的，视觉效果方面极佳，但不能与具体数据进行一一对应，只能表示权重之间的差别，所以可以用于一些对精度要求不高
+            而需要重点突出权重渐变的行业，如可以制作气象温度对比动态效果图、地震区域的震点强弱图等。</li>
+    </ul>
+    <h2>二、使用</h2>
+    <h4>1、创建热点图图层</h4>
+    <p>
+        首先创建一个热点图对象。由于热点图是对矢量点数据的渲染，不能作为底图，初始化只需要设置一个图层的名称即可。
+    </p>
+    <p>
+        <pre>
+//创建一个名为“heatMap”的热点图层。
+heatMapLayer = new SuperMap.Layer.HeatMapLayer("heatMap");
+        </pre>
+    </p>
+
+    <h4>2、添加到地图</h4>
+    <p></p>
+    <p>
+        然后将此图层添加到map里面。
+    </p>
+    <p>
+        <pre>
+//向map中添加图层
+map.addLayers([heatMapLayer]);
+        </pre>
+    </p>
+
+    <h4>3、添加数据</h4>
+    <p></p>
+    <p>
+        首先需要获取一个点数组（SuperMap.Feature.Vector数组）， 数据可以从服务器查询，也可以使用本地数据，不过都只能是点数据。
+        如下的形式：
+    </p>
+    <p>
+        <pre>
+var heatFeatures = [feature1,feature2,......,featureN];
+        </pre>
+    </p>
+    <p>
+        这些features首先必须是点数据，每一个 feature 必须满足在attributes属性中存在记录权重的值。
+        如我们可以这样初始化feature：
+    </p>
+    <p>
+        <pre>
+var heatFeature = new SuperMap.Feature.Vector(
+     new SuperMap.Geometry.Point(
+                    Math.random()*360 - 180,
+                    Math.random()*180 - 90
+            ),
+            {
+                "value":Math.random()*9
+            }
+    );
+        </pre>
+    </p>
+    <p>
+        这里的value就是记录权重的字段，当每一个feature数据带上权重数据后，
+        我们还需要让layer知道如何读取这些数据，所以需要告诉layer读哪一个字段：
+    </p>
+    <p>
+        <pre>
+heatMapLayer.featureWeight = "value";
+        </pre>
+    </p>
+    <p>再把所有的features添加进layer</p>
+    <p>
+        <pre>
+heatMapLayer.addFeatures(heatFeatures);
+        </pre>
+    </p>
+    <p>然后我们就可以获得如下热点图的效果了：</p>
+    <div class="pageImage"><img src="images/heatMapLayerTopic1.png"/></div>
+    <h4>4、自定义颜色</h4>
+    <p>虽然上面的效果很好，但是颜色渐变是固定的，下面我们就试着自己来设置颜色的渐变</p>
+    <p>我们可以给属性items赋值一个分段颜色数组以此来设置颜色渐变。如下：</p>
+    <p>
+        <pre>
+            var items = [
+                {
+                    start:0,
+                    end:1,
+                    startColor:new  SuperMap.REST.ServerColor(170,240,233),
+                    endColor:new  SuperMap.REST.ServerColor(180,245,185)
+                },
+                {
+                    start:1,
+                    end:2,
+                    startColor:new  SuperMap.REST.ServerColor(180,245,185),
+                    endColor:new  SuperMap.REST.ServerColor(223,250,177)
+                },
+                {
+                    start:2,
+                    end:3,
+                    startColor:new  SuperMap.REST.ServerColor(223,250,177),
+                    endColor:new  SuperMap.REST.ServerColor(224,239,152)
+                },
+                {
+                    start:3,
+                    end:4,
+                    startColor:new  SuperMap.REST.ServerColor(224,239,152),
+                    endColor:new  SuperMap.REST.ServerColor(160,213,103)
+                },
+                {
+                    start:4,
+                    end:5,
+                    startColor:new  SuperMap.REST.ServerColor(160,213,103),
+                    endColor:new  SuperMap.REST.ServerColor(44,104,50)
+                },
+                {
+                    start:5,
+                    end:6,
+                    startColor:new  SuperMap.REST.ServerColor(44,104,50),
+                    endColor:new  SuperMap.REST.ServerColor(29,135,59)
+                },
+                {
+                    start:6,
+                    end:7,
+                    startColor:new  SuperMap.REST.ServerColor(29,135,59),
+                    endColor:new  SuperMap.REST.ServerColor(118,154,49)
+                },
+                {
+                    start:7,
+                    end:8,
+                    startColor:new  SuperMap.REST.ServerColor(118,154,49),
+                    endColor:new  SuperMap.REST.ServerColor(204,175,27)
+                },
+                {
+                    start:8,
+                    end:9,
+                    startColor:new  SuperMap.REST.ServerColor(204,175,27),
+                    endColor:new  SuperMap.REST.ServerColor(198,63,2)
+                }
+
+            ];
+            heatMapLayer.items = items;
+        </pre>
+    </p>
+    <p>这样我们就实现了自己的颜色渐变：</p>
+    <div class="pageImage"><img src="images/heatMapLayerTopic2.png"/></div>
+    <p>
+        这样我们就可以使用热点图功能了，完整范例请见 示范程序->可视化->可视化图层->热点图。
+    </p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

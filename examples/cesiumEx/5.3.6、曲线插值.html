@@ -1,0 +1,116 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%; 
+      position: absolute;
+      top: 0;
+    ">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {
+      contextOptions: {
+        requestWebgl1: true,
+      },
+    });
+    viewer.scene.debugShowFramesPerSecond = true;
+
+    var controls = [
+      Cesium.Cartesian3.fromDegrees(110, 10),
+      Cesium.Cartesian3.fromDegrees(111, 11),
+      Cesium.Cartesian3.fromDegrees(112, 9),
+      Cesium.Cartesian3.fromDegrees(114, 10),
+      Cesium.Cartesian3.fromDegrees(113, 8),
+    ];
+    for (var i = 0; i < controls.length; i++) {
+      viewer.entities.add({
+        position: controls[i],
+        point: {
+          color: Cesium.Color.RED,
+          pixelSize: 10,
+        },
+      });
+    }
+
+    // -----------------------直线--------------------------
+    var spline = new Cesium.LinearSpline({
+      times: [0.0, 0.25, 0.5, 0.75, 1],
+      points: controls,
+    });
+
+    var positions = [];
+    for (var i = 0; i <= 100; i++) {
+      var cartesian3 = spline.evaluate(i / 100);
+      positions.push(cartesian3);
+      viewer.entities.add({
+        position: cartesian3,
+        point: {
+          color: Cesium.Color.YELLOW,
+          pixelSize: 6,
+        },
+      });
+    }
+
+    viewer.entities.add({
+      name: "LinearSpline",
+      polyline: {
+        positions: positions,
+        width: 3,
+        material: Cesium.Color.GREEN,
+      },
+    });
+    // -----------------------直线--------------------------
+
+    // -----------------------曲线--------------------------
+    // 创建CatmullRomSpline对象
+    var spline = new Cesium.CatmullRomSpline({
+      points: controls,
+      times: [0.0, 0.25, 0.5, 0.75, 1],
+    });
+
+    // 插值100个点
+    var positions = [];
+    for (var i = 0; i <= 100; i++) {
+      var cartesian3 = spline.evaluate(i / 100);
+      positions.push(cartesian3);
+      viewer.entities.add({
+        position: cartesian3,
+        point: {
+          color: Cesium.Color.BLUE,
+          pixelSize: 6,
+        },
+      });
+    }
+
+    // 将插值所有的点绘制成线
+    viewer.entities.add({
+      name: "CatmullRomSpline",
+      polyline: {
+        positions: positions,
+        width: 3,
+        material: Cesium.Color.WHITE,
+      },
+    });
+    // -----------------------曲线--------------------------
+
+    viewer.zoomTo(viewer.entities);
+  </script>
+</body>
+
+</html>

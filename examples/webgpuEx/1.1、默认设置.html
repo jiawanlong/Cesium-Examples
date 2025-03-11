@@ -1,0 +1,37 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="webgpu" width="500" height="500"></canvas>
+    <script type="module">
+        // 1. 初始化WebGPU
+        const adapter = await navigator.gpu.requestAdapter();
+        // 获取GPU设备对象，通过GPU设备对象device的WebGPU API可以控制GPU渲染过程
+        const device = await adapter.requestDevice();
+
+        //配置WebGPU上下文，把id名为webgpu的Canvas元素作为WebGPU的画布
+        const canvas = document.getElementById('webgpu');
+        const context = canvas.getContext('webgpu');
+        const format = navigator.gpu.getPreferredCanvasFormat();//获取浏览器默认的
+        context.configure({
+            device: device,//WebGPU渲染器使用的GPU设备对象
+            format: format,//WebGPU渲染器使用的颜色格式
+        });
+    </script>
+</body>
+
+</html>

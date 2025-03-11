@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sphere Explosion
+* source:	https://sketchfab.com/3d-models/sphere-explosion-1c32865d262744538f33dbd971d73956
+* author:	Andrey Kuleshov (https://sketchfab.com/end.of.ray)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sphere Explosion" (https://sketchfab.com/3d-models/sphere-explosion-1c32865d262744538f33dbd971d73956) by Andrey Kuleshov (https://sketchfab.com/end.of.ray) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

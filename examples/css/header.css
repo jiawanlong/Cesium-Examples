@@ -1,0 +1,606 @@
+.skin-blue .main-header .navbar .nav>li>a {
+  color: var(--text-color);
+}
+
+.navbar {
+  font-size: 16px;
+}
+
+.navcontentfixed {
+  width: 100%;
+  height: 72px;
+}
+
+/* 头部右侧部分 */
+.navbar-rightbar{
+  float: right;
+  margin-right: 24px;
+  font-size: 16px;
+}
+.navbar-rightbar>ul>li{
+  float: left;
+  height: 72px;
+  padding: 24px 16px;
+  position: relative;
+}
+.navbar-rightbar>ul>li>a{
+  display: inline-block;
+  line-height: 24px;
+  height: 24px;
+  font-weight: 400;
+  color: var(--text-color);
+}
+.navbar-rightbar>ul>li>a::before{
+  position: absolute;
+  display: inline-block;
+  top: calc((100% - 16px) / 2);
+  left: -16px;
+  margin: 0 16px;
+  background: var(--suffix-color);
+  width: 1px;
+  height: 16px;
+  content: "";
+}
+
+/*logo的样式*/
+
+#logo {
+  width: 106px;
+  height: 48px;
+  margin: 12px 0;
+  display: inline-block;
+}
+
+.navbar .project-title {
+  text-decoration: none;
+  vertical-align: middle;
+  /* letter-spacing: -0.16px; */
+  font-weight: 400;
+}
+
+#title {
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.pre-release {
+  font-size: 12px;
+  color: var(--text-color-third);
+  vertical-align: super;
+}
+
+.main-header .sidebar-toggle {
+  float: left;
+  background-color: transparent;
+  background-image: none;
+  padding: 15px 17px;
+}
+
+.main-header .sidebar-toggle:before {
+  content: "\f03b";
+}
+
+/*头部选项选中时的颜色*/
+
+.skin-blue .main-header .navbar .nav>li>a:hover,
+.skin-blue .main-header .navbar .nav>li>a:active,
+.skin-blue .main-header .navbar .nav>li>a:focus,
+.skin-blue .main-header .navbar .nav .open>a,
+.skin-blue .main-header .navbar .nav .open>a:hover,
+.skin-blue .main-header .navbar .nav .open>a:focus {
+  background: transparent;
+  color: var(--active-color);
+  border: none;
+  /* border-color: transparent; */
+}
+
+.skin-blue .main-header .navbar .nav>li>a:hover {
+  background: transparent;
+  color: var(--active-color);
+}
+
+.navbar-toggle {
+  /* height: 72px; */
+  padding: 0;
+}
+
+.navbar-toggle>a::after {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  background: url(../img/svg/navheadermenu.svg);
+  content: '';
+}
+.navbar-toggle>a[aria-expanded="true"]::after {
+  background: url(../img/svg/navheadermenuclose.svg);
+}
+
+.navbar.default .navbar-title {
+  height: 100%;
+  /*width: 460px;*/
+}
+
+/*头部选项下拉菜单框的样式*/
+
+.nav-header {
+  box-shadow: 0px 2px 4px 0px var(--shadow-color);
+}
+
+.navbar ul {
+  list-style: none outside none;
+  padding: 0;
+}
+
+
+.navbar-nav>li {
+  position: static !important;
+  height: 72px;
+  display: flex;
+}
+.navbar-nav>li.dropdown {
+  position: relative !important;
+}
+
+.navbar-nav>li>a {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.dropdown .dropdown-menu {
+  min-width: auto;
+  width: 120px;
+  padding: 4px 0;
+  left: 20px !important;
+  border: none;
+  border-radius: 4px !important;
+  background-color: var(--dropdown-background-color);
+  box-shadow: 0px 6px 18px 0px var(--dropdown-shadow-color);
+}
+.navbar-rightbar .dropdown .dropdown-menu{
+  left: -20px !important;
+}
+.dropdown>.dropdown-box {
+  position: relative; 
+  padding: 24px 20px;
+}
+.dropdown .dropdown-menu>li{
+  width: 120px
+}
+.dropdown .dropdown-menu>li>a{
+  color: var(--text-color);
+  font-size: 14px;
+  line-height: 22px;
+  padding: 9px 12px;
+}
+.dropdown .dropdown-menu>li>a:hover {
+  background-color: var(--dropdown-active-background);
+  color: var(--active-color);
+}
+
+.menu-sub-warp {
+  max-height: 0px;
+}
+
+.show_menu-sub-warp {
+  max-height: 660px;
+  transform-origin: 50% 0;
+  -webkit-transform-origin: 50% 0;
+  -moz-transform-origin: 50% 0;
+  transition: all .5s ease-out 0.2s;
+  -webkit-transition: all .5s ease-out 0.2s;
+  -moz-transition: all .5s ease-out 0.2s;
+}
+
+
+.navbar .project-log-container {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.lang-option {
+  cursor: pointer;
+  z-index: -1;
+}
+
+.menu-box {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 72px;
+}
+
+.menu-box .menu-sub-warp {
+  width: 100%;
+  margin: 0 auto;
+  overflow: auto;
+  line-height: normal;
+  color: white;
+  background-color: var(--background-color);
+  box-shadow: 0px 4px 16px 0px var(--border-color);
+}
+
+#versions-menu .icl-nav-menu-box {
+  padding: 0;
+  padding-left: 210px;
+}
+
+.menu-box .menu-sub-warp::-webkit-scrollbar {
+  width: 3px;
+}
+
+.menu-box .menu-sub-warp::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background: rgba(0, 0, 0, .8);
+}
+
+.navbar-nav>li>a {
+  padding-bottom: 17px;
+}
+
+ul.icl-nav-menu-box {
+  margin: 0;
+  padding: 10px;
+}
+
+.icl-nav-menu-box>li {
+  display: inline-block;
+  vertical-align: text-top;
+  width: 160px;
+  margin-right: 56px;
+  text-align: left;
+}
+.icl-nav-menu-box>li:last-child{
+  margin-right: 0;
+}
+
+.navbar-nav>li>a {
+  padding: 24px 20px;
+}
+.navbar-nav>li>img {
+  margin: auto;
+  margin-left: -12px;
+  margin-right: 20px;
+}
+
+li.navbar-menu>a{
+  text-shadow: 0px 2px 4px var(--shadow-color);
+  line-height: 24px;
+}
+li.navbar-menu>a:hover,
+li.navbar-menu>a:focus {
+  outline: none;
+}
+
+li.navbar-menu:hover{
+  cursor: pointer;
+}
+
+.skin-blue .main-header .navbar .nav>.active>a{
+  background: transparent;
+  color: var(--active-color);
+}
+
+ul.icl-nav-menu-sub:nth-child(1) {
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.icl-nav-menu-title {
+  display: block;
+  color: var(--text-color);
+  font-size: 14px;
+  text-align: left;
+  margin: 20px 0 16px;
+  padding: 4px 0px;
+}
+
+.icl-nav-menu-title:link,
+.icl-nav-menu-title:hover,
+.icl-nav-menu-title:focus,
+.icl-nav-menu-title:visited {
+  color: var(--text-color);
+}
+
+.icl-nav-menu-box li a:not(.disabled):hover,
+.icl-nav-menu-box li a:not(.disabled):focus {
+  color: var(--active-color);
+}
+
+.icl-nav-menu-sub {
+  font-size: 1.4rem;
+  max-height: 600px;
+  margin-bottom: 10px;
+  /* overflow: auto; */
+  color: var(--text-color);
+}
+
+.icl-nav-menu-sub a {
+  font-weight: 400;
+  color: var(--text-color-secondary);
+}
+
+.icl-nav-menu-sub li {
+  text-align: match-parent;
+  line-height: 22px;
+  margin-bottom: 8px;
+}
+
+.icl-nav-menu-sub .red-circle {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  position: absolute;
+  left: -10px;
+  top: 7px;
+  background: var(--active-color);
+}
+
+.icl-nav-menu-sub::-webkit-scrollbar {
+  width: 3px;
+}
+
+.icl-nav-menu-sub::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background: rgba(0, 0, 0, .8);
+}
+
+.icl-nav-menu-item:not(.icl-nav-menu-overivew)>li:last-child {
+  width: 135px;
+}
+
+.icl-line {
+  width:1392px;
+  height: 1px;
+  background: rgba(255, 255, 255, 1);
+  opacity: 0.12;
+  margin: 0 auto;
+}
+
+
+@media screen and (max-width: 1600px) {
+  #product-menu .tabbable .nav-tabs {
+      width: 296px;
+  }
+  .product-img img {
+      width: 272px;
+      height: 185px;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .introduction-header .navbar-header {
+      margin: 0 8px;
+  }
+  .introduction-header #title {
+      font-size: 18px;
+  }
+  .introduction-header .navbar ul {
+      padding: 0;
+  }
+}
+
+
+@media screen and (max-width: 1199px) {
+
+  .navbar.default .navbar-toggle {
+      display: block;
+      float: right;
+  }
+
+  .navbar.default .navbar-collapse.collapse {
+      display: none !important;
+  }
+
+  #navbar-collapse.in {
+      display: flex !important;
+  }
+
+}
+
+@media screen and (max-width: 992px) {
+
+  /*尺寸小于992时下拉菜单的样式*/
+  .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
+      border: 0;
+      background: #C30022;
+  }
+
+  .navbar-custom-menu>.navbar-nav>li>.dropdown-menu>li {
+      position: relative;
+      right: 0;
+      left: auto;
+      border: 0;
+      background: #C30022;
+  }
+
+  .icl-nav-menu-title {
+      font-size: 1.5rem;
+  }
+
+  .icl-nav-menu-overivew>li {
+      margin: 0 20px;
+  }
+}
+
+
+
+@media (max-width: 991px) {
+  .navbar-custom-menu>.navbar-nav>li {
+      position: relative;
+  }
+  .navbar-custom-menu .navbar-nav>li>a{
+    padding: 24px 20px;
+    line-height: 24px;
+  }
+
+  .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
+      position: absolute;
+      top: auto;
+      right: 0;
+      left: auto;
+  }
+}
+
+@media (max-width: 826px) {
+  .icl-nav-menu-overivew>li {
+      margin: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+
+  .navbar-nav>li>.dropdown-menu {
+      margin-top: 0 !important;
+  }
+
+  .skin-blue .main-header .navbar .dropdown-menu li a {
+      color: var(--text-color);
+  }
+  .skin-blue .main-header .navbar .dropdown-menu li a:hover {
+      color: var(--active-color);
+      background-color: var(--dropdown-active-background);
+  }
+
+  /*尺寸小于768px时，logo和产品名称的样式*/
+
+  .navbar-header{
+      margin: 0 24px;
+  }
+  .navbar-rightbar{
+      margin-right: 8px;
+  }
+
+  .navbar-toggle>img {
+      width: 34px;
+      height: 34px;
+  }
+
+
+  .pre-release {
+      font-size: 14px;
+  }
+
+  .navbar-toggle {
+      height: 60px;
+      padding-left: 10px;
+      padding-top: 15px
+  }
+
+  .navbar-collapse.in {
+      overflow-y: visible;
+  }
+
+  .navbar-menu {
+      font-size: 14px;
+  }
+}
+
+
+@media screen and (max-width: 640px) {
+  .navbar-header {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 8px;
+  }
+  .navbar-rightbar{
+      margin-right: 0px;
+  }
+
+}
+
+@media screen and (max-width: 540px) {
+  .navbar-custom-menu>.navbar-nav>li.navbar-menu {
+      position: static;
+  }
+
+  .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
+      position: absolute;
+      top: auto;
+      right: auto;
+      left: auto;
+  }
+  #title {
+      font-size: 18px;
+  }
+}
+
+/*尺寸小于510px时，logo和产品名称的样式，主要是为了适应iphone6 plus等移动端的浏览器*/
+
+@media screen and (max-width: 510px) {
+
+  .navbar.default .navbar-toggle {
+      margin-right: 0;
+  }
+
+  .navbar-rightbar>ul>li{
+    padding: 24px 12px;
+  }
+
+  #title {
+      font-size: 16px;
+  }
+
+  .pre-release {
+      font-size: 8px;
+  }
+
+  /*尺寸小于510时,利用按钮展开的头部选项的样式*/
+  .navbar-custom-menu .navbar-nav>li>a {
+      padding: 24px 20px;
+      line-height: 24px;
+  }
+
+  .skin-blue .main-header .navbar .nav>li>a {
+      font-size: 15px;
+  }
+
+  .navbar-toggle>img {
+      width: 28px;
+  }
+  
+}
+
+@media screen and (max-width: 424px) {
+  .skin-blue .main-header .navbar .nav>li>a {
+      font-size: 13px;
+  }
+}
+
+/*尺寸小于410px时，logo、产品名称、右侧收缩按钮的样式，主要是为了适应iphone6等移动端的浏览器*/
+
+@media screen and (max-width: 410px) {
+
+  #title {
+      font-size: 12px;
+  }
+
+  .pre-release {
+      font-size: 5px;
+  }
+
+  .navbar-rightbar>ul>li{
+    padding: 24px 8px;
+  }
+
+  /*尺寸小于400时,利用按钮展开的头部选项的样式*/
+  .navbar-custom-menu .navbar-nav>li>a {
+      padding-left: 10px;
+      padding-right: 10px;
+  }
+}
+
+/*尺寸小于358px时，logo、产品名称、右侧收缩按钮的样式，主要是为了适应iphone5等移动端的浏览器*/
+
+@media screen and (max-width: 358px) {
+  .navbar-rightbar>ul>li{
+    padding: 24px 6px;
+  }
+
+  #logo {
+      width: 22px;
+  }
+  .navbar-toggle>img {
+      width: 22px;
+  }
+  }

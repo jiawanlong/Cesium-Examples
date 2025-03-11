@@ -1,0 +1,224 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="./../../cesium/Cesium1.98/Widgets/widgets.css"
+    />
+    <script
+      type="text/javascript"
+      src="./../../cesium/Cesium1.98/Cesium.js"
+    ></script>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    "
+  >
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+      const viewer = new Cesium.Viewer("map", {});
+      viewer.scene.debugShowFramesPerSecond = true;
+      //viewer.scene.globe.depthTestAgainstTerrain = true;
+
+      class pointCluster {
+        constructor(opt) {
+          this.options = {
+            dataOrUrl: "",
+            pixelRange: 15,
+            enabled: true,
+            colorArr: [
+              {
+                num: 1,
+                size: 48,
+                color: "#e6a23cbb",
+              },
+            ],
+            img: "",
+          };
+          this.options = Object.assign(this.options, opt);
+          this.viewer = opt.viewer;
+          this.dataSources = null;
+          this.clustericon = {};
+          if (this.options.dataOrUrl && this.options.dataOrUrl != "") {
+            this.loadjson();
+          }
+        }
+        loadjson() {
+          var this_ = this;
+          new Cesium.GeoJsonDataSource()
+            .load(this_.options.dataOrUrl)
+            .then((geoJsonDataSource) => {
+              this_.showcluster(geoJsonDataSource);
+            });
+        }
+        showcluster(geoJsonDataSource) {
+          var this_ = this;
+          this.dataSources = geoJsonDataSource;
+          this.viewer.dataSources.add(this.dataSources);
+
+          var pixelRange = this.options.pixelRange;
+          var minimumClusterSize = 1;
+          var enabled = this.options.enabled;
+          //开启聚合
+          this.dataSources.clustering.enabled = enabled;
+          this.dataSources.clustering.pixelRange = pixelRange;
+          this.dataSources.clustering.minimumClusterSize = minimumClusterSize;
+
+          var removeListener;
+          //聚合
+          function customStyle() {
+            if (Cesium.defined(removeListener)) {
+              removeListener();
+              removeListener = undefined;
+            } else {
+              removeListener =
+                this_.dataSources.clustering.clusterEvent.addEventListener(
+                  function (clusteredEntities, cluster) {
+                    cluster.label.show = false;
+                    cluster.billboard.show = true;
+                    cluster.billboard.id = cluster.label.id;
+                    cluster.billboard.verticalOrigin =
+                      Cesium.VerticalOrigin.CENTER;
+
+                    var xx = -1;
+                    for (var i = 0; i < this_.options.colorArr.length; i++) {
+                      if (
+                        clusteredEntities.length > this_.options.colorArr[i].num
+                      ) {
+                        xx = i;
+                      }
+                    }
+                    if (xx == -1) {
+                      cluster.billboard.image = this_.options.img;
+                    } else {
+                      cluster.billboard.image = this_.drawImage(
+                        clusteredEntities.length,
+                        this_.options.colorArr[xx].size,
+                        this_.options.colorArr[xx].color
+                      );
+                    }
+                  }
+                );
+            }
+
+            // force a re-cluster with the new styling
+            var pixelRange = this_.dataSources.clustering.pixelRange;
+            this_.dataSources.clustering.pixelRange = 0;
+            this_.dataSources.clustering.pixelRange = pixelRange;
+          }
+          customStyle();
+        }
+
+        drawImage(text, size, color) {
+          if (this.clustericon[text + "_" + size + "_" + color]) {
+            return this.clustericon[text + "_" + size + "_" + color];
+          }
+          var canvas = document.createElement("canvas");
+          canvas.height = size;
+          canvas.width = size;
+          var ctx = canvas.getContext("2d");
+          //画圈
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+          ctx.fillStyle = color;
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.font = "16px bold 楷体";
+          ctx.fillStyle = "#ffffff";
+          var tx = (size - (text + "").length * 9) / 2;
+          ctx.fillText(text, tx, size / 2 + 6);
+          var canvasdataurl = canvas.toDataURL();
+          this.clustericon[text + "_" + size + "_" + color] = canvasdataurl;
+          return canvasdataurl;
+        }
+        remove() {
+          this.viewer.dataSources.remove(this.dataSources);
+          this.dataSources = null;
+          this.clustericon = {};
+        }
+      }
+
+      function randomPointsWithinBbox(xmin, xmax, ymin, ymax, num, type) {
+        if (type && type == "geojson") {
+          var points = {
+            type: "FeatureCollection",
+            features: [],
+          };
+          for (var i = 0; i < num; i++) {
+            var point = {
+              type: "Feature",
+              properties: {
+                value: parseInt(Math.random() * 10000000),
+              },
+              geometry: {
+                type: "Point",
+                coordinates: [
+                  Math.random() * (xmax - xmin) + xmin,
+                  Math.random() * (ymax - ymin) + ymin,
+                ],
+              },
+            };
+            points.features.push(point);
+          }
+          return points;
+        } else {
+          var points = [];
+          for (var i = 0; i < num; i++) {
+            var point = {
+              x: Math.random() * (xmax - xmin) + xmin,
+              y: Math.random() * (ymax - ymin) + ymin,
+            };
+            points.push(point);
+          }
+          return points;
+        }
+      }
+      var results = randomPointsWithinBbox(-120, -90, 25, 40, 10000, "geojson");
+      var clu = new pointCluster({
+        viewer: viewer,
+        dataOrUrl: results,
+        pixelRange: 20,
+        colorArr: [
+          {
+            num: 1,
+            size: 30,
+            color: "#1c86d1cc",
+          },
+          {
+            num: 50,
+            size: 32,
+            color: "#67c23acc",
+          },
+          {
+            num: 100,
+            size: 34,
+            color: "#f56c6ccc",
+          },
+          {
+            num: 200,
+            size: 36,
+            color: "#e6a23ccc",
+          },
+        ],
+        img: "./marker6.png",
+      });
+    </script>
+  </body>
+</html>

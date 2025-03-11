@@ -1,0 +1,57 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // 基础示例
+        let entity = viewer.entities.add({
+            polyline: {
+                positions: new Cesium.CallbackProperty(changePosition, false),
+                width: new Cesium.CallbackProperty(changeWidth, false),
+                material: new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(changeColor, false)),
+            },
+        });
+        function changePosition(time, isConstant) {
+            let lat = 20;
+            let lon = -100;
+
+            return Cesium.Cartesian3.fromDegreesArray(
+                [lon, lat, lon + Math.floor(Math.random() * 50), lat + Math.floor(Math.random() * 50)],
+                Cesium.Ellipsoid.WGS84,
+                isConstant
+            );
+        }
+        function changeWidth(time, isConstant) {
+            return Math.floor(Math.random() * 10);
+        }
+        function changeColor(time, isConstant) {
+            return Cesium.Color.fromRandom({
+                minimumRed: 0.1,
+                minimumGreen: 0.1,
+                minimumBlue: 0.1,
+                alpha: 1.0
+            });
+        }
+
+    </script>
+</body>
+
+</html>

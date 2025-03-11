@@ -1,0 +1,70 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./skyBoxOnGround.js"></script>
+    <script src="./SkyBox.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+            contextOptions: {
+               // requestWebgl1: true,
+            },
+        });
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(-95.166493, 39.9060534, 20000)
+        });
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(-95.166493, 39.9060534, 3336.6),
+             orientation: {
+                heading: Cesium.Math.toRadians(351.2), // 水平旋转，围绕Y轴，0为正北方向
+                pitch: Cesium.Math.toRadians( -6.7),     // 上下旋转，围绕X轴，-90为俯视地面
+                roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
+            },
+        });
+
+        //设置天空盒
+        var skyBox = new SkyBox(viewer);
+        //天空盒
+        // skyBox.customSkyBox({
+        //     positiveX: './SkyBox/tycho2t3_80_px.jpg',
+        //     negativeX: './SkyBox/tycho2t3_80_mx.jpg',
+        //     positiveY: './SkyBox/tycho2t3_80_py.jpg',
+        //     negativeY: './SkyBox/tycho2t3_80_my.jpg',
+        //     positiveZ: './SkyBox/tycho2t3_80_pz.jpg',
+        //     negativeZ: './SkyBox/tycho2t3_80_mz.jpg'
+        // });
+
+
+        // //近地天空盒
+        skyBox.SkyBoxOnGround({
+            sources: {
+                positiveX: './SkyBox/Right.jpg',
+                negativeX: './SkyBox/Left.jpg',
+                positiveY: './SkyBox/Front.jpg',
+                negativeY: './SkyBox/Back.jpg',
+                positiveZ: './SkyBox/Up.jpg',
+                negativeZ: './SkyBox/Down.jpg'
+            }
+        });
+    </script>
+</body>
+
+</html>

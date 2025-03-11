@@ -1,0 +1,73 @@
+/*!
+ * 
+ *          iclient-leaflet.(https://iclient.supermap.io)
+ *          Copyright© 2000 - 2023 SuperMap Software Co.Ltd
+ *          version: v11.1.0
+ */
+
+.leaflet-supermap-plot-control-icon-path {
+    background-image: url(./images/plot/control.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-scale-icon-path {
+    background-image: url(./images/plot/scale.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-rotate-icon-path {
+    background-image: url(./images/plot/rotate.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-locked-icon-path {
+    background-image: url(./images/plot/locked.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-avoid-icon-path {
+    background-image: url(./images/plot/avoid.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-move-icon-path {
+    background: rgba(0, 0, 255, 0.3);
+    border: 1px solid rgba(0, 0, 255, 0.5);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-left-top-icon-path {
+    background-image: url(./images/plot/leftTop.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-left-bottom-icon-path {
+    background-image: url(./images/plot/leftBottom.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-right-top-icon-path {
+    background-image: url(./images/plot/rightTop.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-right-bottom-icon-path {
+    background-image: url(./images/plot/rightBottom.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leaflet-supermap-plot-center-icon-path {
+    background-image: url(./images/plot/centerCross.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}

@@ -1,0 +1,194 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+  <script src="./weatherEffects.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+  <audio style="display: none;" loop autoplay src="./dl.mp3"></audio>
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+    const viewer = new Cesium.Viewer('map', {
+      contextOptions: {
+        requestWebgl1: true,
+      },
+    });
+
+    // 开启帧率
+    viewer.scene.debugShowFramesPerSecond = true;
+    // 加载默认地形
+    viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+      url: 'http://data.mars3d.cn/terrain'
+    });
+    // 深度监测
+    viewer.scene.globe.depthTestAgainstTerrain = true;
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(121.662323, 20.157338, 271712),
+      easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+      orientation: {
+        heading: Cesium.Math.toRadians(350.3),
+        pitch: Cesium.Math.toRadians(-27.4),
+        roll: 0.0
+      },
+    });
+    setTimeout(() => {
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(98.865691, 28.358436, 16210.4),
+        easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+        duration: 5,
+        easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+        orientation: {
+          heading: Cesium.Math.toRadians(331.5),
+          pitch: Cesium.Math.toRadians(-20.2),
+          roll: 0.0
+        }
+      });
+    }, 5000);
+
+    start();
+
+    function start() {
+      viewer.entities.removeAll();   //删除所有
+
+      let waterHeight = 3900
+      let targertWaterHeight = 5000
+      let speed;
+      let times;
+      var startTime = Cesium.JulianDate.now();
+
+      const redPolygon = viewer.entities.add({
+        name: "最简单的贴地面",
+        polygon: {
+          extrudedHeight: new Cesium.CallbackProperty(function () {
+            console.log(startTime)
+            console.log(Cesium.JulianDate.now())
+            // 要按流速速度的话，加时间判断即可
+            waterHeight += 1;
+            if (waterHeight > targertWaterHeight) {
+              waterHeight = targertWaterHeight;
+            }
+            return waterHeight;
+          }, false),
+          hierarchy: Cesium.Cartesian3.fromDegreesArray([97.56045631976923, 29.59433175465213, 97.56045631976923, 27.934801881214653, 100.39490750962062, 27.934801881214653, 100.39490750962062, 29.59433175465213, 97.56045631976923, 29.59433175465213]),
+          material: new Cesium.Color.fromBytes(64, 157, 253, 125),
+          perPositionHeight: true,
+        },
+      });
+    }
+
+
+    // 雨
+    new weatherEffects(viewer, {
+      name: 'a',
+      type: 'rain'
+    });
+
+
+    // 闪电
+    let Lightning = `
+            float hash(float x)
+            {
+            return fract(21654.6512 * sin(385.51 * x));
+            }
+            float hash(vec2 p)
+            {
+            return fract(1654.65157 * sin(15.5134763 * p.x + 45.5173247 * p.y + 5.21789));
+            }
+            vec2 hash2(vec2 p)
+            {
+            return vec2(hash(p * .754), hash(1.5743 * p + 4.5476351));
+            }
+            vec2 add = vec2(1.0, 0.0);
+            vec2 noise2(vec2 x)
+            {
+            vec2 p = floor(x);
+            vec2 f = fract(x);
+            f = f * f * (3.0 - 2.0 * f);
+            vec2 res = mix(mix(hash2(p),
+            hash2(p + add.xy), f.x),
+            mix(hash2(p + add.yx), hash2(p + add.xx), f.x), f.y);
+            return res;
+            }
+            vec2 fbm2(vec2 x)
+            {
+            vec2 r = vec2(0.0);
+            float a = 1.0;
+            for (int i = 0; i < 8; i++)
+            {
+            r += noise2(x) * a;
+            x *= 2.;
+            a *= .5;
+            }
+            return r;
+            }
+            float dseg(vec2 ba, vec2 pa)
+            {
+            float h = clamp(dot(pa, ba) / dot(ba, ba), -0.2, 1.);
+            return length(pa - ba * h);
+            }
+            uniform sampler2D colorTexture; 
+            uniform float fall_interval; 
+            uniform float mix_factor; 
+            varying vec2 v_textureCoordinates; 
+            void main(void){
+            vec2 uv = gl_FragCoord.xy; 
+            float iTime = czm_frameNumber * fall_interval * clamp(fall_interval * 0.1, 0.01, 0.1); 
+            vec2 p = uv / czm_viewport.zw; 
+            vec2 d; 
+            vec2 tgt = vec2(1., -1.); 
+            float c = 0.; 
+            if (p.y >= 0.) 
+            c = (1. - (fbm2((p + .2) * p.y + .1 * iTime)).x) * p.y; 
+            else                                
+            c = (1. - (fbm2(p + .2 + .1 * iTime)).x) * p.y * p.y; 
+            vec3 col = vec3(0.); 
+            vec3 col1 = c * vec3(.3, .5, 1.); 
+            float mdist = 100000.; 
+            float t = hash(floor(5. * iTime)); 
+            tgt += 4. * hash2(tgt + t) - 1.5; 
+            if (hash(t + 2.3) > .6) 
+            for (int i = 0; i < 100; i++) {
+            vec2 dtgt = tgt - p; 
+            d = .05 * (vec2(-.5, -1.) + hash2(vec2(float(i), t))); 
+            float dist = dseg(d, dtgt); 
+            mdist = min(mdist, dist); 
+            tgt -= d; 
+            c = exp(-1.2 * dist) + exp(-55. * mdist); 
+            col = c * vec3(.7, .8, 1.); 
+            } 
+            col += col1; 
+            gl_FragColor = mix(texture2D(colorTexture, v_textureCoordinates), vec4(col, 0.0), mix_factor); 
+            } 
+            `
+
+
+    Cesium.PostProcessStageLibrary.createLightningStage = function (val) {
+      return new Cesium.PostProcessStage({
+        name: 'czm_lightning',
+        fragmentShader: Lightning,
+        uniforms: {
+          mix_factor: val.mix_factor,//混合系数0-1之间的数
+          fall_interval: 0.8,//0-1之间的数
+        }
+      });
+    }
+
+    var collection = viewer.scene.postProcessStages;
+    var lightning = Cesium.PostProcessStageLibrary.createLightningStage({
+      mix_factor: 0.35,//混合系数
+    });
+    collection.add(lightning);
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>动态标绘专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>动态标绘专题--不使用标绘面板和属性面板</h1>
+    <hr/>
+    <h2>一、简介</h2>
+        <p>前面提到，为了方便用户，SuperMap iClient for JavaScript动态标绘功能提供标绘和属性两个面板。如果用户不去加载现有面板的情况下还需要做哪些工作呢？
+            这篇专题主要介绍的是在不存在标绘和属性面板的情况下，还需要做的工作。所以这里着重介绍<a calss="contentLink" href="PlottingTopic.html">动态标绘专题</a>
+            里面替代“6、初始化标绘面板和属性面板”的初始化工作，而<a calss="contentLink" href="PlottingTopic.html">动态标绘专题</a>里面的1至5点的创建图层、标绘和编辑控件
+            并添加到地图等的工作就不重复介绍了，但并不代表不需要。相反，他们都是动态标绘必须的工作。这点需要引起注意。
+        </p>
+    <h2>二、使用</h2>
+    <h4>1、初始化标号库</h4>
+    <p></p>
+    <p>
+        除了基本图元外，动态标绘里面用到的所有标号都是标号库提供的，也就是说，除了绘制基本图元以外，绘制其他所有标号都需要初始化标号所在的标号库。
+    </p>
+    <p>
+        <pre>
+//标绘服务地址
+var plottingUrl = "http://localhost:8090/iserver/services/plot-jingyong/rest/plot/";
+
+//声明动态标绘总控类，从总控类获取标号库管理类
+var plotting = SuperMap.Plotting.getInstance(map, plottingUrl);
+var symbolLibManager = plotting.getSymbolLibManager();
+
+//判断标号库管理类如果没有进行初始化，则异步初始化。初始化完成后返回支持的标号库ID列表，目前由于服务器不支持多个标号库，所以客户端也不支持多个标号库。
+if(!symbolLibManager.isInitializeOK()){
+    //标号库管理类初始化完成的处理函数
+    function initializeCompleted(result){
+        console.log(result);
+    }
+
+    symbolLibManager.events.on({"initializeCompleted": initializeCompleted,
+        scope: this});
+    symbolLibManager.initializeAsync();
+}
+        </pre>
+    </p>
+    <p>值得注意的是：标号库管理类初始化完成后，返回支持的标号库ID列表所对应的标号库已经初始化完成，不需要再单独初始化。</p>
+    <p>下面开始介绍鼠标标绘和编辑标号，严格意义来说，标绘和编辑不属于初始化工作。但是如果使用客户端提供的面板，这些工作都是封装在面板内部，是不需要用户自己去做任何事的。</p>
+    <h4>2、绘制标号</h4>
+    <p></p>
+    <p>
+        激活控件，绘制控件。这里以警用库的刑事案件标号为例。警用标号库的ID为421，刑事案件的Code为20100。用标号库ID和标号Code就可以确定要绘制的标号。
+    </p>
+    <p>
+        <pre>
+//激活控件
+drawGraphicObject.activate();
+
+//将标号的标号库ID、编号Code以及标绘服务地址赋值给标绘控件内部的handler，即SuperMap.Handler.GraphicObject
+drawGraphicObject.handler.libID = 421;
+drawGraphicObject.handler.symbolCode = 20100;
+drawGraphicObject.handler.serverUrl = plottingUrl;
+        </pre>
+    </p>
+    <h4>3、编辑标号</h4>
+    <p></p>
+
+    <p>
+        选中标号后，可以鼠标编辑编号的大小、旋转等；也可以对标号的边线、衬线、填充、镜像、等级、子标号及注记等属性进行修改。
+    </p>
+    <p>
+    <ul style="list-style-type:disc;">
+        <li>鼠标编辑，鼠标编辑只需要在绘制结束后激活编辑控件。</li>
+    </ul>
+    <p>
+        <pre>
+//取消激活绘制控件
+drawGraphicObject.deactivate();
+//激活编辑控件
+plottingEdit.activate();
+        </pre>
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>修改属性。标号可以修改的属性分两部分存储，和风格有关的属性从SuperMap.Feature.Vector的style里获取，和形状有关的属性从SuperMap.Feature.Vector的geometry里获取。这里的代码段只以少部分属性为例，<a href="#properties"><span>4、动态标绘标号的属性</span></a>会具体列出所有属性。</li>
+    </ul>
+    <p>
+        <pre>
+//首先绑定图层的beforefeaturemodified事件
+plottingLayer.events.register("featureselected", this, changeProperty);
+//修改属性，featureselected事件的处理函数
+function showFeatureProperty(selectFeatueEvt)
+{
+    if(selectFeatueEvt && selectFeatueEvt !== null){
+        //被选中，要修改的feature
+        selectfeature = selectFeatueEvt.feature;
+
+        //修改风格相关的属性
+        if(selectfeature !== null && selectfeature.style !== null){
+            //修改边线宽度、边线颜色、边线颜色透明度
+            selectfeature.style.strokeWidth = 2;
+            selectfeature.style.strokeColor = "#ff0000";
+            selectfeature.style.strokeOpacity = 1;
+        }
+
+        //修改形状相关的属性
+        if(selectfeature !== null && selectfeature.geometry !== null){
+            //修改旋转、缩放、标号等级，适用于点标号
+            selectfeature.geometry.setRotate(30);
+            selectfeature.geometry.setScale(1.2);
+            selectfeature.geometry.setSymbolRank(1);
+        }
+    }
+
+    SuperMap.Event.stop(selectFeatueEvt);
+}
+        </pre>
+    </p>
+    <h4>4、动态标绘标号的属性</h4>
+    <p></p>
+    <p>
+        <table id="properties" width="100%" border="1">
+            <tr><th>属性名/属性接口</th><th>属性含义</th><th>点标号</th><th>线面标号</th></tr>
+            <tr><td>selectfeature.geometry.symbolType</td><td>获取标号几何类型，点标号、线面标号或者基本图元类型，只读属性</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.geometry.libID</td><td>获取标号所属标号库ID，只读属性</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.geometry.code</td><td>获取标号Code，只读属性</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.geometry.symbolName</td><td>获取标号名称，只读属性</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.strokeWith</td><td>{Number}设置/获取标号边线宽度，单位是像素</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.strokeColor</td><td>{String}设置/获取标号边线颜色, 例如，"ff0000"</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.strokeOpacity</td><td>{Number}设置/获取标号边线颜色透明度，取值范围(0-1)</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.strokeDashstyle</td><td>{String}设置/获取标号边线类型，dot、dash、dashdot、longdash、longdashdot、solid</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.surroundLineWidth</td><td>{Number}设置/获取标号衬线宽度，单位是像素</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.surroundLineColor</td><td>{String}设置/获取标号衬线颜色，例如，"ffff00"</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.surroundLineColorOpacity</td><td>{Number}设置/获取标号衬线颜色透明度，取值范围(0-1)</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fill</td><td>{Boolean}设置/获取标号填充，不需要填充则设置成false</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fillGradientMode</td><td>{String}设置/获取标号渐变填充方式，渐变填充的优先级高于填充，支持LINEAR、RADIAL两种渐变方式</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fillColor</td><td>{String}设置/获取标号填充颜色，例如，"ff0000"</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fillOpacity</td><td>{Number}设置/获取标号填充透明度，取值范围(0-1)</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fillBackColor</td><td>{String}设置/获取标号背景色，例如，"ffff00"，渐变填充时生效</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fillBackOpacity</td><td>{Number}设置/获取标号背景填充透明度，，取值范围(0-1)，渐变填充时生效</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.display</td><td>{String}设置/获取标号可见性，display可见，none不可见</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.style.fontSize</td><td>{String}设置/获取点标号注记字体大小，单位是像素,例如，fontSize="2em"</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.style.fontColor</td><td>{String}设置/获取点标号注记字体颜色，十六进制颜色</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.style.fontFamily</td><td>{String}设置/获取点标号注记字体类型</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setRotate(value)/getRetate()</td><td>{Number}设置/获取点标号旋转角度</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setScale(value)/getSclae()</td><td>{Number}设置/获取点标号缩放比例</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setNegativeImage(value)/getNegativeImage()</td><td>{Boolean}设置/获取点标号镜像</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setSymbolRank(value)/getSymbolRank()</td><td>{Number}设置/获取点标号等级，标号可以设置的等级范围可以通过selectfeature.geometry.symbolData.symbolRanks获取</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setSymbolSize(w, h)/getSymbolSize()</td><td>{Number, Number}设置/获取点标号大小，参数分别为军标宽度和高度，单位是像素</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setTextContent(value)/getTextContent()</td><td>{String}设置/获取点标号注记内容</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setTextPosition(value)/getTextPosition()</td><td>{Number}设置/获取点标号注记位置，有0：左上，1：左下，2：右上，3：右下，4：上，5：下，6：左，7：右，8：中间共九个位置，标号是否可以设置中间注记可以通过selectfeature.geometry.symbolData.middleMarkExist判断</td><td>支持</td><td>不支持</td></tr>
+            <tr><td>selectfeature.geometry.setSurroundLineType(value)/getSurroundLineType()</td><td>{Number}设置/获取标号衬线类型，点标号只有0：无衬线和1：有衬线两种，而线面标号除了无衬线外，还有1：内侧衬线，2：外侧衬线，3：双侧衬线</td><td>支持</td><td>支持</td></tr>
+            <tr><td>selectfeature.geometry.setSubSymbol(code，index)/getSubSymbol()</td><td>{Number, Number}设置/获取线面标号的子标号，参数分别为修改后的子标号code及其索引</td><td>不支持</td><td>支持</td></tr>
+        </table>
+    </p>
+    <p>到这里为止，这篇专题对标号库初始化以及鼠标交互式标绘和编辑，相关属性的修改都做了详细介绍。相信即使不使用SuperMap iClient for JavaScript提供的标绘面板和属性面板，也可以很容易的熟悉动态标绘。</p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

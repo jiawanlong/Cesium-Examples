@@ -1,0 +1,122 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {
+            contextOptions: {
+                // requestWebgl1: true,
+            },
+        });
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        /* 
+            ----------------------------------Material-----------------------------
+        */
+
+        // Primitive对象的自定义可视化，Cesium为其提供了Appearance和Material对象。
+        // 其中，Material只负责片段着色器中材质部分的代码，
+        // 而Appearance负责该Primitive整个Shader的代码，包括顶点着色器和片段着色器两个部分。
+        // 可以理解为Appearance为Material之上的又一层封装，负责将Material赋给对应的Primitive对象。
+
+        // Appearance中的属性值Materia的三种创建方式
+        // 1、Material.fromType
+        // 2、new Cesium.Material()
+        // 3、fabric
+
+        /*
+            var appearance = new Cesium.MaterialAppearance();
+            viewer.scene.primitives.add(
+                new Cesium.Primitive({
+                    geometryInstances: instances,
+                    appearance: appearance
+                }));
+            
+            //  1、Material.fromType 
+            appearance.material = Cesium.Material.fromType('Color');
+            appearance.material.uniforms.color = new Cesium.Color(1.0, 1.0, 0.0, 1.0);
+
+            // 2、new Cesium.Material()
+            appearance.material = new Cesium.Material();
+
+            //  3、fabric
+            appearance.material = new Cesium.Material({
+                fabric: {
+                    type: 'Color',
+                    uniforms: {
+                        color: new Cesium.Color(1.0, 1.0, 0.0, 1.0)
+                    },
+                    source: fs
+                }
+            });
+        */
+
+        let source = `czm_material czm_getMaterial(czm_materialInput materialInput)
+            {
+                czm_material material = czm_getDefaultMaterial(materialInput);
+                vec2 st = materialInput.st;
+                vec4 colorImage = texture(image, vec2(fract((st.s - speed * czm_frameNumber * 0.001)), st.t));
+                material.alpha = colorImage.a * color.a;
+                material.diffuse = color.rgb;
+                return material;
+        }`;
+
+        let material = new Cesium.Material({
+            fabric: {
+                uniforms: {
+                    color: Cesium.Color.fromCssColorString('#7ffeff'),
+                    image: "./line1.png",
+                    speed: 10,
+                },
+                source: source,
+            },
+            translucent: function () {
+                return true
+            },
+        });
+
+        var appearance = new Cesium.PolylineMaterialAppearance();
+        appearance.material = material;
+
+        viewer.scene.primitives.add(
+            new Cesium.Primitive({
+                geometryInstances: new Cesium.GeometryInstance({
+                    geometry: new Cesium.PolylineGeometry({
+                        positions: Cesium.Cartesian3.fromDegreesArray([
+                            -112, 36,
+                            -100, 38,
+                            -90, 42
+                        ]),
+                        width: 5.0,
+                    }),
+                }),
+                appearance: appearance
+            })
+        );
+
+    </script>
+</body>
+
+</html>

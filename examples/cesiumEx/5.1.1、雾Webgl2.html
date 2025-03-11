@@ -1,0 +1,124 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="./../../cesium/Cesium1.98/Widgets/widgets.css"
+    />
+    <script
+      type="text/javascript"
+      src="./../../cesium/Cesium1.98/Cesium.js"
+    ></script>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    "
+  >
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+      const viewer = new Cesium.Viewer("map", {});
+      // 开启帧率
+      viewer.scene.debugShowFramesPerSecond = true;
+
+      const tileset = new Cesium.Cesium3DTileset({
+        url: "./data/tileset.json",
+      });
+
+      tileset.readyPromise
+        .then(function (tileset) {
+          viewer.scene.primitives.add(tileset);
+          viewer.zoomTo(tileset);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      // 模型删除
+      // viewer.scene.primitives.remove(tileset)
+      // viewer.scene.primitives.removeAll()
+      function setFogEffect1(viewer) {
+        const fs = ` 
+        float getDistance(sampler2D depthTexture, vec2 texCoords) 
+        { 
+            //它用于将从深度纹理中读取到的深度值进行解压缩，以便在着色器中进行深度测试和深度值比较等操作。
+            //深度纹理通常用于实现阴影效果、深度检测等功能。
+            //在Cesium中，深度值通常被存储在一个16位的纹理单元中，这个值被压缩成0到1之间的浮点数，以便节省显存空间。
+            float depth = czm_unpackDepth(texture(depthTexture, texCoords)); 
+            //若深度值为0，则返回无穷远
+            if (depth == 0.0) { 
+                return czm_infinity; 
+            } 
+            //将窗口坐标系(即屏幕坐标系)下的像素坐标转换为相机坐标系下的坐标
+            vec4 eyeCoordinate = czm_windowToEyeCoordinates(gl_FragCoord.xy, depth); 
+            //返回物体离相机的距离
+            return -eyeCoordinate.z / eyeCoordinate.w; 
+        } 
+        //根据距离，在中间进行插值
+        float interpolateByDistance(vec4 nearFarScalar, float distance) 
+        { 
+            //根据常识，雾应该是距离远，越看不清，近距离内的物体可以看清
+            //因此近距离alpha=0，远距离的alpha=1.0
+            //本例中设置可见度为200米
+            //雾特效的起始距离
+            float startDistance = nearFarScalar.x;
+            //雾特效的起始alpha值
+            float startValue = nearFarScalar.y;
+            //雾特效的结束距离 
+            float endDistance = nearFarScalar.z;
+            //雾特效的结束alpha值
+            float endValue = nearFarScalar.w; 
+            //根据每段距离占总长度的占比，插值alpha，距离越远，alpha值越大。插值范围0,1。
+            float t = clamp((distance - startDistance) / (endDistance - startDistance), 0.0, 1.0); 
+            return mix(startValue, endValue, t); 
+        } 
+        vec4 alphaBlend(vec4 sourceColor, vec4 destinationColor) 
+        { 
+            return sourceColor * vec4(sourceColor.aaa, 1.0) + destinationColor * (1.0 - sourceColor.a); 
+        } 
+        uniform sampler2D colorTexture; 
+        uniform sampler2D depthTexture; 
+        uniform vec4 fogByDistance; 
+        uniform vec4 fogColor; 
+        in vec2 v_textureCoordinates; 
+        void main(void) 
+        { 
+            //获取地物距相机的距离
+            float distance = getDistance(depthTexture, v_textureCoordinates);
+            //获取场景原本的纹理颜色 
+            vec4 sceneColor = texture(colorTexture, v_textureCoordinates);
+            //根据距离，对alpha进行插值
+            float blendAmount = interpolateByDistance(fogByDistance, distance); 
+            //将alpha变化值代入雾的原始颜色中，并将雾与场景原始纹理进行融合
+            vec4 finalFogColor = vec4(fogColor.rgb, fogColor.a * blendAmount); 
+            out_FragColor = alphaBlend(finalFogColor, sceneColor); 
+        }`;
+        viewer.scene.postProcessStages.add(
+          new Cesium.PostProcessStage({
+            name: "test",
+            fragmentShader: fs,
+            uniforms: {
+              fogByDistance: new Cesium.Cartesian4(10, 0.0, 200, 0.7),
+              fogColor: Cesium.Color.WHITE,
+            },
+          })
+        );
+      }
+      setFogEffect1(viewer);
+    </script>
+  </body>
+</html>

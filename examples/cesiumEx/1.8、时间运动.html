@@ -1,0 +1,118 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        let start = new Cesium.JulianDate.fromDate(new Date());
+
+        // 开始时间  cesium用的JulianDate:代表天文朱利安时间,用的是世界协调时,比北京时间晚8个小时, 加上东8时，就是当前的真正时间
+        start = Cesium.JulianDate.addHours(start, 8, new Cesium.JulianDate());
+        // 结束时间 6分钟
+        const center = Cesium.JulianDate.addSeconds(start, 180, new Cesium.JulianDate());
+        const center2 = Cesium.JulianDate.addSeconds(start, 200, new Cesium.JulianDate());
+        const stop = Cesium.JulianDate.addSeconds(start, 360, new Cesium.JulianDate());
+
+        // 设置时钟范围
+        viewer.clock.startTime = start.clone();
+        viewer.clock.stopTime = stop.clone();
+        viewer.clock.currentTime = start.clone();
+
+        // 循环结束时后续动作
+        viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+        // 时间速率控制速度，时间调快多少倍，比如原来用时360秒，调整10倍后，现在用时36秒
+        viewer.clock.multiplier = 10;
+        //给下方时间线设置边界
+        viewer.timeline.zoomTo(start, stop);
+
+        const position = new Cesium.SampledPositionProperty();
+
+        const startPos = Cesium.Cartesian3.fromDegrees(-90, 20, 10000);
+        const centerPos = Cesium.Cartesian3.fromDegrees(-60, 40, 1000000);
+        const centerPos2 = Cesium.Cartesian3.fromDegrees(-60, 42, 1000000);
+        const endPos = Cesium.Cartesian3.fromDegrees(-120, 30, 3000000);
+
+        position.addSample(start, startPos);
+        position.addSample(center, centerPos);
+        position.addSample(center2, centerPos2);
+        position.addSample(stop, endPos);
+
+        const entity = viewer.entities.add({
+            // 将实体availability设置为与模拟时间相同的时间间隔。
+            availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                start: start,
+                stop: stop
+            })]),
+            position: position, // 计算实体位置属性
+            // 基于位置移动自动计算方向.
+            orientation: new Cesium.VelocityOrientationProperty(position),
+            model: {
+                uri: 'missile/scene.gltf',
+                minimumPixelSize: 32
+            },
+            label: {
+                text: '我是飞机',
+                font: '10pt monospace',
+                outlineWidth: 2,
+                fillColor: Cesium.Color.BLUE,
+                showBackground: true,
+                pixelOffset: new Cesium.Cartesian2(40, 20),
+                backgroundColor: Cesium.Color.RED
+            },
+            // 路径
+            path: {
+                show: true,
+                resolution: 1,
+                material: new Cesium.PolylineGlowMaterialProperty({
+                    glowPower: 0.1,
+                    color: Cesium.Color.PINK
+                }),
+                width: 5
+            }
+        });
+
+        // 开启运动
+        viewer.clock.shouldAnimate = true;
+
+        // 第三人称
+        // viewer.trackedEntity = entity;
+
+        // 第一人称
+        viewer.scene.preUpdate.addEventListener(traceHandler)
+
+        // https://blog.csdn.net/dandan__666/article/details/115293860
+        // https://blog.csdn.net/AllBluefm/article/details/137928976
+
+        function traceHandler() {
+            let center = entity.position.getValue(
+                viewer.clock.currentTime
+            );
+            let orientation = entity.orientation.getValue(
+                viewer.clock.currentTime
+            )
+            let transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+            transform = Cesium.Matrix4.fromRotationTranslation(Cesium.Matrix3.fromQuaternion(orientation), center);
+            viewer.camera.lookAtTransform(transform, new Cesium.Cartesian3(-20, 0, 30))
+        }
+
+    </script>
+</body>
+
+</html>

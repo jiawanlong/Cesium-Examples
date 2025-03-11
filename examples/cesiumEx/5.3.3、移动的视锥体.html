@@ -1,0 +1,141 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <!-- ./video.mp4 -->
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {});
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // 地图视野定位
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(120, 30, 3000),
+        });
+
+        // 视锥体位置
+        let qd = Cesium.Cartesian3.fromDegrees(120, 30, 1000);
+        let zd = Cesium.Cartesian3.fromDegrees(125, 30, 0);
+
+        const fov = 30;  //上下角度
+        const near = 10;  // 进距离
+        const far = 5000;  //远距离
+        const aspectRatio = 1.4;  //横向比例
+
+        // 绘制
+        addFrustum(
+            qd,
+            _getOrientation(qd, zd),
+            fov,
+            near,
+            far,
+            aspectRatio
+        );
+
+        // 创建视锥体及轮廓线
+        function addFrustum(position, orientation, fov, near, far, aspectRatio) {
+            let frustum = new Cesium.PerspectiveFrustum({
+                fov: Cesium.Math.toRadians(fov),
+                aspectRatio: aspectRatio,
+                near: near,
+                far: far,
+            });
+            let instanceGeo = new Cesium.GeometryInstance({
+                geometry: new Cesium.FrustumGeometry({
+                    frustum: frustum,
+                    origin: position,
+                    orientation: orientation,
+                    vertexFormat: Cesium.VertexFormat.POSITION_ONLY,
+                }),
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+                        new Cesium.Color(1.0, 0.0, 0.0, 0.3)
+                    ),
+                },
+            });
+            let instanceGeoLine = new Cesium.GeometryInstance({
+                geometry: new Cesium.FrustumOutlineGeometry({
+                    frustum: frustum,
+                    origin: position,
+                    orientation: orientation,
+                }),
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+                        new Cesium.Color(1.0, 1.0, 1.0, 1)
+                    ),
+                },
+            });
+
+            let primitive = new Cesium.Primitive({
+                geometryInstances: [instanceGeo],
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    closed: true,
+                    flat: true,
+                }),
+                asynchronous: false,
+            });
+
+            let primitive1 = new Cesium.Primitive({
+                geometryInstances: [instanceGeoLine],
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    closed: true,
+                    flat: true,
+                }),
+                asynchronous: false,
+            });
+            // viewer.scene.primitives.add(primitive);
+            // viewer.scene.primitives.add(primitive1);
+            return [primitive,primitive1];
+        }
+
+        function _getOrientation(cameraPosition, position) {
+            var e = cameraPosition,
+                t = position,
+                i = Cesium.Cartesian3.normalize(
+                    Cesium.Cartesian3.subtract(t, e, new Cesium.Cartesian3()),
+                    new Cesium.Cartesian3()
+                ),
+                a = Cesium.Cartesian3.normalize(e, new Cesium.Cartesian3()),
+                n = new Cesium.Camera(viewer.scene);
+            (n.position = e),
+                (n.direction = i),
+                (n.up = a),
+                (i = n.directionWC),
+                (a = n.upWC);
+            var r = n.rightWC,
+                o = new Cesium.Cartesian3(),
+                l = new Cesium.Matrix3(),
+                u = new Cesium.Quaternion();
+            r = Cesium.Cartesian3.negate(r, o);
+            var d = l;
+            Cesium.Matrix3.setColumn(d, 0, r, d),
+                Cesium.Matrix3.setColumn(d, 1, a, d),
+                Cesium.Matrix3.setColumn(d, 2, i, d);
+            var c = Cesium.Quaternion.fromRotationMatrix(d, u);
+            return (this.orientation = c), c;
+        }
+    </script>
+</body>
+
+</html>

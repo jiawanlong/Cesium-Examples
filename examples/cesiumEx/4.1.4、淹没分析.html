@@ -1,0 +1,84 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./util.js"></script>
+    <script src="./SubmergenceAnalysis.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div style="    position: absolute;
+    left: 0;
+    top: 0;
+    color: #fff;">
+        <p>
+            <span>起始高度</span>
+            <input id="ks" value="1000" type="text">
+            <span>目标高度</span>
+            <input id="mb" value="2500" type="text">
+            <span>速度（米/秒）</span>
+            <input id="speed" value="200" type="text">
+            <span>当前高度</span>
+            <input id="dq" value="0" type="text">
+        </p>
+        <p>
+            <button onclick="fly()">飞行到淹没区域</button>
+            <button onclick="star()">开始淹没</button>
+            <button onclick="clea()">清除</button>
+        </p>
+    </div>
+
+    <script type="text/javascript">
+        let aaa
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+        });
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        // 加载默认地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水掩膜以实现水体效果
+            requestVertexNormals: true // 请求法线以实现光照效果
+        });
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+        function fly() {
+            viewer.camera.setView({
+                destination: Cesium.Cartesian3.fromDegrees(98.71707797694049, 27.677299704639537, 50000.0)
+            });
+        }
+        function star() {
+            aaa = new SubmergenceAnalysis({
+                viewer: viewer,
+                targetHeight: parseFloat(document.getElementById("mb").value),
+                startHeight: parseFloat(document.getElementById("ks").value),
+                adapCoordi: [
+                    98.676842346815, 27.571578111198868,
+                    98.86252156624968, 27.77444519911974,
+                    98.76756234288729, 27.800244194152533,
+                    98.57088699052892, 27.72492584876768,
+                    98.676842346815, 27.571578111198868,
+                ],
+                speed: Number(document.getElementById("speed").value),
+                changetype: "up",
+                speedCallback: function (h) {
+                    document.getElementById("dq").value = h;
+                }
+            });
+            aaa.start()
+        }
+        function clea() {
+            aaa.clear()
+        }
+
+    </script>
+</body>
+
+</html>

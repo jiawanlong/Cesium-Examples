@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>可视化专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+    <style type="text/css">
+
+        .tabel1{
+            width: 300px;;
+        }
+        .tabel2{
+            width: 450px;;
+        }
+        .tabel3{
+            width: 450px;;
+        }
+        .div1{
+            background-color: #000000;
+        }
+        .img1{
+            margin: 2px;
+        }
+
+    </style>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>可视化专题</h1>
+    <hr/>
+    <p style="font-weight:bold">
+        SuperMap iClient for JavaScript 提供了大量可视化效果图，可以满足用户的不同需求，总体可划分为三大类：
+        <a href="#test1">客户端渲染</a>、
+        <a href="#test2">数据交互</a>、
+        <a href="#test3">其他</a>。
+    </p>
+    <div class="pageImage"><img src="images/visualTopic.png"/></div>
+    <h2><a name="test1">一、客户端渲染</a></h2>
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            1、热点图
+            <div class="div1">
+                <img class="img1" src="images/heatMapLayerTopic.png"/>
+            </div>
+            <br />
+            <p>
+                热点图（HeatMapLayer），用于渲染数据的衰减趋势，颜色渐变的效果。
+            </p>
+        </p>
+        <p>
+            详情请查看：
+            <a href="HeatMapLayerTopic.html">热点图专题</a>
+        </p>
+
+    </div>
+
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            2、聚合图
+            <div class="div1">
+                <img class="img1" src="images/clusterLayerTopic.png"/>
+            </div>
+            <br />
+            <p>
+                聚合图（ClusterLayer），用于解决大量数据在浏览器渲染缓慢的问题。
+            </p>
+        </p>
+        <p>
+            详情请查看：
+            <a href="ClusterLayerTopic.html">聚合图专题</a>
+        </p>
+
+    </div>
+
+
+    <div class="tabel1"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            3、热点格网图
+            <div class="div1">
+                <img class="img1" src="images/heatGridLayerTopic.png"/>
+            </div>
+            <br />
+            <p>
+                热点格网图（HeatGridLayer），用于解决大量数据在浏览器渲染缓慢的问题并带有数据衰减趋势的效果。
+            </p>
+        </p>
+        <p>
+            详情请查看：
+            <a href="HeatGridLayerTopic.html">热点格网图专题</a>
+        </p>
+
+    </div>
+
+    <br>
+
+    <p style="font-weight:bold">
+        总结：
+    </p>
+    <p>
+        用户在选择点数据的渲染方式时，如果对视觉渐变效果要求比较高可以选择使用热点图，如果只是为了解决大数据量渲染问题可以选择聚合图，
+        如果想要渐变效果，但是数据量又比较大时可以考虑格网图，具体选择哪种渲染方式还得由用户的具体需求决定。
+    </p>
+
+    <h2><a name="test2">二、数据交互</a></h2>
+    <div class="tabel2"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            1、属性图（UTFGriid）
+            <div class="div1">
+                <img class="img1" src="images/utfgridTopic.gif"/>
+            </div>
+            <br />
+            <p>
+                属性图（UTFGriid），用于前端快速访问后台属性。
+            </p>
+        </p>
+        <p>
+            详情请查看：
+            <a href="UTFGridLayerTopic.html">属性图专题</a>
+        </p>
+    </div>
+
+    <div class="tabel2"  style="display: inline-table;">
+        <p style="font-weight:bold">
+            2、麻点图
+            <div class="div1">
+                <img class="img1" src="images/goisTopic.png"/>
+            </div>
+            <br />
+            <p>
+                麻点图（GOIs），用于解决前端超大数据量渲染以及快速访问属性的问题。
+            </p>
+        </p>
+        <p>
+            详情请查看：
+            <a href="GOISTopic.html">麻点图专题</a>
+        </p>
+    </div>
+
+
+    <h2><a name="test3">三、其他</a></h2>
+    <p style="font-weight:bold">
+        1、扩展图
+        <div>
+            <div class="tabel3"  style="display: inline-table;">
+                <div class="div1"><img class="img1" src="images/elementsTopic.png"/></div>
+            </div>
+            <div class="tabel3"  style="display: inline-table;">
+                <div class="div1"><img class="img1" src="images/elementsTopic1.png"/></div>
+            </div>
+        </div>
+    </p>
+    <p>Elements图层用于添加任意dom对象，其自身是一个div，所以用户可以向该图层上添加任意dom对象，并且支持第三方扩展应用。
+        如果我们提供的之前的可视化图层还不能满足用户的需求，那么用户可以尝试使用此图层来自定义。
+    </p>
+    <p>
+        详情请查看：
+        <a href="ElementsTopic.html">扩展图专题</a>
+    </p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

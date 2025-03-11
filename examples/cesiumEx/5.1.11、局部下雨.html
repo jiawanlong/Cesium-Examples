@@ -1,0 +1,115 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map");
+
+
+        viewer.camera.flyTo({
+            destination: new Cesium.Cartesian3(-930635.3822360804, -5464034.592507356, 3161315.472199566),
+            orientation: {
+                heading: 6.126725323385694, // east, default value is 0.0 (north)
+                pitch: -0.22764983413485584,    // default value (looking down)
+                roll: 6.28290552999833                           // default value
+            }
+        });
+        let obj = {
+            minx: -100,
+            miny: 30,
+            maxx: -99.5,
+            maxy: 30.5,
+            dx: 15,      // 雨滴宽度
+            ds: 5000,     // 雨滴数量
+            sd: 50,       // 雨滴下落速度
+        };
+
+        // 创建一个 BillboardCollection 来存储所有的雨滴
+        let billboardCollection = viewer.scene.primitives.add(new Cesium.BillboardCollection());
+        let rainDrops = [];
+
+        // 添加雨滴并开始更新
+        addRain();
+
+        function addRain() {
+            // 通过 Turf 生成随机的雨滴位置
+            let points = turf.randomPoint(obj.ds, { bbox: [obj.minx, obj.miny, obj.maxx, obj.maxy] });
+            points.features.forEach((feature) => {
+                let cor = feature.geometry.coordinates;
+                let billboard = billboardCollection.add({
+                    scaleByDistance: new Cesium.NearFarScalar(2000000, 0.8, 8000000, 0.3),
+                    position: Cesium.Cartesian3.fromDegrees(cor[0], cor[1], getRandomHeight()),
+                    image: './yd.jpg',
+                    width: obj.dx,
+                    height: obj.dx,
+                });
+
+                rainDrops.push(billboard);
+            });
+
+            // 使用请求动画帧来优化性能
+            viewer.scene.postRender.addEventListener(updateRainPositions);
+        }
+
+        // 获取一个随机的雨滴高度
+        function getRandomHeight() {
+            return Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+        }
+
+        // 更新所有雨滴的位置
+        function updateRainPositions() {
+            rainDrops.forEach(billboard => {
+                updateBillboardPosition(billboard);
+            });
+        }
+
+        // 更新雨滴的高度
+        function updateBillboardPosition(billboard) {
+            var ellipsoid = viewer.scene.globe.ellipsoid;
+            var cartographic = ellipsoid.cartesianToCartographic(billboard.position);
+            var lat = Cesium.Math.toDegrees(cartographic.latitude);
+            var lng = Cesium.Math.toDegrees(cartographic.longitude);
+            var height = cartographic.height;
+
+            // 如果高度小于0，则重新设置为随机高度
+            if (height < 0) {
+                height = getRandomHeight();
+            } else {
+                // 向下移动雨滴
+                height -= obj.sd;
+            }
+
+            // 更新雨滴的位置
+            billboard.position = Cesium.Cartesian3.fromDegrees(lng, lat, height);
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>

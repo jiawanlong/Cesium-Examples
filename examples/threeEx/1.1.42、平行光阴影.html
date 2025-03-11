@@ -1,0 +1,120 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
+        camera.position.set(5, 4, 5)
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        scene.add(new THREE.AmbientLight(0xffffff, 4))
+        scene.add(new THREE.AxesHelper(1000))
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+
+        
+        // receiveShadow 接收阴影：别的物体阴影可以在自己身上显示（地面用）
+        // castShadow  发射阴影，本身物体发射出去阴影，在其他物体身上显示（模型用）
+
+        
+        // --------------------renderer启用阴影--------------------
+        renderer.shadowMap.enabled = true; // 启用阴影映射
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // 使用软阴影
+        // --------------------renderer启用阴影--------------------
+
+
+        // --------------------平行光开始--------------------
+        // 创建一个平行光
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+        directionalLight.position.set(5, 8, 5).normalize(); // 设置平行光的方向
+        directionalLight.castShadow = true; // 启用平行光的阴影
+        // 配置平行光的阴影贴图
+        directionalLight.shadow.mapSize.width = 1024; // 阴影贴图的宽度
+        directionalLight.shadow.mapSize.height = 1024; // 阴影贴图的高度
+        directionalLight.shadow.camera.near = 0.5; // 阴影摄像机的近裁剪面
+        directionalLight.shadow.camera.far = 500; // 阴影摄像机的远裁剪面
+        directionalLight.shadow.camera.left = -50;
+        directionalLight.shadow.camera.right = 50;
+        directionalLight.shadow.camera.top = 50;
+        directionalLight.shadow.camera.bottom = -50;
+        // 将平行光添加到场景中
+        scene.add(directionalLight);
+        // --------------------平行光结束--------------------
+
+
+        // --------------------地面开始--------------------
+        const planeGeometry = new THREE.PlaneGeometry(100, 100);
+        const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x808080, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.receiveShadow = true; // 启用接收阴影
+        plane.rotation.x = -Math.PI / 2; // 使平面水平
+        scene.add(plane);
+        // --------------------地面结束--------------------
+
+        const loader = new GLTFLoader()
+        loader.load('./zhanji.glb', (gltf) => {
+
+            scene.add(gltf.scene)
+            gltf.scene.scale.set(0.005, 0.005, 0.005)
+            gltf.scene.position.set(0, 2, 0)
+
+            // ---------确保模型的每个网格都启用投射阴影-----------
+            gltf.scene.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    child.castShadow = true; // 启用投射阴影
+                }
+            });
+
+        })
+
+        new OrbitControls(camera, renderer.domElement)
+        animate()
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+        }
+
+    </script>
+
+</body>
+
+</html>

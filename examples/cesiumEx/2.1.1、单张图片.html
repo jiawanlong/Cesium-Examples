@@ -1,0 +1,34 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        const viewer = new Cesium.Viewer('map', {
+            // 添加这两行，就不会找烦人的defaultAccessToken了
+            imageryProvider:false,
+            baseLayerPicker: false,
+        });
+
+        // 加载单张图片
+        var imageryProvider = new Cesium.SingleTileImageryProvider({
+            "url": "./world_b.jpg",
+            id: '1'
+        })
+        viewer.imageryLayers.addImageryProvider(imageryProvider)
+
+
+    </script>
+</body>
+
+</html>

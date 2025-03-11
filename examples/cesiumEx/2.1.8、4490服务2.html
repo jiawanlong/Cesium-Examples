@@ -1,0 +1,109 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        function getOptions(item) {
+            var opts = {};
+            for (var key in item) {
+                var value = item[key];
+                if (value == null) continue;
+
+                switch (key) {
+                    default: //直接赋值
+                        opts[key] = value;
+                        break;
+                    case "crs":
+                        opts[key] = value;
+                        if (value == "4326" || value.toUpperCase() == "EPSG4326" || value.toUpperCase() == 'EPSG:4326') {
+                            opts.tilingScheme = new Cesium.GeographicTilingScheme({
+                                numberOfLevelZeroTilesX: item.numberOfLevelZeroTilesX || 2,
+                                numberOfLevelZeroTilesY: item.numberOfLevelZeroTilesY || 1
+                            });
+                        } else if (value == '4490' || value.toUpperCase() == 'EPSG4490' || value.toUpperCase() == 'EPSG:4490') {
+                            opts.tilingScheme = new Cesium.GeographicTilingScheme({
+                                numberOfLevelZeroTilesX: item.numberOfLevelZeroTilesX || 2,
+                                numberOfLevelZeroTilesY: item.numberOfLevelZeroTilesY || 1
+                            });
+                            opts.is4490 = true;
+                        } else {
+                            opts.tilingScheme = new Cesium.WebMercatorTilingScheme({
+                                numberOfLevelZeroTilesX: item.numberOfLevelZeroTilesX || 1,
+                                numberOfLevelZeroTilesY: item.numberOfLevelZeroTilesY || 1
+                            });
+                        }
+                        break;
+                    case "proxy":
+                        opts.proxy = new Cesium.DefaultProxy(value);
+                        break;
+                    case "rectangle":
+                        opts.rectangle = Cesium.Rectangle.fromDegrees(value.xmin, value.ymin, value.xmax, value.ymax);
+                        break;
+                }
+            }
+
+            if (opts.is4490 && opts.url) {
+                opts.url = opts.url.replace('{z}', '{z4490}');
+                opts.url = opts.url.replace('{arc_z}', '{arc_z4490}');
+                opts.url = opts.url.replace('{arc_Z}', '{arc_Z4490}');
+            }
+
+            if (!opts.url || !opts.proxy && !opts.headers && !opts.queryParameters) { } else if (opts.url instanceof Cesium.Resource) {
+                opts.url.headers = opts.headers;
+            } else {
+                opts.url = new Cesium.Resource({
+                    url: opts.url,
+                    proxy: opts.proxy ? new Cesium[('DefaultProxy')](opts.proxy) : null,
+                    headers: opts.headers,
+                    queryParameters: opts.queryParameters
+                })
+            }
+
+            return opts;
+        }
+        var opts = {
+            name: "影像",
+            type: "tile",
+            url: "https://engine.piesat.cn/hr_data/wmts?tilematrix={z}&layer=wmts_ifile&style=wmts_satellite&tilerow={y}&tilecol={x}&tilematrixset=Global_ifile&format=image/jpeg&service=WMTS&version=1.0.0&request=GetTile",
+            crs: "4490",
+            rectangle: {
+                xmin: -180,
+                xmax: 180,
+                ymin: -90,
+                ymax: 90
+            },
+            minimumLevel: 1,
+            maximumLevel: 18,
+            alpha: 1,
+            visible: true,
+            layerid: '123'
+        }
+        var opts = getOptions(opts);
+        opts.customTags = opts.customTags || {};
+        opts.customTags.z4490 = function (imageryProvider, x, y, level) {
+            return level;
+        };
+        var xyz = new Cesium.UrlTemplateImageryProvider(opts);
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+
+
+    </script>
+</body>
+
+</html>

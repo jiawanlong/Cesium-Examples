@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>矩形</title>
+    <defs>
+        <filter x="-1.2%" y="-16.7%" width="102.4%" height="133.3%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.04 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <rect id="path-2" x="0" y="0" width="24" height="24"></rect>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="产品下拉-适配" transform="translate(-6085.000000, -318.000000)">
+            <g id="编组-40备份-4" transform="translate(5157.000000, 294.000000)" filter="url(#filter-1)">
+                <g id="编组-2" transform="translate(595.000000, 24.000000)">
+                    <g transform="translate(316.000000, 0.000000)" id="编组-51">
+                        <g transform="translate(17.000000, 0.000000)">
+                            <mask id="mask-3" fill="white">
+                                <use xlink:href="#path-2"></use>
+                            </mask>
+                            <g id="矩形"></g>
+                            <path d="M18.3984322,4.05742988 C18.4814143,3.97781133 18.615094,3.98141817 18.6991828,4.06550691 L19.9344931,5.30081721 C20.0185818,5.38490596 20.0221887,5.51858566 19.9425701,5.60156776 L13.544,12 L19.9425701,18.3984322 C20.006265,18.4648179 20.0166956,18.5636501 19.9752666,18.6435809 L19.9344931,18.6991828 L18.6991828,19.9344931 C18.615094,20.0185818 18.4814143,20.0221887 18.3984322,19.9425701 L12,13.544 L5.60156777,19.9425701 C5.53518209,20.006265 5.43634994,20.0166956 5.35641907,19.9752666 L5.30081721,19.9344931 L4.06550691,18.6991828 C3.98141817,18.615094 3.97781134,18.4814143 4.05742989,18.3984322 L10.456,12 L4.05742988,5.60156776 C3.99373504,5.53518208 3.98330445,5.43634994 4.02473344,5.35641907 L4.06550691,5.30081721 L5.30081721,4.06550691 C5.38490596,3.98141817 5.51858566,3.97781133 5.60156776,4.05742988 L12,10.456 Z" id="形状" fill-opacity="0.85" fill="#000000" fill-rule="nonzero" mask="url(#mask-3)"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

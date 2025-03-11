@@ -1,0 +1,188 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        .box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS3DRenderer, CSS3DObject, CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        // 实例化一个gui对象
+        const gui = new GUI();
+        const obj = {
+            yd: 300,
+            dx: 5,
+            color: 0x00ffff,
+            scale: 0,
+            bool:false
+        };
+
+        // 创建场景
+        const scene = new THREE.Scene();
+        let box = document.getElementById("box")
+
+        //创建相机对象
+        var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 50, 1000);
+        camera.position.set(292, 109, 568); //设置相机位置
+        camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+
+
+        // 光源
+        var point = new THREE.PointLight(0xffffff);
+        point.position.set(400, 200, 300); //点光源位置
+        scene.add(point); //点光源添加到场景中
+        var point1 = new THREE.PointLight(0xffffff);
+        point1.position.set(-400, -200, -300);
+        scene.add(point1);
+        var ambient = new THREE.AmbientLight(0x888888, 2);
+        scene.add(ambient);
+
+        // 创建渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        box.appendChild(renderer.domElement)
+
+        // 加载纹理
+        const textureLoader = new THREE.TextureLoader();
+        const spriteTexture = textureLoader.load('./yd.jpg');
+
+        // 创建精灵材质
+        const spriteMaterial = new THREE.SpriteMaterial({
+            map: spriteTexture,
+            useScreenCoordinates: false,
+            color: 0xffffff // 可以设置颜色
+        });
+
+
+        let group = new THREE.Group();
+        for (let i = 0; i < obj.yd; i++) {
+            // 精灵模型共享材质
+            const sprite = new THREE.Sprite(spriteMaterial);
+            group.add(sprite);
+            sprite.scale.set(obj.dx, obj.dx, 1);
+            // 设置精灵模型位置，在长方体空间上上随机分布
+            const x = 1000 * (Math.random() - 0.5);
+            const y = 600 * Math.random();
+            const z = 1000 * (Math.random() - 0.5);
+            sprite.position.set(x, y, z)
+        }
+        scene.add(group);
+
+
+        function addYD() {
+            group.clear();
+            for (let i = 0; i < obj.yd; i++) {
+                // 精灵模型共享材质
+                const sprite = new THREE.Sprite(spriteMaterial);
+                group.add(sprite);
+                sprite.scale.set(obj.dx, obj.dx, 1);
+                // 设置精灵模型位置，在长方体空间上上随机分布
+                const x = 1000 * (Math.random() - 0.5);
+                const y = 600 * Math.random();
+                const z = 1000 * (Math.random() - 0.5);
+                sprite.position.set(x, y, z)
+            }
+        }
+
+        // 环境光强度
+        gui.add(ambient, 'intensity', 0, 5.0).name('环境光强度').step(0.1);
+        // point光强度
+        gui.add(point, 'intensity', 0, 5.0).name('point光强度');
+
+
+        // GUI控制雨滴
+        gui.add(obj, 'yd', 0, 18000).name('雨滴多少').onChange(function (value) {
+            addYD();
+        });
+
+        // GUI控制雨滴
+        gui.add(obj, 'dx', 0, 50).name('雨滴大小').onChange(function (value) {
+            addYD();
+        });
+
+        // 颜色
+        gui.addColor(obj, 'color').name('颜色').onChange(function (value) {
+        });
+
+        // 下拉菜单
+        gui.add(obj, 'scale', [-100, 0, 100]).name('下拉菜单').onChange(function (value) {
+        });
+
+        // 下拉菜单
+        gui.add(obj, 'scale', { left: -100,center: 0,right: 100}).name('下拉菜单').onChange(function (value) {
+        });
+
+        // 布尔值
+        gui.add(obj, 'bool').name('布尔值').onChange(function (value) {
+        });
+
+
+
+        // 草地 
+        var geometry1 = new THREE.PlaneGeometry(2000, 2000);
+        const texLoader = new THREE.TextureLoader();
+        const texture = texLoader.load('./cao.png');
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(20, 20);
+        const material = new THREE.MeshLambertMaterial({
+            map: texture,
+        });
+        const mesh1 = new THREE.Mesh(geometry1, material);
+        mesh1.position.set(50, 50, 0);
+        scene.add(mesh1);
+        mesh1.rotateX(-Math.PI / 2);
+
+
+        function render() {
+            group.children.forEach(sprite => {
+                sprite.position.y -= 2;
+                if (sprite.position.y < 0) {
+                    sprite.position.y = 600;
+                }
+            });
+            renderer.render(scene, camera)
+            requestAnimationFrame(render);
+        }
+        render();
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+    </script>
+
+</body>
+
+</html>

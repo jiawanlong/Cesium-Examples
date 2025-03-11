@@ -1,0 +1,116 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+        import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+        // 相机
+        const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
+        camera.position.set(5, 5, 5)
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        // 环境光
+        scene.add(new THREE.AmbientLight(0xffffff, 4))
+        // 参考线
+        scene.add(new THREE.AxesHelper(1000))
+
+        
+        // 加载模型 gltf/ glb 
+        const loader = new GLTFLoader()
+        // loader.setDRACOLoader(new DRACOLoader().setDecoderPath(`https://file.threehub.cn/` + 'js/three/draco/'))
+        loader.load('./zhanji.glb', (gltf) => {
+
+            scene.add(gltf.scene)
+            gltf.scene.scale.set(0.005, 0.005, 0.005)
+
+
+            // 递归遍历所有模型节点
+            gltf.scene.traverse(function (obj) {
+                if (obj.isMesh) {//判断是否是网格模型
+                    console.log('模型节点', obj);
+                    console.log('模型节点名字', obj.name);
+                    console.log('模型材质', obj.material);
+
+                    // obj.material = new THREE.MeshLambertMaterial({
+                    //     color: 0xffff00,
+                    // });
+                }
+            });
+
+
+            // 返回名战机的玻璃
+            const nameNode = gltf.scene.getObjectByName("boli");
+            nameNode.material.color.set(0xff00ff);//改变战机的玻璃Mesh材质颜色
+
+
+            // 多个mesh共享材质
+            // .material.clone()返回一个新材质对象，和原来一样，重新赋值给.material属性
+            // obj.material = obj.material.clone();
+
+
+            //获得所有zhuti的父对象
+            // const obj = gltf.scene.getObjectByName('zhuti');
+            // console.log('obj', obj); //控制台查看返回结果
+            // console.log('obj.children', obj.children);
+            // // // obj.children的所有子对象都是Mesh，改变Mesh对应颜色
+            // // obj.children.forEach(function (mesh) {
+            // //     mesh.material.color.set(0xffff00);
+            // // })
+
+
+        })
+
+
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+        new OrbitControls(camera, renderer.domElement)
+
+        animate()
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+        }
+
+    </script>
+
+</body>
+
+</html>

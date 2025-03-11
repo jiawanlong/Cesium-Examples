@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title></title>
+    <script src="../Build/Cesium/Cesium.js"></script>
+
+    <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+    <!-- <script  type="text/javascript" src="CesiumPopup.js"></script> -->
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/video.js/5.15.0/video-js.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/video.js/5.15.0/video.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.15.0/videojs-contrib-hls.min.js" type="text/javascript"></script>
+    <style>
+        @import url(../Build/Cesium/Widgets/widgets.css);
+        html,
+        body,
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+       
+
+    </style>
+
+
+</head>
+
+<body>
+<div id="cesiumContainer"></div>
+<script>
+
+
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjYzOTI5NC0yM2QyLTQyOTgtYWM5OS1lM2MwNTYwMGEzMjciLCJpZCI6ODQ1MjYsImlhdCI6MTY0NjM1ODM5OX0.BzsVR7Lt9RhsCia-R7E64KunaAME0HGD7Sv2-xF-RIQ';
+
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+
+   
+        imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
+            url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+            maximumLevel: 18,
+        }),
+
+        // terrainProvider: Cesium.createWorldTerrain({
+        //     requestVertexNormals: true,
+        //     requestWaterMask: true
+        // }),
+        shouldAnimate: true,
+        selectionIndicator: false,
+        infoBox: false,
+        geocoder: false,   // 位置查找工具
+        baseLayerPicker: false,// 图层选择器（地形影像服务）
+        timeline: false, // 底部时间线
+        homeButton: false,// 视角返回初始位置
+        fullscreenButton: false, // 全屏
+        animation: false,   // 左下角仪表盘（动画器件）
+        sceneModePicker: false,// 选择视角的模式（球体、平铺、斜视平铺）
+        navigationHelpButton: false, //导航帮助按钮
+    });
+   //viewer.scene.debugShowFramesPerSecond = true;
+   viewer.cesiumWidget.creditContainer.style.display = "none";
+    var towerJson;
+
+    // viewer.flyTo(tileset);
+    var position = Cesium.Cartesian3.fromDegrees(120.619907115,31.317987368,500);//定义飞行终点的坐标
+console.log(position);
+viewer.camera.flyTo({
+    // 设置相机前往的位置
+    destination: position,
+    // 相机的朝向
+    orientation: {
+      // 如果围绕y轴旋转，偏航角
+      heading: Cesium.Math.toRadians(0),
+      // 如果围绕x轴旋转，俯仰角
+      pitch: Cesium.Math.toRadians(-90),
+      // 如果围绕z轴旋转，翻滚角
+      roll: 0.0,
+    },
+    duration: 1,
+    complete: function () {
+      // 在相机移动完成后执行
+    //   console.log("已抵达北京天安门");
+    },
+  });
+
+    viewer.scene.globe.depthTestAgainstTerrain=true
+
+
+
+let ECEF = (function () {
+	var _=function () {
+		this.PI = 3.141592653589793238;
+		this.a = 6378137.0;
+		this.b = 6356752.3142
+		this.f = (this.a - this.b) / this.a;
+		this.e_sq = this.f * (2.0 - this.f);
+		this.ee = 0.00669437999013;
+		this.WGSF = 1 / 298.257223563;
+		this.WGSe2 = this.WGSF * (2 - this.WGSF);
+		this.WGSa = 6378137.00000;
+		this.EPSILON = 1.0e-12;
+	}
+	_.prototype.CalculateCoordinates = function (point, azimuth, elevation, distance) {
+		var vertical_height = distance * Math.sin(2 * this.PI / 360 * elevation);//垂直高度
+		var horizontal_distance = distance * Math.cos(2 * this.PI / 360 * elevation);//水平距离
+		if (azimuth > 360) azimuth = azimuth % 360;
+		if (azimuth < 0) azimuth = 360 + (azimuth % 360);
+
+		var point1 = this.lonLat2WebMercator(point);
+		var lnglat = null;
+		
+		var x_length , y_length
+		if (azimuth <= 90) {//第四象限
+			x_length = horizontal_distance * Math.cos(2 * this.PI / 360 * azimuth);
+			y_length = horizontal_distance * Math.sin(2 * this.PI / 360 * azimuth);
+			lnglat = {
+				x: point1.x + x_length,
+				y: point1.y - y_length
+			}
+		} else if (azimuth > 90 && azimuth <= 180) {//第三象限
+			x_length = horizontal_distance * Math.sin(2 * this.PI / 360 * (azimuth - 90));
+			y_length = horizontal_distance * Math.cos(2 * this.PI / 360 * (azimuth - 90));
+			lnglat = {
+				x: point1.x - x_length,
+				y: point1.y - y_length
+			}
+		} else if (azimuth > 180 && azimuth <= 270) {//第二象限
+			x_length = horizontal_distance * Math.cos(2 * this.PI / 360 * (azimuth - 180));
+			y_length = horizontal_distance * Math.sin(2 * this.PI / 360 * (azimuth - 180));
+			lnglat = {
+				x: point1.x - x_length,
+				y: point1.y + y_length
+			}
+		} else {//第一象限
+			x_length = horizontal_distance * Math.sin(2 * this.PI / 360 * (azimuth - 270));
+			y_length = horizontal_distance * Math.cos(2 * this.PI / 360 * (azimuth - 270));
+			lnglat = {
+				x: point1.x + x_length,
+				y: point1.y + y_length
+			}
+		}
+		lnglat = this.webMercator2LonLat(lnglat);
+		return {
+			lng: lnglat.x,
+			lat: lnglat.y,
+			height: vertical_height
+		}
+	}
+	/*
+	   *经纬度转Web墨卡托
+	   *@lonLat 经纬度
+	   */
+	_.prototype.lonLat2WebMercator = function (lonLat) {
+		let x = lonLat.x * this.a / 180;
+		let y = Math.log(Math.tan((90 + lonLat.y) * this.PI / 360)) / (this.PI / 180);
+		y = y * this.a / 180;
+		return {
+			x: x,
+			y: y
+		}
+	}
+
+	/*
+	   *Web墨卡托转经纬度
+	   *@mercator 平面坐标
+	   */
+	_.prototype.webMercator2LonLat = function (mercator) {
+		let x = mercator.x / this.a * 180;
+		let y = mercator.y / this.a * 180;
+		y = 180 / this.PI * (2 * (Math.exp(y * this.PI / 180)) - this.PI / 2);
+		return {
+			x: x,
+			y: y
+		}
+	}
+
+	_.prototype.get_atan = function (z, y) {
+		let x;
+		if (z == 0) {
+			x = this.PI / 2;
+		} else {
+			if (y == 0) {
+				x = this.PI;
+			} else {
+				x = Math.atan(Math.abs(y / z));
+				if ((y > 0) && (z < 0)) {
+					x = this.PI - x;
+				} else if ((y < 0) && (z < 0)) {
+					x = this.PI + x;
+				} else if ((y < 0) && (z > 0)) {
+					x = 2 * this.M_PI - x;
+				}
+			}
+		}
+		return x;
+	}
+	//WGS84转ECEF坐标系
+	_.prototype.ConvertLLAToXYZ = function (LLACoor) {
+		let lon = this.PI / 180 * LLACoor.longitude;
+		let lat = this.PI / 180 * LLACoor.latitude;
+		let H = LLACoor.altitude;
+		let N0 = this.a / Math.sqrt(1.0 - this.ee * Math.sin(lat) * Math.sin(lat));
+		let x = (N0 + H) * Math.cos(lat) * Math.cos(lon);
+		let y = (N0 + H) * Math.cos(lat) * Math.sin(lon);
+		let z = (N0 * (1.0 - this.ee) + H) * Math.sin(lat);
+		return {
+			x: x,
+			y: y,
+			z: z
+		}
+	}
+
+	//ECEF坐标系转WGS84
+	_.prototype.ConvertXYZToLLA = function (XYZCoor) {
+		let longitude = this.get_atan(XYZCoor.x, XYZCoor.y);
+		if (longitude < 0) {
+			longitude = longitude + this.PI;
+		}
+		let latitude = this.get_atan(Math.sqrt(XYZCoor.x * XYZCoor.x + XYZCoor.y * XYZCoor.y), XYZCoor.z);
+
+		let W = Math.sqrt(1 - this.WGSe2 * Math.sin(latitude) * Math.sin(latitude));
+		let N = this.WGSa / W;
+		let B1;
+		do {
+			B1 = latitude;
+			W = Math.sqrt(1 - this.WGSe2 * Math.sin(B1) * Math.sin(B1));
+			N = this.WGSa / W;
+			latitude = this.get_atan(Math.sqrt(XYZCoor.x * XYZCoor.x + XYZCoor.y * XYZCoor.y), (XYZCoor.z + N * this.WGSe2 * Math.sin(B1)));
+		}
+		while (Math.abs(latitude - B1) > this.EPSILON);
+
+		var altitude = Math.sqrt(XYZCoor.x * XYZCoor.x + XYZCoor.y * XYZCoor.y) / Math.cos(latitude) - this.WGSa / Math.sqrt(1 - this.WGSe2 * Math.sin(latitude) * Math.sin(latitude));
+
+		return {
+			longitude: longitude * 180 / this.PI,
+			latitude: latitude * 180 / this.PI,
+			altitude: altitude
+		}
+	}
+	/*北东天坐标系转WGS84
+	@ a A点坐标
+	@ p 相对参数，距离、方位角、仰角
+	*/
+	//	俯视角pitch -elevation 
+	//航向角heading（yaw） -azimuth 
+	_.prototype.enu_to_ecef = function (a, p) {
+		//距离
+		let distance = p.distance;
+		//方位角
+		let azimuth = p.azimuth;
+		//仰角
+		let elevation = p.elevation;
+
+		let zUp = elevation >= 0 ? distance * Math.sin(this.PI / 180 * elevation) : (-1) * distance * Math.sin(this.PI / 180 * Math.abs(elevation));
+
+		let d = distance * Math.cos(this.PI / 180 * Math.abs(elevation));
+		let xEast;
+		let yNorth;
+		if (azimuth <= 90) {
+			xEast = d * Math.sin(this.PI / 180 * azimuth);
+			yNorth = d * Math.cos(this.PI / 180 * azimuth);
+		} else if (azimuth > 90 && azimuth < 180) {
+			xEast = d * Math.cos(this.PI / 180 * (azimuth - 90));
+			yNorth = (-1) * d * Math.sin(this.PI / 180 * (azimuth - 90));
+		} else if (azimuth > 180 && azimuth < 270) {
+			xEast = (-1) * d * Math.sin(this.PI / 180 * (azimuth - 180));
+			yNorth = (-1) * d * Math.cos(this.PI / 180 * (azimuth - 180));
+		} else {
+			xEast = (-1) * d * Math.sin(this.PI / 180 * (360 - azimuth));
+			yNorth = d * Math.cos(this.PI / 180 * (360 - azimuth));
+		}
+
+		let lamb = this.radians(a.latitude);
+		let phi = this.radians(a.longitude);
+		let h0 = a.altitude;
+
+		let s = Math.sin(lamb);
+		let N = this.a / Math.sqrt(1.0 - this.e_sq * s * s);
+
+		let sin_lambda = Math.sin(lamb);
+		let cos_lambda = Math.cos(lamb);
+
+		let sin_phi = Math.sin(phi);
+		let cos_phi = Math.cos(phi);
+
+		let x0 = (h0 + N) * cos_lambda * cos_phi;
+		let y0 = (h0 + N) * cos_lambda * sin_phi;
+		let z0 = (h0 + (1 - this.e_sq) * N) * sin_lambda;
+
+		let t = cos_lambda * zUp - sin_lambda * yNorth;
+
+		let zd = sin_lambda * zUp + cos_lambda * yNorth;
+		let xd = cos_phi * t - sin_phi * xEast;
+		let yd = sin_phi * t + cos_phi * xEast;
+
+		return this.ConvertXYZToLLA({
+			x: xd + x0,
+			y: yd + y0,
+			z: zd + z0
+		})
+	}
+	_.prototype.radians = function (degree) {
+		return this.PI / 180 * degree;
+	}	
+	return _
+})()
+
+let CesiumVideo3d = (function () {
+
+var videoShed3dShader = "\r\n\r\n\r\n\r\nuniform float mixNum;\r\nuniform sampler2D colorTexture;\r\nuniform sampler2D stcshadow; \r\nuniform sampler2D videoTexture;\r\nuniform sampler2D depthTexture;\r\nuniform mat4 _shadowMap_matrix; \r\nuniform vec4 shadowMap_lightPositionEC; \r\nuniform vec4 shadowMap_normalOffsetScaleDistanceMaxDistanceAndDarkness; \r\nuniform vec4 shadowMap_texelSizeDepthBiasAndNormalShadingSmooth; \r\nvarying vec2 v_textureCoordinates;\r\nvec4 toEye(in vec2 uv, in float depth){\r\n    vec2 xy = vec2((uv.x * 2.0 - 1.0),(uv.y * 2.0 - 1.0));\r\n    vec4 posInCamera =czm_inverseProjection * vec4(xy, depth, 1.0);\r\n    posInCamera =posInCamera / posInCamera.w;\r\n    return posInCamera;\r\n}\r\nfloat getDepth(in vec4 depth){\r\n    float z_window = czm_unpackDepth(depth);\r\n    z_window = czm_reverseLogDepth(z_window);\r\n    float n_range = czm_depthRange.near;\r\n    float f_range = czm_depthRange.far;\r\n    return (2.0 * z_window - n_range - f_range) / (f_range - n_range);\r\n}\r\nfloat _czm_sampleShadowMap(sampler2D shadowMap, vec2 uv){\r\n    return texture2D(shadowMap, uv).r;\r\n}\r\nfloat _czm_shadowDepthCompare(sampler2D shadowMap, vec2 uv, float depth){\r\n    return step(depth, _czm_sampleShadowMap(shadowMap, uv));\r\n}\r\nfloat _czm_shadowVisibility(sampler2D shadowMap, czm_shadowParameters shadowParameters){\r\n    float depthBias = shadowParameters.depthBias;\r\n    float depth = shadowParameters.depth;\r\n    float nDotL = shadowParameters.nDotL;\r\n    float normalShadingSmooth = shadowParameters.normalShadingSmooth;\r\n    float darkness = shadowParameters.darkness;\r\n    vec2 uv = shadowParameters.texCoords;\r\n    depth -= depthBias;\r\n    vec2 texelStepSize = shadowParameters.texelStepSize;\r\n    float radius = 1.0;\r\n    float dx0 = -texelStepSize.x * radius;\r\n    float dy0 = -texelStepSize.y * radius;\r\n    float dx1 = texelStepSize.x * radius;\r\n    float dy1 = texelStepSize.y * radius;\r\n    float visibility = \r\n    (\r\n    _czm_shadowDepthCompare(shadowMap, uv, depth)\r\n    +_czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy0), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy0), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy0), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, 0.0), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, 0.0), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(dx0, dy1), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(0.0, dy1), depth) +\r\n    _czm_shadowDepthCompare(shadowMap, uv + vec2(dx1, dy1), depth)\r\n    ) * (1.0 / 9.0)\r\n    ;\r\n    return visibility;\r\n}\r\nvec3 pointProjectOnPlane(in vec3 planeNormal, in vec3 planeOrigin, in vec3 point){\r\n    vec3 v01 = point -planeOrigin;\r\n    float d = dot(planeNormal, v01) ;\r\n    return (point - planeNormal * d);\r\n}\r\nfloat ptm(vec3 pt){\r\n    return sqrt(pt.x*pt.x + pt.y*pt.y + pt.z*pt.z);\r\n}\r\nvoid main() \r\n{ \r\n    const float PI = 3.141592653589793;\r\n    vec4 color = texture2D(colorTexture, v_textureCoordinates);\r\n    vec4 currD = texture2D(depthTexture, v_textureCoordinates);\r\n    if(currD.r>=1.0){\r\n        gl_FragColor = color;\r\n        return;\r\n    }\r\n    \r\n    float depth = getDepth(currD);\r\n    vec4 positionEC = toEye(v_textureCoordinates, depth);\r\n    vec3 normalEC = vec3(1.0);\r\n    czm_shadowParameters shadowParameters; \r\n    shadowParameters.texelStepSize = shadowMap_texelSizeDepthBiasAndNormalShadingSmooth.xy; \r\n    shadowParameters.depthBias = shadowMap_texelSizeDepthBiasAndNormalShadingSmooth.z; \r\n    shadowParameters.normalShadingSmooth = shadowMap_texelSizeDepthBiasAndNormalShadingSmooth.w; \r\n    shadowParameters.darkness = shadowMap_normalOffsetScaleDistanceMaxDistanceAndDarkness.w; \r\n    shadowParameters.depthBias *= max(depth * 0.01, 1.0); \r\n    vec3 directionEC = normalize(positionEC.xyz - shadowMap_lightPositionEC.xyz); \r\n    float nDotL = clamp(dot(normalEC, -directionEC), 0.0, 1.0); \r\n    vec4 shadowPosition = _shadowMap_matrix * positionEC; \r\n    shadowPosition /= shadowPosition.w; \r\n    if (any(lessThan(shadowPosition.xyz, vec3(0.0))) || any(greaterThan(shadowPosition.xyz, vec3(1.0)))) \r\n    { \r\n        gl_FragColor = color;\r\n        return;\r\n    }\r\n\r\n    shadowParameters.texCoords = shadowPosition.xy; \r\n    shadowParameters.depth = shadowPosition.z; \r\n    shadowParameters.nDotL = nDotL; \r\n    float visibility = _czm_shadowVisibility(stcshadow, shadowParameters); \r\n\r\n    vec4 videoColor = texture2D(videoTexture,shadowPosition.xy);\r\n    if(visibility==1.0){\r\n        gl_FragColor = mix(color,vec4(videoColor.xyz,1.0),mixNum*videoColor.a);\r\n    }else{\r\n        if(abs(shadowPosition.z-0.0)<0.01){\r\n            return;\r\n        }\r\n        gl_FragColor = color;\r\n    }\r\n} ";
+// var Cesium=null
+
+var videoShed3d=function(viewer, param) {
+
+    // Cesium=cesium
+    this.ECEF = new ECEF();        
+    this.param = param;
+  
+    var option = this._initCameraParam();
+    this.optionType = {
+        Color: 1,
+        Image: 2,
+        Video: 3
+    }
+    console.log(option)
+    this.near = option.near ? option.near : 0.1;
+    if (option || (option = {}), this.viewer = viewer, this._cameraPosition = option.cameraPosition, this._position = option.position,
+        this.type = option.type, this._alpha = option.alpha || 1, this.url = option.url, this.color = option.color,
+        this._debugFrustum = Cesium.defaultValue(option.debugFrustum, !0), this._aspectRatio = option.aspectRatio || this._getWinWidHei(),
+        this._camerafov = option.fov || Cesium.Math.toDegrees(this.viewer.scene.camera.frustum.fov), this.texture = option.texture || new Cesium.Texture({
+            context: this.viewer.scene.context,
+            source: {
+                width: 1,
+                height: 1,
+                arrayBufferView: new Uint8Array([255, 255, 255, 255])
+            },
+            flipY: !1
+        }), this._videoPlay = Cesium.defaultValue(option.videoPlay, !0), this.defaultShow = Cesium.defaultValue(option.show, !0), !this.cameraPosition || !this.position) return void console.log('初始化失败：请确认相机位置与视点位置正确!');
+    switch (this.type) {
+        default:
+        case this.optionType.Video:
+            this.activeVideo(this.url);
+            break;
+        case this.optionType.Image:
+            this.activePicture(this.url);
+            this.deActiveVideo();
+            break;
+        case this.optionType.Color:
+            this.activeColor(this.color),
+                this.deActiveVideo();
+    }
+    this._createShadowMap(),
+        this._getOrientation(),
+        this._addCameraFrustum()
+    this._addPostProcess()
+    this.viewer.scene.primitives.add(this)
+}
+Object.defineProperties(videoShed3d.prototype, {
+    alpha: {
+        get: function () {
+            return this._alpha
+        },
+        set: function (e) {
+            return this._alpha = e
+        }
+    },
+    aspectRatio: {
+        get: function () {
+            return this._aspectRatio
+        },
+        set: function (e) {
+            this._aspectRatio = e,
+                this._changeVideoWidHei()
+        }
+    },
+    debugFrustum: {
+        get: function () {
+            return this._debugFrustum
+        },
+        set: function (e) {
+            this._debugFrustum = e,
+                this.cameraFrustum.show = e
+        }
+    },
+    fov: {
+        get: function () {
+            return this._camerafov
+        },
+        set: function (e) {
+            this._camerafov = e,
+                this._changeCameraFov()
+        }
+    },
+    cameraPosition: {
+        get: function () {
+            return this._cameraPosition
+        },
+        set: function (e) {
+            e && (this._cameraPosition = e, this._changeCameraPos())
+        }
+    },
+    position: {
+        get: function () {
+            return this._position
+        },
+        set: function (e) {
+            e && (this._position = e, this._changeViewPos())
+        }
+    },
+    videoPlay: {
+        get: function () {
+            return this._videoPlay
+        },
+        set: function (e) {
+            this._videoPlay = Boolean(e),
+                this._videoEle && (this.videoPlay ? this._videoEle.paly() : this._videoEle.pause())
+        }
+    },
+    params: {
+        get: function () {
+            var t = {}
+            return t.type = this.type,
+                this.type == this.optionType.Color ? t.color = this.color : t.url = this.url,
+                t.position = this.position,
+                t.cameraPosition = this.cameraPosition,
+                t.fov = this.fov,
+                t.aspectRatio = this.aspectRatio,
+                t.alpha = this.alpha,
+                t.debugFrustum = this.debugFrustum,
+                t
+        }
+    },
+    show: {
+        get: function () {
+            return this.defaultShow
+        },
+        set: function (e) {
+            this.defaultShow = Boolean(e),
+                this._switchShow()
+        }
+    }
+})
+videoShed3d.prototype._initCameraParam = function () {
+    var viewPoint = this.ECEF.enu_to_ecef({ longitude: this.param.position.x * 1, latitude: this.param.position.y * 1, altitude: this.param.position.z * 1 },
+        { distance: this.param.far, azimuth: this.param.rotation.y * 1, elevation: this.param.rotation.x * 1 });
+    var position = Cesium.Cartesian3.fromDegrees(120.619907115,31.317987368,200);
+    var cameraPosition = Cesium.Cartesian3.fromDegrees(this.param.position.x * 1, this.param.position.y * 1, this.param.position.z * 1);
+    return {
+        type: 3,
+        url: this.param.url,
+        cameraPosition: cameraPosition,
+        position: position,
+        alpha: this.param.alpha,
+        near: this.param.near,
+        fov: this.param.fov,
+        debugFrustum: this.param.debugFrustum
+    }
+}
+/**
+ * 旋转
+ */
+videoShed3d.prototype._changeRotation = function (e) {
+    if (e) {
+        this.param.rotation = e;
+        var option = this._initCameraParam();
+        this.position = option.position;
+    }
+}
+/**
+ * 相机位置
+ */
+videoShed3d.prototype._changeCameraPosition = function (e) {
+    if (e) {
+        this.param.position = e;
+        var option = this._initCameraParam();
+        this.cameraPosition = option.cameraPosition;
+    }
+}
+videoShed3d.prototype._changeFar = function (e) {
+    if (e) {
+        this.param.far = e;
+        var option = this._initCameraParam();
+        this.position = option.position;
+    }
+}
+videoShed3d.prototype._changeNear = function (e) {
+    if (e) {
+        this.param.near = e;
+        this.near = this.param.near;
+        this._changeCameraPos();
+    }
+}
+/**获取三维地图容器像素大小
+ */
+videoShed3d.prototype._getWinWidHei = function () {
+    var viewer = this.viewer.scene;
+    return viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+}
+videoShed3d.prototype._changeCameraFov = function () {
+    this.viewer.scene.postProcessStages.remove(this.postProcess)
+    this.viewer.scene.primitives.remove(this.cameraFrustum),
+        this._createShadowMap(this.cameraPosition, this.position),
+        this._getOrientation(),
+        this._addCameraFrustum(),
+        this._addPostProcess()
+}
+videoShed3d.prototype._changeVideoWidHei = function () {
+    this.viewer.scene.postProcessStages.remove(this.postProcess),
+        this.viewer.scene.primitives.remove(this.cameraFrustum)
+    this._createShadowMap(this.cameraPosition, this.position),
+        this._getOrientation(),
+        this._addCameraFrustum(),
+        this._addPostProcess()
+}
+videoShed3d.prototype._changeCameraPos = function () {
+    this.viewer.scene.postProcessStages.remove(this.postProcess),
+        this.viewer.scene.primitives.remove(this.cameraFrustum),
+        this.viewShadowMap.destroy(),
+        this.cameraFrustum.destroy(),
+        this._createShadowMap(this.cameraPosition, this.position),
+        this._getOrientation(),
+        this._addCameraFrustum(),
+        this._addPostProcess()
+}
+videoShed3d.prototype._changeViewPos = function () {
+    this.viewer.scene.postProcessStages.remove(this.postProcess),
+        this.viewer.scene.primitives.remove(this.cameraFrustum),
+        this.viewShadowMap.destroy(),
+        this.cameraFrustum.destroy(),
+        this._createShadowMap(this.cameraPosition, this.position),
+        this._getOrientation(),
+        this._addCameraFrustum(),
+        this._addPostProcess()
+}
+videoShed3d.prototype._switchShow = function () {
+    this.show ? !this.postProcess && this._addPostProcess() : (this.viewer.scene.postProcessStages.remove(this.postProcess), delete this.postProcess, this.postProcess = null),
+        this.cameraFrustum.show = this.show
+}
+/** 创建视频Element
+ * @param {String} url 视频地址
+ **/
+videoShed3d.prototype._createVideoEle = function (url) {
+    this.videoId = "visualDomId";
+    var t = document.createElement("SOURCE");
+    t.type = "video/mp4",
+        t.src = url;
+    var i = document.createElement("SOURCE");
+    i.type = "video/quicktime",
+        i.src = url;
+    var a = document.createElement("VIDEO");
+    return a.setAttribute("autoplay", !0),
+        a.setAttribute("loop", !0),
+        a.setAttribute("crossorigin", !0),
+        a.appendChild(t),
+        a.appendChild(i),
+        //document.body.appendChild(a),
+        this._videoEle = a,
+        a
+}
+/** 视频投射
+ * @param {String} url 视频地址
+ */
+videoShed3d.prototype.activeVideo = function (url) {
+    var video = this._createVideoEle(url),
+        that = this;
+    if (video) {
+        this.type = that.optionType.Video;
+        var viewer = this.viewer;
+        this.activeVideoListener || (this.activeVideoListener = function () {
+            that.videoTexture && that.videoTexture.destroy(),
+                that.videoTexture = new Cesium.Texture({
+                    context: viewer.scene.context,
+                    source: video,
+                    width: 1,
+                    height: 1,
+                    pixelFormat: Cesium.PixelFormat.RGBA,
+                    pixelDatatype: Cesium.PixelDatatype.UNSIGNED_BYTE
+                })
+        }),
+            viewer.clock.onTick.addEventListener(this.activeVideoListener)
+    }
+}
+videoShed3d.prototype.deActiveVideo = function () {
+    if (this.activeVideoListener) {
+        this.viewer.clock.onTick.removeEventListener(this.activeVideoListener),
+            delete this.activeVideoListener
+    }
+}
+/** 图片投放
+ * @param {String} url 图片地址
+ **/
+videoShed3d.prototype.activePicture = function (url) {
+    this.videoTexture = this.texture;
+    var that = this,
+        img = new Image;
+    img.onload = function () {
+        that.type = that.optionType.Image,
+            that.videoTexture = new Cesium.Texture({
+                context: that.viewer.scene.context,
+                source: img
+            })
+    },
+        img.onerror = function () {
+            console.log('图片加载失败:' + url)
+        },
+        img.src = url
+}
+videoShed3d.prototype.locate = function () {
+    var cameraPosition = Cesium.clone(this.cameraPosition),
+        position = Cesium.clone(this.position);
+    this.viewer.Camera.position = cameraPosition,
+        this.viewer.camera.direction = Cesium.Cartesian3.subtract(position, cameraPosition, new Cesium.Cartesian3(0, 0, 0)),
+        this.viewer.camera.up = Cesium.Cartesian3.normalize(cameraPosition, new Cesium.Cartesian3(0, 0, 0))
+}
+videoShed3d.prototype.update = function (e) {
+    this.viewShadowMap && this.viewer.scene.frameState.shadowMaps.push(this.viewShadowMap) // *重点* 多投影
+}
+videoShed3d.prototype.destroy = function () {
+    this.viewer.scene.postProcessStages.remove(this.postProcess),
+        this.viewer.scene.primitives.remove(this.cameraFrustum),
+        //this._videoEle && this._videoEle.parentNode.removeChild(this._videoEle),
+        this.activeVideoListener && this.viewer.clock.onTick.removeEventListener(this.activeVideoListener),
+        this.activeVideoListener && delete this.activeVideoListener,
+        delete this.postProcess,
+        delete this.viewShadowMap,
+        delete this.color,
+        delete this.viewDis,
+        delete this.cameraPosition,
+        delete this.position,
+        delete this.alpha,
+        delete this._camerafov,
+        delete this._cameraPosition,
+        delete this.videoTexture,
+        delete this.cameraFrustum,
+        delete this._videoEle,
+        delete this._debugFrustum,
+        delete this._position,
+        delete this._aspectRatio,
+        delete this.url,
+        delete this.orientation,
+        delete this.texture,
+        delete this.videoId,
+        delete this.type,
+        this.viewer.scene.primitives.remove(this),
+        delete this.viewer
+}
+// 创建shadowmap
+videoShed3d.prototype._createShadowMap = function () {
+    var e = this.cameraPosition,
+        t = this.position,
+        i = this.viewer.scene,
+        a = new Cesium.Camera(i);
+    a.position = e,
+        a.direction = Cesium.Cartesian3.subtract(t, e, new Cesium.Cartesian3(0, 0, 0)), //计算两个笛卡尔的组分差异。
+        a.up = Cesium.Cartesian3.normalize(e, new Cesium.Cartesian3(0, 0, 0)); // 归一化
+    var n = Cesium.Cartesian3.distance(t, e);
+    this.viewDis = n,
+        a.frustum = new Cesium.PerspectiveFrustum({
+            fov: Cesium.Math.toRadians(this.fov),
+            aspectRatio: this.aspectRatio,
+            near: this.near,
+            far: 1000
+        });
+    this.viewShadowMap = new Cesium.ShadowMap({
+        lightCamera: a,
+        enable: !1,
+        isPointLight: !1,
+        isSpotLight: !0,
+        cascadesEnabled: !1,
+        context: i.context,
+        pointLightRadius: n
+    })
+}
+// 获取shadowmap位置
+videoShed3d.prototype._getOrientation = function () {
+    var e = this.cameraPosition,
+        t = this.position,
+        i = Cesium.Cartesian3.normalize(Cesium.Cartesian3.subtract(t, e, new Cesium.Cartesian3), new Cesium.Cartesian3),
+        a = Cesium.Cartesian3.normalize(e, new Cesium.Cartesian3),
+        n = new Cesium.Camera(this.viewer.scene);
+    n.position = e,
+        n.direction = i,
+        n.up = a,
+        i = n.directionWC,
+        a = n.upWC;
+    var r = n.rightWC,
+        o = new Cesium.Cartesian3,
+        l = new Cesium.Matrix3,
+        u = new Cesium.Quaternion;
+    r = Cesium.Cartesian3.negate(r, o);
+    var d = l;
+    Cesium.Matrix3.setColumn(d, 0, r, d),
+        Cesium.Matrix3.setColumn(d, 1, a, d),
+        Cesium.Matrix3.setColumn(d, 2, i, d);
+    var c = Cesium.Quaternion.fromRotationMatrix(d, u);
+
+
+
+
+
+    /*var viewMatrix=n.viewMatrix;
+    var inverseViewMatrix=n.inverseViewMatrix;
+    console.log("视图矩阵=",viewMatrix);
+    console.log("逆视图矩阵=",inverseViewMatrix);
+    
+    var frustum = new Cesium.PerspectiveFrustum({
+        fov :20,
+        aspectRatio : 0.75,
+        near : 1.0,
+        far : 10.0
+    });
+
+    var projectionMatrix=frustum.projectionMatrix;
+    var infiniteProjectionMatrix=frustum.infiniteProjectionMatrix;
+    console.log("投影矩阵=",projectionMatrix);
+    console.log("透视投影矩阵=",infiniteProjectionMatrix);
+     
+    //透视投 影矩阵反转
+   var inverseInfiniteProjectionMatrix=new Cesium.Matrix4();
+   Cesium.Matrix4.inverse(infiniteProjectionMatrix,inverseInfiniteProjectionMatrix);
+   console.log("透视投 影矩阵反转=",inverseInfiniteProjectionMatrix);
+   
+   //逆视图投影矩阵
+   var inverseViewProjectionMatrix=new Cesium.Matrix4();
+   Cesium.Matrix4.multiply(inverseInfiniteProjectionMatrix,inverseViewMatrix,inverseViewProjectionMatrix)
+   console.log("逆视图投影矩阵=",inverseViewProjectionMatrix);
+   
+   //视图投影矩阵
+   var viewProjectionMatrix=new Cesium.Matrix4();
+   Cesium.Matrix4.inverse(inverseViewProjectionMatrix,viewProjectionMatrix);
+   console.log("视图投影矩阵=",viewProjectionMatrix);
+   
+   //远平面标准模型矩阵
+   var matrix4 = Cesium.Matrix4.fromUniformScale(10);
+   console.log("远平面标准模型矩阵=",matrix4);
+   
+   //模型矩阵
+   var modelMatrix=new Cesium.Matrix4();
+   Cesium.Matrix4.multiply(inverseViewMatrix,matrix4,modelMatrix)
+   console.log("模型矩阵=",modelMatrix);
+   
+   //视图矩阵与逆视图投影矩阵相乘得到立方体模型视图
+   var uBoxMV=new Cesium.Matrix4();
+   Cesium.Matrix4.multiply(viewMatrix,inverseViewProjectionMatrix,uBoxMV)
+   console.log("立方体模型视图=",uBoxMV);
+   
+   //逆立方体模型视图
+   var uInverseBoxMV=new Cesium.Matrix4();
+   Cesium.Matrix4.multiply(viewMatrix,viewProjectionMatrix,uInverseBoxMV)
+   console.log("立方体模型视图=",uInverseBoxMV);
+   
+   //将这两个模型视图赋予分类基元类的一致性映射 参数便可以最终实现视频监控图像与实景三维场景的融 合
+   
+     var geometry =this.creacteGeometry(5,5);
+     var instance = new Cesium.GeometryInstance({
+           // geometry: //new Cesium.Geometry({}),
+           // geometry: new Cesium.GeometryInstance({
+           //   geometry:new Cesium.FrustumOutlineGeometry ({
+           //     origin: Cesium.Cartesian3.fromDegrees(cameraLong,cameraLat, cameraHeight),
+           //     orientation:orientation,
+           //     frustum: perspectiveFrustum,
+           //     _drawNearPlane: true
+           //   }),
+           geometry:geometry,
+           classificationType:Cesium.ClassificationType.BOTH,
+           // modelMatrix: modelMatrix,
+           attributes : {
+             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.fromCssColorString('#ff0000').withAlpha(1.0)),
+             show : new Cesium.ShowGeometryInstanceAttribute(true)
+           }
+           });
+     var videoElement = this._createVideoEle("http://localhost:7070/video/北京路与天马路交叉口高点枪机.mkv");
+     var material = Cesium.Material.fromType('Image');
+    material.uniforms.image = videoElement;
+     var _uniformMap ={
+               u_boxMV:uBoxMV,
+               u_inverseBoxMV:uInverseBoxMV
+             };
+     this.viewer.scene.primitives.add(new Cesium.Primitive({
+           geometryInstances: instance,
+           appearance: new Cesium.MaterialAppearance ({
+             material: material,
+             close:false,
+           }),
+           modelMatrix: modelMatrix,
+           _uniformMap:_uniformMap,
+           asynchronous:false,
+           compressVertices:false,
+           allowPicking:false
+         }));*/
+
+    //ClassificationPrimitive
+    return this.orientation = c,
+        c
+}
+videoShed3d.prototype.creacteGeometry = function (width, height) {
+    var hwidth = width / 2.0;
+    var hheigt = height / 2.0;
+    var positions = new Float64Array([hwidth, 0.0, hheigt, -hwidth, 0.0, hheigt, -hwidth, 0.0, -hheigt, hwidth, 0.0, -hheigt]);
+    var sts = new Float32Array([1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0]);
+    var indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
+    var ge = this._createGeometry(positions, sts, indices);
+    return ge;
+},
+videoShed3d.prototype._createGeometry = function (positions, sts, indices) {
+    /* var Cesium = this.Cesium;*/
+    return new Cesium.Geometry({
+        attributes: {
+            position: new Cesium.GeometryAttribute({
+                componentDatatype: Cesium.ComponentDatatype.DOUBLE,
+                componentsPerAttribute: 3,
+                values: positions
+            }),
+            normal: new Cesium.GeometryAttribute({
+                componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                componentsPerAttribute: 3,
+                values: new Float32Array([255.0, 0.0, 0.0, 255.0, 0.0, 0.0, 255.0, 0.0, 0.0, 255.0, 0.0, 0.0])
+                // values: new Float32Array([0.0, 0.0, 0.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0,0.0, 0.0, 0.0])
+            }),
+            st: new Cesium.GeometryAttribute({
+                componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                componentsPerAttribute: 2,
+                values: sts
+            })
+        },
+        indices: indices,
+        primitiveType: Cesium.PrimitiveType.TRIANGLES,
+        vertexFormat: new Cesium.VertexFormat({
+            position: true,
+            color: true
+        }),
+        boundingSphere: Cesium.BoundingSphere.fromVertices(positions)
+    });
+},
+//创建视锥
+videoShed3d.prototype._addCameraFrustum = function () {
+    var e = this;
+    this.cameraFrustum = new Cesium.Primitive({
+        geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.FrustumOutlineGeometry({
+                origin: e.cameraPosition,
+                orientation: e.orientation,
+                frustum: this.viewShadowMap._lightCamera.frustum,
+                _drawNearPlane: !0
+            }),
+            attributes: {
+                color: Cesium.ColorGeometryInstanceAttribute.fromColor(new Cesium.Color(0, 0.5, 0.5))
+            }
+        }),
+        appearance: new Cesium.PerInstanceColorAppearance({
+            translucent: !1,
+            flat: !0
+        }),
+        asynchronous: !1,
+        show: this.debugFrustum && this.show
+    }),
+        this.viewer.scene.primitives.add(this.cameraFrustum)
+}
+videoShed3d.prototype._addPostProcess = function () {
+    var e = this,
+        t = videoShed3dShader,
+        i = e.viewShadowMap._isPointLight ? e.viewShadowMap._pointBias : e.viewShadowMap._primitiveBias;
+    this.postProcess = new Cesium.PostProcessStage({
+        fragmentShader: t,
+        uniforms: {
+            mixNum: function () {
+                return e.alpha
+            },
+            stcshadow: function () {
+                return e.viewShadowMap._shadowMapTexture
+            },
+            videoTexture: function () {
+                return e.videoTexture
+            },
+            _shadowMap_matrix: function () {
+                return e.viewShadowMap._shadowMapMatrix
+            },
+            shadowMap_lightPositionEC: function () {
+                return e.viewShadowMap._lightPositionEC
+            },
+            shadowMap_texelSizeDepthBiasAndNormalShadingSmooth: function () {
+                var t = new Cesium.Cartesian2;
+                return t.x = 1 / e.viewShadowMap._textureSize.x,
+                    t.y = 1 / e.viewShadowMap._textureSize.y,
+                    Cesium.Cartesian4.fromElements(t.x, t.y, i.depthBias, i.normalShadingSmooth, this.combinedUniforms1)
+            },
+            shadowMap_normalOffsetScaleDistanceMaxDistanceAndDarkness: function () {
+                return Cesium.Cartesian4.fromElements(i.normalOffsetScale, e.viewShadowMap._distance, e.viewShadowMap.maximumDistance, e.viewShadowMap._darkness, this.combinedUniforms2)
+            }
+
+        }
+    }),
+    this.viewer.scene.postProcessStages.add(this.postProcess);
+}
+return videoShed3d;
+})()
+
+new CesiumVideo3d(viewer,
+{
+	position:{
+	
+		x:120.61990711,
+		y: 31.317987368,
+		z:300
+	},
+	far:12000,
+	
+	rotation:{
+		y:0,
+		x:-60
+	},
+	url:'/Apps/jiankong.mp4',
+	alpha:1,
+	near:0.5,
+	fov:200,
+	debugFrustum:true
+})
+</script>
+</body>
+
+</html>

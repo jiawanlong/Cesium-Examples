@@ -1,0 +1,26 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"  ></script>
+    <script src="./projDefs.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%">
+        <h1>示例为把4547坐标转换成4326坐标</h1>
+        <h1>0、此文件适合任意坐标的相互转换</h1>
+        <h1>1、请看控制台！</h1>
+        <h1>2、如果报错怎么办？因为坐标系没定义，需要先定义</h1>
+        <h1>3、去epsg.io找到需要定义的坐标系，复制出来放到projDefs.js文件下就行</h1>
+    </div>
+    <script type="text/javascript">
+        console.log(proj4("EPSG:4547","EPSG:4326",[ 494574.84309478942, 2522478.3074803744]))
+    </script>
+</body>
+
+</html>

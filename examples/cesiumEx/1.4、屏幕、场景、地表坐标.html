@@ -1,0 +1,79 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./latlng.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+
+        // 加载离线地形
+        // viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+        //     url: 'http://localhost/dem_30m/',
+        // });
+        // 根据xy，可以获得高度，贴地用
+        // var cartographic=Cesium.Cartographic.fromDegrees(88.01574604728957, 31.464332955079115);
+        // var posi = new Cesium.Cartographic(cartographic.longitude, cartographic.latitude)
+        // var height21 =viewer.scene.globe.getHeight(posi)
+
+        
+        var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function (movement) {
+
+            // 1、屏幕坐标
+            console.log(movement.position);
+
+            // 2、椭球面坐标（不包含地形、模型、倾斜摄影表面。）
+            var position = viewer.scene.camera.pickEllipsoid(movement.position, viewer.scene.globe.ellipsoid);
+            console.log(position);
+            // 经纬度坐标
+            var cartesian3 = new Cesium.Cartesian3(position.x, position.y, position.z)
+            var cartographic = viewer.scene.globe.ellipsoid.cartesianToCartographic(cartesian3);
+            var lat = Cesium.Math.toDegrees(cartographic.latitude);
+            var lng = Cesium.Math.toDegrees(cartographic.longitude);
+            console.log(lng, lat)
+
+            // 3、场景坐标（包含了地形、倾斜摄影表面、模型的坐标）
+            // 只有在开启地形深度检测viewer.scene.globe.depthTestAgainstTerrain = true，且不使用默认地形时是准确的
+            var position = viewer.scene.pickPosition(movement.position);
+            console.log(position);
+
+            // 4、地表坐标（这里是地球表面的世界坐标，包含地形，不包括模型、倾斜摄影表面。）
+            var ray = viewer.camera.getPickRay(movement.position);
+            var position = viewer.scene.globe.pick(ray, viewer.scene);
+            console.log(position);
+
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+
+        // 扩展获取当前鼠标移动的位置
+        handler.setInputAction(function (movement) {
+
+            // console.log(viewer.scene, movement.endPosition, null)
+
+            // 获取当前坐标
+            console.log(latlng.getCurrentMousePosition(viewer.scene, movement.endPosition, null))
+
+            // 获取当前坐标并转换为经纬度
+            console.log(latlng.Cartesian3To(latlng.getCurrentMousePosition(viewer.scene, movement.endPosition, null), viewer).latlng)
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+
+    </script>
+</body>
+
+</html>

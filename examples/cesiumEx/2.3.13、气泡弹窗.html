@@ -1,0 +1,179 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./jquery-1.8.3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .pops {
+            position: absolute;
+            color: #ffffff;
+            z-index: 99;
+            pointer-events: none;
+            display: none;
+        }
+
+        .arrow_box {
+            position: relative;
+            background: rgba(63, 72, 84, 0.9);
+            left: -50%;
+            top: -126px;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        .arrow_box:before {
+            top: 100%;
+            left: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+
+        .arrow_box:before {
+            border-color: transparent;
+            border-top-color: rgba(63, 72, 84, 0.9);
+            border-width: 12px;
+            margin-left: -12px;
+        }
+
+        .pops_close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .pops_con {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div class="pops" id="pops">
+        <div class='arrow_box'>
+            <span class="pops_close">×</span>
+            <div class="pops_con">
+                <p class="name">测试！！！！</p>
+                <p>测试！！！！</p>
+                <p>测试！！！！</p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-100, 40),
+            billboard: {
+                image: './icon.png',
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                scale: 1,
+                show: true,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                width: 32,
+                height: 32,
+            },
+            data: {
+                name: '凯里市九寨大坡公益性公园'
+            }
+        });
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-120, 20),
+            billboard: {
+                image: './icon.png',
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                scale: 1,
+                show: true,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                width: 32,
+                height: 32,
+            },
+            data: {
+                name: '乐沙坡公园'
+            }
+        });
+
+
+        // 取消默认的单击和双击事件，右上角弹窗很丑
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+        // 左单击
+        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function (clickEvent) {
+
+            // 获取被点击的实体
+            var ray1 = viewer.camera.getPickRay(clickEvent.position);
+            var cartesian = viewer.scene.globe.pick(ray1, viewer.scene);
+            var pickEd = viewer.scene.pick(clickEvent.position);
+            console.log(pickEd)
+
+            if (pickEd) {
+                var htmlOverlay = document.getElementById('pops');
+                var scratch = new Cesium.Cartesian2();
+
+                let data = pickEd.id.data;
+                $(".pops_con .name").html(data.name)
+
+                viewer.scene.preRender.addEventListener(function () {
+                    var position = new Cesium.Cartesian3(pickEd.primitive.position.x, pickEd.primitive.position.y, pickEd.primitive.position.z);
+                    var canvasPosition = viewer.scene.cartesianToCanvasCoordinates(position, scratch);
+                    if (Cesium.defined(canvasPosition)) {
+                        htmlOverlay.style.top = canvasPosition.y + 'px';
+                        htmlOverlay.style.left = canvasPosition.x + 'px';
+                        $(".arrow_box").css('top', -($("#pops .arrow_box").height() + 40) + 'px')
+                    }
+                });
+
+                $("#pops").show()
+            }
+
+
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+
+        $(".pops_close").click(() => {
+            $("#pops").hide()
+        })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,508 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.72/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.72/Cesium.js"></script>
+    <script src="./ammolibs/ammo/ammo.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="cesiumContainer" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div class="infoview">
+        操作提示：鼠标左键单击进行发射
+      </div>
+
+    <script src="./ammolibs/three/three.min.js"></script>
+    <script src="./ammolibs/ammo/ex/ConvexObjectBreaker.js"></script>
+    <script src="./ammolibs/ammo/ex/QuickHull.js"></script>
+    <script src="./ammolibs/ammo/ex/geometries/ConvexGeometry.js"></script>
+    <script src="./ammolibs/meshVisualizer/CesiumMeshVisualizer.js"></script>
+    <script>
+  
+  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+
+const viewer = new Cesium.Viewer('cesiumContainer', {});
+
+
+    var homePosition = [114.40184, 30.46331, 50]; //初始位置
+    look(homePosition[0], homePosition[1], homePosition[2]);
+    viewer.scene.debugShowFramesPerSecond = true; //查看帧率
+
+    MeshVisualizer = Cesium.MeshVisualizer;
+    Mesh = Cesium.Mesh;
+    MeshMaterial = Cesium.MeshMaterial;
+    FramebufferTexture = Cesium.FramebufferTexture;
+    GeometryUtils = Cesium.GeometryUtils;
+    MeshPhongMaterial = Cesium.MeshPhongMaterial;
+    BasicMeshMaterial = Cesium.BasicMeshMaterial;
+    LOD = Cesium.LOD;
+
+    var center = Cesium.Cartesian3.fromDegrees(homePosition[0], homePosition[1], 10);
+    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+    var meshVisualizer = new MeshVisualizer({
+        modelMatrix: modelMatrix,
+        up: {
+            y: 1
+        },
+        referenceAxisParameter: {
+            length: 100,
+            width: 0.05,
+            headLength: 2,
+            headWidth: 0.1
+        }
+    });
+    viewer.scene.primitives.add(meshVisualizer);
+    meshVisualizer.showReference = true; //显示坐标轴
+
+    function createRandomColor() {
+        return Cesium.Color.fromRandom({
+            alpha: 1
+        }) //fromRgba(Math.floor(Math.random() * (1 << 24)));
+    }
+
+    function createMaterial() {
+        return new MeshPhongMaterial({
+            defaultColor: createRandomColor(),
+            side: MeshMaterial.Sides.DOUBLE,
+            translucent: false
+        });
+    }
+
+    Cesium.Cartesian3.prototype.set = function (x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+    }
+    Cesium.Cartesian2.prototype.set = function (x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    Cesium.Quaternion.prototype.set = function (x, y, z, w) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
+    }
+
+    Ammo().then(function () {
+        // Graphics variables   
+        var clickRequest = false;
+        var mouseCoords = new Cesium.Cartesian2();
+        var ballMaterial = createMaterial();
+        var pos = new Cesium.Cartesian3();
+        var quat = new Cesium.Quaternion();
+
+        // Physics variables
+        var gravityConstant = -9.8;
+        var collisionConfiguration;
+        var dispatcher;
+        var broadphase;
+        var solver;
+        var physicsWorld;
+        var rigidBodies = [];
+        var softBodies = [];
+        var margin = 0.05;
+        var hinge;
+        var transformAux1 = new Ammo.btTransform();
+        var softBodyHelpers = new Ammo.btSoftBodyHelpers();
+        var armMovement = 0;
+        var ray = new Cesium.Ray();
+
+        function initPhysics() {
+            // Physics configuration
+            collisionConfiguration = new Ammo.btSoftBodyRigidBodyCollisionConfiguration();
+            dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+            broadphase = new Ammo.btDbvtBroadphase();
+            solver = new Ammo.btSequentialImpulseConstraintSolver();
+            softBodySolver = new Ammo.btDefaultSoftBodySolver();
+            physicsWorld = new Ammo.btSoftRigidDynamicsWorld(dispatcher, broadphase, solver,
+                collisionConfiguration,
+                softBodySolver);
+            physicsWorld.setGravity(new Ammo.btVector3(0, gravityConstant, 0));
+            physicsWorld.getWorldInfo().set_m_gravity(new Ammo.btVector3(0, gravityConstant, 0));
+        }
+
+        function createObjects() {
+            // Ground
+            pos.set(0, -0.5, 0);
+            quat.set(0, 0, 0, 1);
+            var ground = createParalellepiped(40, 1, 40, 0, pos, quat,
+                new MeshPhongMaterial({
+                    defaultColor: "rgb(200,200,200)",
+                    side: MeshMaterial.Sides.DOUBLE,
+                    translucent: false
+                }));
+            GeometryUtils.computeVertexNormals(ground.geometry);
+
+            // Create soft volumes
+            var volumeMass = 15;
+
+            var sphereGeometry = new THREE.SphereBufferGeometry(1.5, 40, 25);
+            sphereGeometry.translate(5, 5, 0);
+            createSoftVolume(sphereGeometry, volumeMass, 250);
+
+            var boxGeometry = new THREE.BufferGeometry().fromGeometry(new THREE.BoxGeometry(1, 1, 5, 4, 4, 20));
+            boxGeometry.translate(-2, 5, 0);
+            createSoftVolume(boxGeometry, volumeMass, 120);
+
+            // Ramp
+            pos.set(3, 1, 0);
+            Cesium.Quaternion.fromAxisAngle(new Cesium.Cartesian3(0, 0, 1), 30 * Math.PI / 180, quat);
+            var obstacle = createParalellepiped(10, 1, 4, 0, pos, quat, new MeshPhongMaterial({
+                defaultColor: "rgb(28,28,28)",
+                side: MeshMaterial.Sides.DOUBLE,
+                translucent: false
+            }));
+            GeometryUtils.computeVertexNormals(obstacle.geometry);
+        }
+
+        function processGeometry(bufGeometry) {
+            // Obtain a Geometry
+            var geometry = new THREE.Geometry().fromBufferGeometry(bufGeometry);
+
+            // Merge the vertices so the triangle soup is converted to indexed triangles
+            var vertsDiff = geometry.mergeVertices();
+
+            // Convert again to BufferGeometry, indexed
+            var indexedBufferGeom = createIndexedBufferGeometryFromGeometry(geometry);
+
+            // Create index arrays mapping the indexed vertices to bufGeometry vertices
+            mapIndices(bufGeometry, indexedBufferGeom);
+        }
+
+        function createIndexedBufferGeometryFromGeometry(geometry) {
+            var numVertices = geometry.vertices.length;
+            var numFaces = geometry.faces.length;
+
+            var bufferGeom = new THREE.BufferGeometry();
+            var vertices = new Float32Array(numVertices * 3);
+            var indices = new(numFaces * 3 > 65535 ? Uint32Array : Uint16Array)(numFaces * 3);
+
+            for (var i = 0; i < numVertices; i++) {
+                var p = geometry.vertices[i];
+                var i3 = i * 3;
+                vertices[i3] = p.x;
+                vertices[i3 + 1] = p.y;
+                vertices[i3 + 2] = p.z;
+            }
+
+            for (var i = 0; i < numFaces; i++) {
+                var f = geometry.faces[i];
+                var i3 = i * 3;
+                indices[i3] = f.a;
+                indices[i3 + 1] = f.b;
+                indices[i3 + 2] = f.c;
+            }
+
+            bufferGeom.setIndex(new THREE.BufferAttribute(indices, 1));
+            bufferGeom.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            return bufferGeom;
+        }
+
+        function isEqual(x1, y1, z1, x2, y2, z2) {
+            var delta = 0.000001;
+            return Math.abs(x2 - x1) < delta &&
+                Math.abs(y2 - y1) < delta &&
+                Math.abs(z2 - z1) < delta;
+        }
+
+        function mapIndices(bufGeometry, indexedBufferGeom) {
+            // Creates ammoVertices, ammoIndices and ammoIndexAssociation in bufGeometry
+            var vertices = bufGeometry.attributes.position.array;
+            var idxVertices = indexedBufferGeom.attributes.position.array;
+            var indices = indexedBufferGeom.index.array;
+
+            var numIdxVertices = idxVertices.length / 3;
+            var numVertices = vertices.length / 3;
+
+            bufGeometry.ammoVertices = idxVertices;
+            bufGeometry.ammoIndices = indices;
+            bufGeometry.ammoIndexAssociation = [];
+
+            for (var i = 0; i < numIdxVertices; i++) {
+                var association = [];
+                bufGeometry.ammoIndexAssociation.push(association);
+
+                var i3 = i * 3;
+                for (var j = 0; j < numVertices; j++) {
+                    var j3 = j * 3;
+                    if (isEqual(idxVertices[i3], idxVertices[i3 + 1], idxVertices[i3 + 2],
+                            vertices[j3], vertices[j3 + 1], vertices[j3 + 2])) {
+                        association.push(j3);
+                    }
+                }
+            }
+        }
+
+        function createSoftVolume(bufferGeom, mass, pressure) {
+            processGeometry(bufferGeom);
+
+            var volume = new Mesh(bufferGeom, new BasicMeshMaterial({
+                uniforms: {
+                    diffuseColorMap: "images/visualization/ammo/colors.png"
+                },
+                translucent: false
+            }));
+            volume.geometry.ammoIndexAssociation = bufferGeom.ammoIndexAssociation;
+
+            meshVisualizer.add(volume);
+
+            // Volume physic object
+            var volumeSoftBody = softBodyHelpers.CreateFromTriMesh(
+                physicsWorld.getWorldInfo(),
+                bufferGeom.ammoVertices,
+                bufferGeom.ammoIndices,
+                bufferGeom.ammoIndices.length / 3,
+                true);
+
+            var sbConfig = volumeSoftBody.get_m_cfg();
+            sbConfig.set_viterations(40);
+            sbConfig.set_piterations(40);
+
+            // Soft-soft and soft-rigid collisions
+            sbConfig.set_collisions(0x11);
+
+            // Friction
+            sbConfig.set_kDF(0.1);
+            // Damping
+            sbConfig.set_kDP(0.01);
+            // Pressure
+            sbConfig.set_kPR(pressure);
+            // Stiffness
+            volumeSoftBody.get_m_materials().at(0).set_m_kLST(0.9);
+            volumeSoftBody.get_m_materials().at(0).set_m_kAST(0.9);
+
+            volumeSoftBody.setTotalMass(mass, false)
+            Ammo.castObject(volumeSoftBody, Ammo.btCollisionObject).getCollisionShape().setMargin(margin);
+            physicsWorld.addSoftBody(volumeSoftBody, 1, -1);
+            volume.physicsBody = volumeSoftBody;
+
+            // Disable deactivation
+            volumeSoftBody.setActivationState(4);
+
+            softBodies.push(volume);
+        }
+
+        function createParalellepiped(sx, sy, sz, mass, pos, quat, material) {
+            var box = Cesium.BoxGeometry.fromDimensions({
+                dimensions: new Cesium.Cartesian3(sx, sy, sz),
+                vertexFormat: new Cesium.VertexFormat({
+                    position: true,
+                    normal: true
+                })
+            });
+
+            var threeObject = new Mesh(box, material);
+            var shape = new Ammo.btBoxShape(new Ammo.btVector3(sx * 0.5, sy * 0.5, sz * 0.5));
+            shape.setMargin(margin);
+
+            createRigidBody(threeObject, shape, mass, pos, quat);
+            return threeObject;
+        }
+
+        function createRigidBody(threeObject, physicsShape, mass, pos, quat) {
+            Cesium.Cartesian3.clone(pos, threeObject.position);
+            if (!threeObject.quaternion) threeObject.quaternion = new Cesium.Quaternion();
+            Cesium.Quaternion.clone(quat, threeObject.quaternion);
+
+            var transform = new Ammo.btTransform();
+            transform.setIdentity();
+            transform.setOrigin(new Ammo.btVector3(pos.x, pos.y, pos.z));
+            transform.setRotation(new Ammo.btQuaternion(quat.x, quat.y, quat.z, quat.w));
+            var motionState = new Ammo.btDefaultMotionState(transform);
+
+            var localInertia = new Ammo.btVector3(0, 0, 0);
+            physicsShape.calculateLocalInertia(mass, localInertia);
+
+            var rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, physicsShape, localInertia);
+            var body = new Ammo.btRigidBody(rbInfo);
+
+            threeObject.physicsBody = body;
+
+            meshVisualizer.add(threeObject);
+
+            if (mass > 0) {
+                rigidBodies.push(threeObject);
+
+                // Disable deactivation
+                body.setActivationState(4);
+            }
+
+            physicsWorld.addRigidBody(body);
+            return body;
+        }
+
+        function updatePhysics(deltaTime) {
+            try {
+                // Step world
+                physicsWorld.stepSimulation(deltaTime, 10);
+
+                // Update soft volumes
+                for (var i = 0, il = softBodies.length; i < il; i++) {
+                    var volume = softBodies[i];
+                    var geometry = volume.geometry;
+                    var softBody = volume.physicsBody;
+                    var volumePositions = geometry.attributes.position.values;
+                    var volumeNormals = geometry.attributes.normal.values;
+                    var association = geometry.ammoIndexAssociation;
+                    var numVerts = association.length;
+                    var nodes = softBody.get_m_nodes();
+                    for (var j = 0; j < numVerts; j++) {
+                        var node = nodes.at(j);
+                        var nodePos = node.get_m_x();
+                        var x = nodePos.x();
+                        var y = nodePos.y();
+                        var z = nodePos.z();
+                        var nodeNormal = node.get_m_n();
+                        var nx = nodeNormal.x();
+                        var ny = nodeNormal.y();
+                        var nz = nodeNormal.z();
+                        var assocVertex = association[j];
+
+                        for (var k = 0, kl = assocVertex.length; k < kl; k++) {
+                            var indexVertex = assocVertex[k];
+                            volumePositions[indexVertex] = x;
+                            volumeNormals[indexVertex] = nx;
+                            indexVertex++;
+                            volumePositions[indexVertex] = y;
+                            volumeNormals[indexVertex] = ny;
+                            indexVertex++;
+                            volumePositions[indexVertex] = z;
+                            volumeNormals[indexVertex] = nz;
+                        }
+                    }
+
+                    geometry.attributes.position.needsUpdate = true;
+                    geometry.attributes.normal.needsUpdate = true;
+                    volume.modelMatrixNeedsUpdate = true;
+                }
+
+                // Update rigid bodies
+                for (var i = 0, il = rigidBodies.length; i < il; i++) {
+                    var objThree = rigidBodies[i];
+                    var objPhys = objThree.physicsBody;
+                    var ms = objPhys.getMotionState();
+                    if (ms) {
+                        ms.getWorldTransform(transformAux1);
+                        var p = transformAux1.getOrigin();
+                        var q = transformAux1.getRotation();
+                        objThree.position.set(p.x(), p.y(), p.z());
+                        objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
+                        objThree.modelMatrixNeedsUpdate = true;
+                    }
+                }
+            } catch (e) {
+                meshVisualizer.beforeUpdate.removeEventListener(update);
+                console.log("崩溃了兄弟，你这是神马操作");
+            }
+        }
+
+        var start = false;
+        var init = false;
+        var startTime = new Date();
+        var rayDir = new Cesium.Cartesian3();
+        var maxDistance = 100; //发射点与射线和局部场景的交点的距离不能太远，过远会撕碎软体进而碎片过多时导致ammo物理引擎崩溃
+
+        function initInput() {
+            var scene = viewer.scene;
+            var handler = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+            var lastMesh = null;
+            handler.setInputAction(function (movement) {
+                if (!clickRequest) {
+                    Cesium.Cartesian2.clone(movement.position, mouseCoords);
+                    clickRequest = true;
+                }
+            }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
+        }
+
+        function processClick() {
+            if (clickRequest) {
+                meshVisualizer.getPickRay(mouseCoords, ray);
+                if (!ray) {
+                    clickRequest = false;
+                    return;
+                }
+
+                // Creates a ball
+                var ballMass = 3;
+                var ballRadius = 0.4;
+                var ball = new Mesh(new THREE.SphereGeometry(ballRadius, 18, 16), ballMaterial);
+
+                var ballShape = new Ammo.btSphereShape(ballRadius);
+                ballShape.setMargin(margin);
+
+                Cesium.Cartesian3.clone(ray.direction, rayDir);
+                Cesium.Cartesian3.subtract(ray.origin, ray.direction, pos);
+
+                quat.set(0, 0, 0, 1);
+                var ballBody = createRigidBody(ball, ballShape, ballMass, pos, quat);
+                ballBody.setFriction(0.5);
+
+                Cesium.Cartesian3.normalize(rayDir, rayDir);
+                Cesium.Cartesian3.multiplyByScalar(rayDir, 30, rayDir);
+                console.log(rayDir);
+                ballBody.setLinearVelocity(new Ammo.btVector3(rayDir.x, rayDir.y, rayDir.z));
+
+                clickRequest = false;
+            }
+        }
+
+        function update(frameState) {
+            var deltaTime = (new Date() - startTime) / 1000.0;
+            updatePhysics(deltaTime);
+            processClick();
+            startTime = new Date();
+        }
+        setTimeout(function () {
+            if (!init) {
+                // - Init -
+                initPhysics();
+                createObjects();
+                initInput();
+
+                init = true;
+            }
+
+            if (!start) {
+                meshVisualizer.beforeUpdate.addEventListener(update);
+                start = true;
+            } else {
+                meshVisualizer.beforeUpdate.removeEventListener(update);
+                start = false;
+            }
+        }, 1000 * 3);
+    });
+
+    function look(lon, lat, offset) {
+        var center = Cesium.Cartesian3.fromDegrees(lon, lat);
+        var transform = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+        // View in east-north-up frame
+        var camera = viewer.camera;
+        camera.constrainedAxis = Cesium.Cartesian3.UNIT_Z;
+        camera.lookAtTransform(transform, new Cesium.Cartesian3(-offset, -offset, offset));
+        setTimeout(function () {
+            camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+        }, 100)
+    }
+    </script>
+</body>
+
+</html>

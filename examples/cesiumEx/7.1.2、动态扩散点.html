@@ -1,0 +1,118 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {
+            contextOptions: {
+                requestWebgl1: true,
+            },
+        });
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+
+        let EllipsoidFadeMaterialProperty = function (color, duration) {
+            this._definitionChanged = new Cesium.Event();
+            this._color = undefined;
+            this._colorSubscription = undefined;
+            this.color = color;
+            this.duration = duration;
+            this._time = (new Date()).getTime();
+        }
+        Object.defineProperties(EllipsoidFadeMaterialProperty.prototype, {
+            definitionChanged: {
+                get: function () {
+                    return this._definitionChanged;
+                }
+            },
+            color: Cesium.createPropertyDescriptor('color')
+        });
+        EllipsoidFadeMaterialProperty.prototype.getType = function (time) {
+            return 'EllipsoidFade';
+        }
+        EllipsoidFadeMaterialProperty.prototype.getValue = function (time, result) {
+            if (!Cesium.defined(result)) {
+                result = {};
+            }
+            result.color = Cesium.Property.getValueOrClonedDefault(this._color, time, Cesium.Color.WHITE, result.color);
+
+            result.time = (((new Date()).getTime() - this._time) % this.duration) / this.duration;
+            return result;
+        }
+        EllipsoidFadeMaterialProperty.prototype.equals = function (other) {
+            return this === other ||
+                (other instanceof EllipsoidFadeMaterialProperty &&
+                    Property.equals(this._color, other._color))
+        }
+        Cesium.Material.EllipsoidFadeType = 'EllipsoidFade';
+        Cesium.Material.EllipsoidFadeSource =
+            "czm_material czm_getMaterial(czm_materialInput materialInput)\n" +
+            "{\n" +
+            "czm_material material = czm_getDefaultMaterial(materialInput);\n" +
+            "material.diffuse = 1.5 * color.rgb;\n" +
+            "vec2 st = materialInput.st;\n" +
+            "float dis = distance(st, vec2(0.5, 0.5));\n" +
+            "float per = fract(time);\n" +
+            "if(dis > per * 0.5){\n" +
+            "material.alpha = 0.0;\n" +
+            "discard;\n" +
+            "}else {\n" +
+            "material.alpha = color.a  * dis / per / 1.0;\n" +
+            "}\n" +
+            "return material;\n" +
+            "}";
+        Cesium.Material._materialCache.addMaterial(Cesium.Material.EllipsoidFadeType, {
+            fabric: {
+                type: Cesium.Material.EllipsoidFadeType,
+                uniforms: {
+                    color: new Cesium.Color(1.0, 0.0, 0.0, 1),
+                    time: 1
+                },
+                source: Cesium.Material.EllipsoidFadeSource
+            },
+            translucent: function (material) {
+                return true;
+            }
+        });
+
+        var entity = new Cesium.Entity({
+            ellipse: {
+                height: 100,
+                semiMinorAxis: 3000.0,
+                semiMajorAxis: 3000.0,
+                // 3000为毫秒，控制速度
+                material: new EllipsoidFadeMaterialProperty(Cesium.Color.RED, 3000)
+            },
+            id: "temporary",
+            position: Cesium.Cartesian3.fromDegrees(121.466139, 31.257341, 0)
+        })
+        viewer.entities.add(entity)
+        viewer.zoomTo(viewer.entities);
+
+
+    </script>
+</body>
+
+</html>

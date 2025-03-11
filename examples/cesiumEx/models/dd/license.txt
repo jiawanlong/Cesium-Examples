@@ -1,0 +1,11 @@
+Model Information:
+* title:	AIM-9 missile
+* source:	https://sketchfab.com/3d-models/aim-9-missile-caaf15b49bac4144b6c6be577c2b872a
+* author:	RickSlash (https://sketchfab.com/RickSlash)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "AIM-9 missile" (https://sketchfab.com/3d-models/aim-9-missile-caaf15b49bac4144b6c6be577c2b872a) by RickSlash (https://sketchfab.com/RickSlash) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

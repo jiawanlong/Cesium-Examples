@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>属性图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>属性图专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+    <p>
+        SuperMap iClient for JavaScript 提供了UTFGrid图层（属性图），用于客户端属性信息的快速交互。
+        UTFGrid图层从UTFGrid切片数据源读取数据，其本质是基于JSON的ASCII 码’字符画’与属性数据的结合。
+        UTFGrid图层不能被可视化渲染，在地图中使用这个图层，
+        必须同时添加 SuperMap.Control.UTFGrid 控件类来控制触发事件类型。
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>原理：通过请求瓦片数据（非图片），将属性信息保存到客服端UTFGrid图层中，提高客户端属性信息的交互速度。</li>
+        <li>特点：根据屏幕像素位置在客户端快速获取图层的属性信息。</li>
+        <li>应用场景：
+            UTFGrid图层常用于客户端需要快速响应属性信息的场景。
+            当需要实时查询地图上某些地物属性并且地物数量很大时，采用与服务器交互获取属性信息的方式需要频繁的发起请求，
+            时间消耗较大， 而通过UTFGrid图层，可以快速的获取地物属性信息，极大的提高用户体验。
+            例如：实现鼠标悬停或鼠标单击某一地物时，快速获取该地物某些属性信息。
+        </li>
+    </ul>
+    <h2>二、使用</h2>
+    <p>下面展示属性图使用方式：</p>
+
+    <h4>1、创建UTFGrid图层</h4>
+    <p></p>
+    <p>
+        首先创建一个属性图对象。由于属性图从UTFGrid切片数据源读取数据，
+        所以在创建属性图对象时可以根据需要指定utfTileSize 、pixcell、utfgridResolution等图层属性。
+    </p>
+    <p>
+        <pre>
+        var utfgrid = new SuperMap.Layer.UTFGrid("UTFGridLayer", url,
+                {
+                    layerName: "China_Province_R@China400",
+                    utfTileSize: 256,
+                    pixcell: 8,
+                    isUseCache: true
+                },
+                {
+                    utfgridResolution: 8
+                }
+        );
+        </pre>
+    </p>
+    <p>
+        说明：pixcell与utfgridResolution两个属性有对应关系，在使用的时候要注意应用场景：
+    </p>
+    <p>
+        &nbsp;&nbsp;  1.其中pixcell为发送给服务端请求utfgrid瓦片的精度，数值越小，精度越高，相应的瓦片大小也就越大；
+    </p>
+    <p>
+        &nbsp;&nbsp;  2.utfgridResolution为客户端解析瓦片使用的精度，应该与pixcell的值相等，否则会产生位置与属性对应不上的问题；
+    </p>
+    <p>
+        &nbsp;&nbsp;  3.通常如果UTFGrid图层为面图层，对应的数据量会比较大，为了不影响页面的正常浏览，可以将这两个属性设的大一些；
+    </p>
+    <p>
+        &nbsp;&nbsp; 4.isUseCache设置是否使用缓存，使用缓存能够提高性能。
+    </p>
+
+    <h4>2、添加到地图</h4>
+    <p></p>
+    <p>
+        然后将此图层添加到map里面。
+    </p>
+    <p>
+        <pre>
+        //向map中添加图层
+        map.addLayers([utfgrid]);
+        </pre>
+    </p>
+
+    <h4>3、创建UTFGrid控件</h4>
+    <p></p>
+    <p>
+        创建UTFGrid控件，通过layers属性与先前创建的属性图utfgrid关联，指定触发事件类型为move。
+    </p>
+    <p>
+        <pre>
+         control = new SuperMap.Control.UTFGrid({
+             layers: [utfgrid],
+             callback: callback,
+             handlerMode: "move"
+         });
+        </pre>
+    </p>
+
+    <h4>4、添加控件到地图</h4>
+    <p></p>
+    <p>
+        将此控件添加到map里面。
+    </p>
+    <p>
+        <pre>
+        //向map中添加控件
+        map.addControl(control);
+        </pre>
+    </p>
+
+    <h4>5、处理事件</h4>
+    <p></p>
+    <p>
+        当鼠标事件触发的位置恰好在UTFGrid图层上有对应数据的时候调用回调函数callback。
+    </p>
+    <p>
+        回调函数callback的参数 infoLookup 是一个返回对象，该对象由一个或多个键值对组成，
+        其中键值为图层索引，值为鼠标位置对应该图层的数据（属性信息），数据格式为JSON类型。
+        通过 infoLookup 对象，无需与服务器交互就可以快速获取鼠标位置对应地物的属性信息。
+    </p>
+    <p>
+        <pre>
+         var callback = function (infoLookup, loc, pixel) {
+               closeInfoWin();
+               if (infoLookup) {
+                   var info;
+                   for (var idx in infoLookup) {
+                       info = infoLookup[idx];
+                       if (info && info.data) {
+                            //弹出框内容，info.data.NAME 就是当前鼠标位置对应要素的NAME属性字段值
+                           var dom = "&lt;div style='font-size: 12px; color: #000000;border: 0.5px solid #000000'&gt;"
+                                + info.data.NAME + "&lt; /div &gt;";
+                           //设置x与y的像素偏移量，不影响地图浏览；
+                           var xOff = (1 / map.getScale()) * 0.001;
+                           var yOff = -(1 / map.getScale()) * 0.005;
+                           var pos = new SuperMap.LonLat(loc.lon+xOff, loc.lat+yOff);
+                           //新建一个弹出框对象
+                           infowin = new SuperMap.Popup("chicken",
+                                   pos,
+                                   new SuperMap.Size(100, 20),
+                                   dom,
+                                   true, null);
+                           infowin.autoSize=true;
+                           map.addPopup(infowin);
+                       }
+                   }
+               }
+         };
+
+         //关闭弹出窗
+         function closeInfoWin() {
+             if (infowin) {
+                 try {
+                     map.removePopup(infowin)
+                 }
+                 catch (e) {
+                 }
+             }
+         }
+        </pre>
+    </p>
+
+    <p>这样我们就可以获得以下下效果：</p>
+    <p>当鼠标移动到中国的某个省份上时，弹出框显示该省份的名称。</p>
+    <div class="pageImage"><img src="images/utfgridTopic1.png"/></div>
+    <br />
+    <p>
+        完整范例请见 示范程序->高级示例->UTFGrid图层。
+    </p>
+
+    <h4>6、示例：UTFGrid国旗版</h4>
+    <p>
+        产品示例程序中提供了另一个属性专题图范例：UTFGrid国旗版。
+        该示例展示通过UTFGrid图层快速的响应用户的鼠标移动事件，显示出当前鼠标对应国家的国旗和名称。
+    </p>
+    <p>
+        完整范例请见 示范程序->可视化->可视化图层->UTFGrid国旗版。
+    </p>
+
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

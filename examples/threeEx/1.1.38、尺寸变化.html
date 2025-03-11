@@ -1,0 +1,92 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const getColor = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0')
+
+        // 场景
+        const scene = new THREE.Scene();// 创建场景
+        const geometry = new THREE.BoxGeometry(5, 5, 5);
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                for (let k = 0; k < 10; k++) {
+                    const material = new THREE.MeshBasicMaterial({ color: getColor() }); //材质 
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set(i * 20, k * 20, j * 20);
+                    scene.add(mesh);
+                }
+            }
+        }
+
+        // AxesHelper
+        const axesHelper = new THREE.AxesHelper(300);
+        scene.add(axesHelper);
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera();  //相机
+        camera.position.set(125, 253, 583); //相机位置
+        camera.lookAt(0, 0, 0); //相机位置
+        // window.camera = camera
+
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+        });
+
+
+        // Canvas画布跟随窗口变化
+        window.onresize = function () {
+            const s = 50;
+            const width = window.innerWidth; //canvas画布宽度
+            const height = window.innerHeight; //canvas画布高度
+            // 1. WebGL渲染器渲染的Cnavas画布尺寸更新
+            renderer.setSize(width, height);
+            // 2.1.更新相机参数
+            const k = width / height; //canvas画布宽高比
+            camera.left = -s * k;
+            camera.right = s * k;
+            // 2.2.相机的left, right, top, bottom属性变化了，通知threejs系统
+            camera.updateProjectionMatrix();
+            renderer.render(scene, camera);
+        };
+
+
+    </script>
+
+</body>
+
+</html>

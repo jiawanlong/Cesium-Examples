@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>产品介绍</title>
+        <link href='./css/bootstrap.min.css' rel='stylesheet' />
+        <link href='./css/bootstrap-responsive.min.css' rel='stylesheet' />
+        <link href='./css/sm-extend.css' rel='stylesheet' />
+        <link href='./css/sm-doc.css' rel='stylesheet' />
+        <style>
+            #togglelink:hover{
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+        <!--导航条-->
+        <div class="navbar navbar-fixed-top" id="navbar">
+
+        </div>
+        <!--功能区-->
+        <div id='container' class='container'>
+            <div id="inner-container">
+                <div class="page-header">
+                    <h2>目录&nbsp&nbsp<span class="label label-info" id="togglelink" onClick="toggleList()">隐藏</span></h2>
+                    <div id="lists">
+                        <ul>
+                            <li><a href="#details1"><span>1.</span>SuperMap iClient 8C(2017) for JavaScript 产品简介</a></li>
+                            <li><a href="#details2"><span>2.</span>产品技术特点</a></li>
+                            <li><a href="#details3"><span>3.</span>产品功能</a></li>
+                            <li><a href="#details5"><span>4.</span>产品包目录结构说明</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="content">
+                    <div>
+                        <h2 class="title" id="details1">SuperMap iClient 8C(2017) for JavaScript 产品简介</h2>
+                        <div id="details1">
+                            <p> SuperMap iClient 8C(2017) for JavaScript 是一款在服务式GIS架构体系中，
+                            面向 HTML 5的应用开发，支持多终端、跨浏览器的客户端开发平台。  
+                            SuperMap iClient 8C(2017) for JavaScript采用 HTML + CSS + JavaScript 的开发组合，无需安装任何插件，
+                            便可在终端浏览器上实现美观的地图呈现，大数据量高效的交互渲染，
+                            动态实时的要素标绘，以及与多源 GIS 服务的高效交互，快速构建内容丰富、响应迅速、体验流畅的地图应用，
+                            同时支持离线存储与访问地图功能，满足用户在离线状态下的地图应用。</p>
+                            <div class="pageImage"> <img src="./images/JavaScript.png" alt="SuperMap iClient 8C(2017) for JavaScript 与其他产品架构关系"/>
+                                <p> 图1 SuperMap iClient 8C(2017) for JavaScript 与其他产品架构关系</p>
+                            </div>
+                        </div>
+                        <h2 class="title" id="details2">SuperMap iClient 8C(2017) for JavaScript 的技术特点</h2>
+                        <div>
+                            <ul  class="circle">
+                                <li> <strong>灵活的交互设计与丰富的数据呈现方式 </strong><br />
+                                SuperMap iClient 8C(2017) for JavaScript 产品面向 HTML 5 应用开发，
+                                可在 HTML 页面利用丰富的图形、图表、图像以及动画等实现 GIS 数据的动态呈现与灵活交互。
+                                基于 HTML 5 用于绘画的新元素 Canvas 实现了地图图片的高效、稳定呈现。
+                                SuperMap iClient 8C(2017) for JavaScript 脱离客户端插件的限制，可灵活构建多终端、跨浏览器的服务式 GIS 应用。 </li>
+                                <li> <strong>支持多终端访问 </strong><br />
+                                SuperMap iClient 8C(2017) for JavaScript 支持多终端模式的 Web 应用开发，包括个人电脑、平板电脑、手机等多种
+                                终端上的浏览器应用，为用户的系统构架提供丰富选择。 </li>
+                                <li><strong>支持多源地图数据 </strong><br />
+                                SuperMap iClient 8C(2017) for JavaScript
+                                支持 SuperMap iServer 8C(2017) 服务及多种标准第三方服务，并支持各种服务在客户端的无缝聚合。
+                                包括 OpenGIS 协会制定的 WMS、WFS、KML等标准格式
+                                服务。
+                                同时支持超图云服务，包括在线地图服务或通过第三方 API 开发得到的地图应用云。
+                                SuperMap iClient 8C(2017) for JavaScript 产品将在服务式 GIS 体系下为用户提供更好的 Web 应用支撑。 </li>
+                                <li><strong>支持地图离线缓存</strong><br/>
+                                SuperMap iClient 8C(2017) for JavaScript 基于 PhoneGap 开源开发框架实现地图离线缓存的插
+                                件化,可将已有的地图应用直接打包生成支持  Android 的应用程序，满足用户在离线状态下的地图应用。
+                              </li>
+							    <li><strong>支持大数据量交互、渲染、可视化</strong><br/>
+                                SuperMap iClient 8C(2017) for JavaScript 的UTFGrid图层为大数据量交互效果问题提供了解决方案，麻点图为大数据量渲染提供了解决方案，客户端专题图(标签专题图、统计专题图等)提供更加炫目的数据展现效果。
+                              </li>
+                                <li><strong>支持矢量数据客户端配图</strong><br/>
+                                    SuperMap iClient 8C(2017) for JavaScript 的矢量分块图层 TiledVectorLayer 提供了在客户端配制地图的方案，用户可在客户端快速、灵活地配制个性化地图，而不再局限于服务器固定的底图。
+                                </li>
+                                <li><strong>支持时空数据展示</strong><br/>
+                                    SuperMap iClient 8C(2017) for JavaScript 的动画渲染图层 AnimatorVector 能够高效、生动地展示空间数据在时间节点上的变化，可广泛应用于气象海洋、物流监控、人口迁移等行业。
+                                </li>
+                                <li><strong>支持二维动态标绘</strong><br/>
+                                    SuperMap iClient 8C(2017) for JavaScript 支持二维动态标绘功能，用户通过访问服务器已发布的动态标绘服务可以鼠标交互式标绘和编辑标号，也可以编程标绘标号；提供了保存、加载和叠加态势图功能，用户可以上传和下载态势图文件。
+                                </li>
+                            </ul>
+                      </div>
+                        <h2 class="title" id="details3">SuperMap iClient 8C(2017) for JavaScript 提供的功能</h2>
+                        <div>
+                            <ul  class="circle">
+                                <li > <strong>SuperMap.Layer 命名空间下的功能： </strong></li>
+                                <ul  class="disc">
+                                    <li>SuperMap 云服务图层类</li>
+                                    <li>分块缓存图层类</li>
+                                    <li>分块动态 REST图层类</li>
+                                    <li>SuperMap iServer 8C(2017) 定义的图层类的基类</li>
+                                    <li>矢量要素渲染图层类（渲染方式有 SVG、VML、Canvas、Canvas2）</li>
+									<li>Elements图层</li>
+									<li>聚合图层</li>
+									<li>热点格网图层</li>
+									<li>热点图图层</li>
+									<li>标签图层（Markers）</li>
+									<li>前端标签专题图</li>
+									<li>前端单值专题图</li>
+									<li>前端分段专题图</li>
+									<li>前端统计专题图</li>
+                                    <li>矢量动画图层</li>
+									<li>矢量分块图层</li>
+									<li>UTFGrid图层</li>
+									<li>WebGL渲染图层</li>
+									<li>OGC服务图层（WMS、WMTS）</li>
+                                    <li>属性图图层（UTFGrid)</li>
+									<li>时空数据图层（AnimatorVector)</li>
+                                    <li>标绘图层（PlottingLayer)</li>
+                                </ul>
+                            </ul>
+                              <ul  class="circle">
+                                <li > <strong>SuperMap.Control 命名空间下的功能： </strong></li>
+                                <ul  class="disc">
+                                    <li>地图拖拽控件</li>
+                                    <li>图层选择控件</li>
+                                    <li>鹰眼控件</li>
+                                    <li>比例尺控件</li>
+                                    <li>平移缩放控件</li>
+									<li>麻点图控件</li>
+									<li>UTFGrid控件</li>
+                                    <li>绘制要素控件</li>
+                                    <li>触摸设备的缩放控件</li>
+                                    <li>支持触摸设备触摸操作的控件</li>
+									<li>卷帘控件</li>
+                                    <li>要素拖拽控件</li>
+                                    <li>地图定位控件</li>
+                                    <li>键盘操作控件</li>
+                                    <li>地图量算控件</li>
+                                    <li>编辑要素控件</li>
+                                    <li>鼠标位置显示控件</li>
+                                    <li>罗盘缩放条控件</li>
+                                    <li>聚合选择控件</li>
+                                    <li>要素选择控件</li>
+                                    <li>UTFGrid控件</li>
+                                    <li>拉框缩放控件</li>
+                                    <li>动态标绘对象的编辑控件</li>
+                                </ul>
+                            </ul>
+                            <ul  class="circle">
+                                <li > <strong> SuperMap.REST 命名空间下的功能： </strong> </li>
+                                <ul  class="disc">
+                                    <li>量算功能
+                                    <ul  class="disc">
+                                        <li>距离量算</li>
+                                        <li>面积量算</li>
+                                    </ul>
+                                    </li>
+                                    <li>查询功能
+                                    <ul  class="disc">
+                                        <li>距离查询</li>
+                                        <li>几何对象查询</li>
+                                        <li>SQL 查询</li>
+                                        <li>范围查询</li>
+										<li>WFS查询</li>
+                                    </ul>
+                                    </li>
+                                    <li>专题图功能
+                                    <ul  class="disc">
+                                        <li>单值专题图</li>
+                                        <li>范围分段专题图</li>
+                                        <li>标签专题图</li>
+                                        <li>点密度专题图</li>
+                                        <li>等级符号专题图</li>
+                                        <li>统计专题图</li>
+										<li>栅格单值专题图</li>
+										<li>栅格分段专题图</li>
+                                    </ul>
+                                    </li>
+                                    <li>空间分析功能
+                                    <ul  class="disc">
+                                        <li>缓冲区分析</li>
+                                        <li>叠加分析</li>
+                                        <li>表面分析</li>
+                                        <li>动态分段</li>
+                                        <li>空间关系分析</li>
+										<li>点密度插值分析</li>
+                                        <li>克吕金插值分析</li>
+                                        <li>离散点插值分析</li>
+										<li>反距离加权插值分析</li>
+										<li>径向基函数插值分析</li>
+										<li>点定里程</li>
+										<li>里程定点</li>
+										<li>里程定线</li>
+                                    </ul>
+                                  </li>
+                                    <li>网络分析功能
+                                    <ul  class="disc">
+                                        <li>最近设施分析服务类</li>
+                                        <li>最佳路径分析服务类</li>
+                                        <li>服务区分析服务类</li>
+                                        <li>选址分区分析服务类 </li>
+                                        <li>旅行商分析服务类</li>
+                                        <li>多旅行商分析服务类</li>
+                                        <li>耗费矩阵分析服务类</li>
+                                    </ul>
+                                    </li>
+                                    <li>数据功能
+                                    <ul  class="disc">
+                                        <li>数据集ID查询服务类</li>
+                                        <li>数据集几何查询服务类</li>
+                                        <li>数据集缓冲区查询服务类</li>
+                                        <li>数据集 SQL 查询服务 </li>
+                                        <li>数据集编辑服务类</li>
+										<li>数据集字段查询统计服务类</li>
+                                    </ul>
+                                    </li>
+                                    <li>交通换乘分析功能</li>
+                                    <li>UGC 图层服务功能
+                                        <ul class="disc">
+                                            <li>UGC 栅格图层类</li>
+                                            <li>UGC 影像图层类</li>
+                                            <li>UGC 矢量图层类 </li>
+                                            <li>UGC 专题图图层类</li>
+                                        </ul>
+                                    </li>
+                                    <li>标绘功能
+                                        <ul class="disc">
+                                            <li>获取标号库列表服务类</li>
+                                            <li>获取指定标号库信息服务类</li>
+                                            <li>获取指定标号信息服务类</li>
+                                            <li>获取态势图列表服务类</li>
+                                            <li>获取指定态势图服务类</li>
+                                            <li>下载指定态势图服务类</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </ul>
+                        </div>
+                       <h2 class="title" id="details5">SuperMap iClient 8C(2017) for JavaScript 的目录结构说明</h2>
+                        <div class="pageImage"> <img src="./images/packageCatalog_All.png" alt="SuperMap iClient 8C(2017) for JavaScript 安装包结构" /> </div>
+                        <ul class="circle">
+                            <li> <strong>apidoc</strong> <br>
+                            apidoc 存放产品的类参考，点击 index.html 文件可以查看产品的控件和所有接口的列表。
+                            </li>
+                            <li> <strong>examples</strong> <br>
+                            examples 存放 SuperMap iClient 8C(2017) for JavaScript 产品页面及其相关资源，产品页面包括产品介绍、开发指南、示范程序、技术专题文档，其中：<br>
+                            <strong>产品介绍</strong> 给用户介绍了产品是什么，其体系架构、功能和产品包结构等。
+                            该部分主要从整体上帮助使用者了解产品；<br>
+                            <strong>产品开发指南</strong> 介绍了产品包获取方法以及产品包的使用方法和基本开发流程，
+                            方便用户快速掌握产品的基本开发方法；<br>
+                            <strong>示范程序</strong> 提供了产品所有示范代码的使用,给开发者提供案例参考；<br>
+                            <strong>类参考</strong> 提供所有控件、对象的接口列表，为开发者提供接口使用参考；<br>
+                            <strong>技术专题</strong> 介绍了产品的一些关键技术，主要涉及高性能矢量渲染、
+                            动态分段、离线缓存与 App 等。 <br>
+							<strong>类结构图</strong>  描述产品中各类之间的关系。
+							</li>
+                            <li> <strong>libs</strong> <br>
+                            libs 文件夹存放产品的库文件、引用文件以及用于国际资源化的文件。其中包括SuperMap.js、SuperMap_Basic.js、SuperMap_IServer.js、SuperMap_Visualization.js、SuperMap_OGC.js和SuperMap.Includ.js，以及lang文件夹。</li>
+							<strong>SuperMap.js</strong> 为总库文件，是四个分库的总和，支持所有功能。<br>
+							<ul>
+                            <div>
+                            <table height="200" class="table table-bordered">
+                                <tr>
+                                    <th>分库名称</th>
+                                    <th>实现功能</th>
+                                </tr>
+                                <tr>
+                                    <td height="48" style="text-align:center; vertical-align:middle">基础库<br>
+									SuperMap_Basic.js</td>
+                                    <td style="text-align:middle; vertical-align:middle">基础地图显示，基础地图操作，添加矢量要素及标记物，添加控件，添加信息框，地图查询；</td>
+                                </tr>
+                                <tr>
+                                    <td height="48" style="text-align:center; vertical-align:middle">iServer服务库<br>
+									SuperMap_IServer.js</td>
+									<td style="text-align:middle; vertical-align:middle">数据集查询，服务器专题图，空间分析，网络分析，交通换乘分析；</td>
+                                </tr>
+                                <tr>
+                                    <td height="48" style="text-align:center; vertical-align:middle">可视化库<br>
+									SuperMap_Visualization.js</td>
+									<td style="text-align:middle; vertical-align:middle">客户端专题图，热点图，聚散点图层，UTFGrid图层，麻点图，Elements Layer 扩展，时空数据可视化，矢量分块；</td>
+                                </tr>
+                                <tr>
+                                    <td height="48" style="text-align:center; vertical-align:middle">OGC库<br>
+									SuperMap_OGC.js</td>
+									<td style="text-align:middle; vertical-align:middle">OGC（WMTS，WCS，WMS，WFS），KML。</td>
+                                </tr>
+                            </table>
+							</div>  
+							</ul>
+							<strong>SuperMap.Includ.js</strong> 是引用文件，可在其中加载需要的类库资源文件，例如加载基础库和iServer服务库：
+							<pre><code>//加载类库资源文件<br> function loadSMLibs() { <br>&nbsp;&nbsp;&nbsp;&nbsp;inputScript(baseurl+'SuperMap_Basic.js'); <br>&nbsp;&nbsp;&nbsp;&nbsp;inputScript(baseurl+'SuperMap_IServer.js'); <br>&nbsp;&nbsp;&nbsp;&nbsp;inputCSS('style.css');<br>&nbsp;&nbsp;&nbsp;&nbsp;inputCSS('google.css'); <br>}<br>//引入汉化资源文件<br> function loadLocalization() { <br>&nbsp;&nbsp;&nbsp;&nbsp;inputScript(baseurl + 'Lang/zh-CN.js');<br> }</code></pre>
+							<strong>lang</strong> 文件夹存放汉化资源文件。<br>
+                            <li> <strong>resource</strong> <br />
+                            resource 为产品使用的资源。目前包括 PhoneGap、WinRTApp、AppPackages 文件夹。<br>
+                            <strong>PhoneGap</strong> 存放 PhoneGap 框架以及基于此框架实现的离线存储范例。通过 PhoneGap 开发框架实现离线存储与访问地图功能，满足用户在离线状态下的地图应用。<br>
+							<strong>WinRTApp</strong> 存放基于 Windows 8 JavaScript 版 Windows 8 应用商店程序的开发的源码文件，该源码程序基于SuperMap 云服务图层，实现基本的地图浏览、缩放及量测功能。<br>
+							<strong>AppPackages</strong> 存放基于 Windows 8 JavaScript 版 Windows 8 应用商店程序的打包文件,下载后可以在直接在Windows 8系统的PC直接安装。</li>
+                            <li> <strong>theme</strong> <br>
+                            theme 文件夹存放产品使用的主题文件。包括 default、image 两个文件夹，其中：<br>
+                            <strong>default</strong> 存放产品类库默认样式文件；<br>
+                            <strong>image</strong> 存放控件的图像资源；<br> </li>
+                            <li> <strong>index.html</strong> <br />
+                            产品首页，启动 index.html 文件可查看产品兼容性和产品变更信息，
+                            通过首页，可以链接到产品介绍，产品开发指南，示范程序，类参考以及技术专题等页面。 </li>
+							<li> <strong>SuperMap iClient for JavaScript Help.chm</strong> <br />
+							产品帮助文档，包含api、首页、产品介绍、开发指南、专题介绍等。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='footer'>
+            <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+        </div>
+    </div>
+    <script src='./js/jquery.js'></script> 
+    <script src='./js/bootstrap.js'></script>
+        <script src="./js/navbar.js"></script>
+        <script src="./js/GoTop.js" id="js_gotop"></script>
+    <script type="text/javascript">
+        var isListToggled = false;
+        function toggleList(){
+            var lists = $("#lists");
+            var link = document.getElementById("togglelink");
+            if(!isListToggled){
+                link.innerText = "显示";
+                lists.hide('slow');
+                isListToggled = true;
+                }else{
+                link.innerText = "隐藏";
+                lists.show();
+                isListToggled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>

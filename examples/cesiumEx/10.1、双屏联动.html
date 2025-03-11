@@ -1,0 +1,112 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map1" style="margin: 0 auto; width: 100%; height: 50%"></div>
+    <div id="map2" style="margin: 0 auto; width: 100%; height: 50%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer1 = new Cesium.Viewer('map1', {});
+        const viewer2 = new Cesium.Viewer('map2', {});
+        let handler, handler1;
+ 
+        setTimeout(() => {
+            viewer1.camera.flyTo({
+                destination: Cesium.Rectangle.fromDegrees(110, 31, 112, 32),
+                complete: () => {
+
+                }
+            });
+            viewer2.camera.flyTo({
+                destination: Cesium.Rectangle.fromDegrees(110, 31, 112, 32),
+                complete: () => {
+
+                }
+            });
+        }, 3000)
+        initHandler(viewer1, viewer2)
+        initHandler1(viewer2, viewer1)
+
+        function initHandler(viewer, viewer0) {
+            if (handler && handler.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)) {
+                return
+            }
+            handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+            handler.setInputAction(function (movement) {
+                var _camerca = viewer.camera
+                viewer0.camera.setView({
+                    destination: _camerca.position,
+                    orientation: {
+                        direction: _camerca._direction,
+                        up: _camerca.up,
+                        heading: _camerca.heading,
+                        pitch: _camerca.pitch,
+                        roll: _camerca.roll
+                    }
+                })
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+            handler.setInputAction(function (movement) {
+                var _camerca = viewer.camera
+                viewer0.camera.setView({
+                    destination: _camerca.position,
+                    orientation: {
+                        direction: _camerca._direction,
+                        up: _camerca.up,
+                        heading: _camerca.heading,
+                        pitch: _camerca.pitch,
+                        roll: _camerca.roll
+                    }
+                })
+            }, Cesium.ScreenSpaceEventType.WHEEL)
+            if (handler && handler.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)) {
+                return
+            }
+        }
+        function initHandler1(viewer, viewer0) {
+            if (handler1 && handler1.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)) {
+                return
+            }
+            handler1 = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+            handler1.setInputAction(function (movement) {
+                var _camerca = viewer.camera
+                viewer0.camera.setView({
+                    destination: _camerca.position,
+                    orientation: {
+                        direction: _camerca._direction,
+                        up: _camerca.up,
+                        heading: _camerca.heading,
+                        pitch: _camerca.pitch,
+                        roll: _camerca.roll
+                    }
+                })
+            }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+            handler1.setInputAction(function (movement) {
+                var _camerca = viewer.camera
+                viewer0.camera.setView({
+                    destination: _camerca.position,
+                    orientation: {
+                        direction: _camerca._direction,
+                        up: _camerca.up,
+                        heading: _camerca.heading,
+                        pitch: _camerca.pitch,
+                        roll: _camerca.roll
+                    }
+                })
+            }, Cesium.ScreenSpaceEventType.WHEEL)
+        }
+    </script>
+</body>
+
+</html>

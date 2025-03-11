@@ -1,0 +1,89 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 创建场景
+        const scene = new THREE.Scene();
+
+        // 创建相机
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // 创建渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 创建立方体
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material1 = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // 十六进制
+        const mesh1 = new THREE.Mesh(geometry, material1);
+        mesh1.position.x = -2;
+
+        /*
+            clone()
+            通过克隆.clone()获得的新模型和原来的模型共享材质和几何体
+        */
+        let mesh1Clone = mesh1.clone();
+        mesh1Clone.position.x = 2;
+        // mesh1Clone.material.color.setRGB(1,1,0)
+        mesh1Clone.material.color.set(0x00ff00);
+
+        /*
+            copy()
+            copy 方法会将一个对象的属性复制到另一个已经存在的对象上
+        */
+        const anotherMesh = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
+        // 将第一个网格的属性复制到第二个网格
+        // anotherMesh.copy(mesh1);
+        // anotherMesh.position.y += 2;  // Y增加100
+        // anotherMesh.position.copy(mesh1.position)
+        anotherMesh.material.copy(mesh1.material)
+
+
+        scene.add(mesh1, mesh1Clone, anotherMesh);
+
+        // 添加轨道控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+
+        // 渲染函数
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // 开始动画循环
+        animate();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>聚散图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>聚散图专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+    <p>随着计算机的发展，浏览器的不断进步与完善，现今大部分浏览渲染效率有了很大的改善，
+        但是由于浏览器厂商的不同，浏览器种类繁多，性能不一，并且很多用户还使用着不少老的浏览，
+        那些如IE6、7等的老式浏览器渲染能力有限，在处理大量数据的时候无法满足用户的需求，
+        为此聚散的思想诞生了，聚散图将非重点的批量数据进行合并，只渲染少量数据，散开并突出重要信息点，
+        减少了浏览器的负荷，解决了大数据量渲染的性能问题。
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>原理：按区域将多个离散点进行计算，合并成为一个聚散点进行显示，在某种情况下（如点击聚散点或者移动到聚散点内部时）将特定的聚散点还原为离散点</li>
+        <li>特点：由于浏览器渲染数据的限制，无法显示大量数据，聚散图可以合并离散点，提高浏览器显示的数据上限。</li>
+        <li>应用场景：多用于数据量特别大的场景，一次性绘制在浏览器导致浏览器负荷过重，所以将数据进行合并，这样整个页面的聚散点数量不至于过多，减少浏览器压力，
+            同时需要获取离散点信息时可以还原对应的聚散点，即保证了浏览器装载了所有数据，又能保证浏览器负荷在可接受范围内。</li>
+    </ul>
+    <h2>二、使用</h2>
+    <p>接下来我们一起看一下聚散图的使用方式：</p>
+
+    <h4>1、创建聚散图图层</h4>
+    <p></p>
+    <p>
+        首先创建一个聚散图对象。由于聚散图只负责矢量数据的渲染，所以初始化只需要设置一个图层的名称即可。
+    </p>
+    <p>
+        <pre>
+//创建一个名为“Cluster”的聚散图层。
+clusterLayer = new SuperMap.Layer.ClusterLayer("Cluster");
+        </pre>
+    </p>
+
+    <h4>2、添加到地图</h4>
+    <p></p>
+    <p>
+        然后将此图层添加到map里面。
+    </p>
+    <p>
+        <pre>
+//向map中添加图层
+map.addLayers([clusterLayer]);
+        </pre>
+    </p>
+
+    <h4>3、添加数据</h4>
+    <p></p>
+    <p>
+        首先需要获取一个点数组（SuperMap.Feature.Vector数组）， 数据可以从服务器查询准备好的点数据集，也可以使用本地数据，不过都只能是点数据。
+        如下的形式：
+    </p>
+    <p>
+        <pre>
+var features = [feature1,feature2,......,featureN];
+        </pre>
+    </p>
+    <p>添加点数据</p>
+    <pre>
+//将数据添加到图层中
+clusterLayer.addFeatures(features);
+    </pre>
+    <p>即可实现类似如下效果，地图放大缩小时点数据会自动聚散或者散开：</p>
+    <div class="pageImage"><img src="images/clusterLayerTopic1.png"/></div>
+
+    <h4>4、事件处理</h4>
+    <p></p>
+    <p>
+        上述的聚散图的聚散点的散开和聚散都是自动计算的，用户不能点击聚散点进行散开，如果需要点击聚散点进行散开，
+        则需要添加SelectCluster控件。如下：
+    </p>
+    <pre>
+//创建聚散选择控件。
+var select = new SuperMap.Control.SelectCluster(clusterLayer);
+//将控件添加到map上
+map.addControl(select);
+//激活控件。
+select.activate();
+    </pre>
+    <p>这样当用户点击聚散点时会散开，如下：</p>
+    <div class="pageImage"><img src="images/clusterLayerTopic2.png"/></div>
+    <p>
+        聚散图支持很多事件，如：
+        <br />
+    <div>
+        <ul style="list-style-type:disc;">
+            <li>click：点击事件（包括聚散点和非聚散点）</li>
+            <li>clickout：点击要素外</li>
+            <li>over：移进要素事件</li>
+            <li>out：移出要素事件</li>
+            <li>dblclick：双击事件</li>
+        </ul>
+    </div>
+    </p>
+    <p>使用事件必须要创建SelectCluster控件，这里举个简单例子演示如何使用事件。</p>
+     <pre>
+//创建聚散选择控件。该控件实现了聚散图层的鼠标事件。
+var select = new SuperMap.Control.SelectCluster(clusterLayer,{
+    callbacks:{
+        click:function(f){
+            if(!f.isCluster){ //当点击聚散点的时候不弹出信息窗口
+                openInfoWin(f);
+            }
+        }
+    }
+});
+//将控件添加到map上
+map.addControl(select);
+//激活控件。
+select.activate();
+    </pre>
+    <p>定义openInfoWin方法：</p>
+         <pre>
+function openInfoWin(feature){
+    var geo = feature.geometry;
+    var bounds = geo.getBounds();
+    //获取中心点
+    var center = bounds.getCenterLonLat();
+    var contentHTML = "&#60;div style='font-size:.8em; opacity: 0.8; overflow-y:hidden;'&#62";
+    //这里我们在创建 feature 的时候动态创建了 info 属性用于存放部分信息
+    contentHTML += "&#60;div&#62"+feature.info.name+"&#60;/div&#62&#60;/div&#62";
+    //创建popup
+    var popup = new SuperMap.Popup.FramedCloud("popwin",
+            new SuperMap.LonLat(center.lon,center.lat),
+            null,
+            contentHTML,
+            null,
+            true);
+    feature.popup = popup;
+    //给map添加popup
+    map.addPopup(popup);
+}
+    </pre>
+    <p>然后可以实现如下效果：</p>
+    <div class="pageImage"><img src="images/clusterLayerTopic3.png"/></div>
+    <h4>5、高级扩展</h4>
+    <p>接下来我们尝试修改聚散点的图片以及自定义聚散的数量，聚散图提供了属性clusterStyles给我们扩展：</p>
+     <pre>
+//设置clusterStyles属性
+clusterLayer.clusterStyles = [
+    {
+        "count":15,//子节点小于等于15的聚散点
+         //style的详情参见 SuperMap.Feature.Vector.style
+        "style":{
+            fontColor:"#404040",
+            graphic:true,
+            externalGraphic:"images/markerbig.png",
+            graphicWidth:37,
+            graphicHeight:38,
+            labelXOffset:0,
+            labelYOffset:5
+        }
+    },
+    {
+        "count":50,//子节点小于等于50大于15的聚散点
+        "style":{
+            fontColor:"#404040",
+            graphic:true,
+            externalGraphic:"images/markerflag.png",
+            graphicWidth:41,
+            graphicHeight:46,
+            labelXOffset:0,
+            labelYOffset:6
+        }
+    },
+    {
+        "count":"moreThanMax",// 子节点大于50的聚散点
+        "style":{
+            fontColor:"#404040",
+            graphic:true,
+            externalGraphic:"images/circle.png",
+            graphicWidth:48,
+            graphicHeight:53,
+            labelXOffset:0,
+            labelYOffset:0
+        }
+    }
+];
+    </pre>
+    <p>这样我们就可以获得如下效果了：</p>
+    <div class="pageImage"><img src="images/clusterLayerTopic4.png"/></div>
+    <br />
+    <p>
+        完整范例请见 示范程序->可视化->可视化图层->聚散点图层。
+    </p>
+
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

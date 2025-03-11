@@ -1,0 +1,236 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+    <script src="./latlng.js"></script>
+    <style>
+        #menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background: #72a8eafa;
+            border-radius: 3px;
+            border: 1px solid rgba(128, 128, 128, 0.5);
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 3px 14px rgba(128, 128, 128, 0.5);
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <div id="menu">
+        <button onclick="load()">加载</button>
+        <button onclick="clears()">clears</button>
+        <span>
+            空间距离，水平距离，垂直距离，等可以用turf计算
+        </span>
+    </div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+        });
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // 加载默认地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水掩膜以实现水体效果
+            requestVertexNormals: true // 请求法线以实现光照效果
+        });
+        // 目的地带方向
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(98.685331, 27.780325, 7318.6),
+            orientation: {
+                heading: Cesium.Math.toRadians(73),
+                pitch: Cesium.Math.toRadians(-52.2),
+                roll: 0.0
+            }
+        });
+        `
+    https://blog.csdn.net/lying_19/article/details/125101050
+    实现思路：仍然是“分而治之”，将观察点与被观察点连成的线段，分割成无限多的小段。获取每一段端点的实际高程值，与线段上该点的理论高程值。比较二者大小。
+                                                                        若 实际高程值>理论高程值，则不通视，且理论高程值为障碍点。
+    技术关键点：（1）将线段分割为很多小段，并获取每一段的端点。
+               （2）线段上的点，需要同时获取屏幕坐标和真实世界坐标
+    
+    `
+
+        var start = Cesium.Cartesian3.fromDegrees(98.71707797694049, 27.777299704639537, 2800.0);
+        // var start = Cesium.Cartesian3.fromDegrees(98.71707797694049, 27.777299704639537, 3500.0);
+        var end = Cesium.Cartesian3.fromDegrees(98.71707797694049, 27.807299704639537, 3500.0);
+        var hello = viewer.entities.add({
+            name: '观测点',
+            position: start,
+            point: {
+                pixelSize: 5,
+                color: Cesium.Color.RED,
+                outlineColor: Cesium.Color.WHITE,
+                outlineWidth: 2,
+            },
+            label: {
+                text: '观测点',
+                font: '14pt monospace',
+                outlineWidth: 2,
+            }
+        });
+
+        var word = viewer.entities.add({
+            name: '目的点',
+            position: end,
+            point: {
+                pixelSize: 5,
+                color: Cesium.Color.RED,
+                outlineColor: Cesium.Color.WHITE,
+                outlineWidth: 2,
+            },
+            label: {
+                text: '目的点',
+                font: '14pt monospace',
+                outlineWidth: 2,
+            }
+        });
+        var line1;
+        var line2;
+        function load() {
+            var center = sightline(start, end)
+            console.log("障碍点坐标-------------------------" + center)
+            if (center.x == 0 && center.y == 0 && center.z == 0) {
+                alert("可视")
+                line1 = viewer.entities.add({
+                    polyline: {
+                        positions: [start, end],
+                        width: 3,
+                        material: Cesium.Color.GREEN,
+                        clampToGround: false,
+                    }
+                });
+            } else {
+                alert("不可视")
+
+                line1 = viewer.entities.add({
+                    polyline: {
+                        positions: [start, center],
+                        width: 3,
+                        material: Cesium.Color.GREEN,
+                        clampToGround: false,
+                    }
+                });
+                line2 = viewer.entities.add({
+                    polyline: {
+                        positions: [center, end],
+                        width: 3,
+                        material: Cesium.Color.RED,
+                        clampToGround: false,
+                    }
+                });
+            }
+
+
+        }
+
+        function clears() {
+            viewer.entities.remove(line1);
+            viewer.entities.remove(line2);
+        }
+
+
+        function sightline(startWorldPoint, endWorldPoint) {
+            var barrierPoint = Cesium.Cartesian3.ZERO;
+            var startPoint = convertCartesian3ToCartesian2(viewer, startWorldPoint);
+            var endPoint = convertCartesian3ToCartesian2(viewer, endWorldPoint);
+            var worldLength = calculateSpatialDistance(startWorldPoint, endWorldPoint);
+            var windowLength = calculateWindowDistance(startPoint, endPoint);
+            var worldInterval = worldLength / 100.0;
+            var windowInterval = windowLength / 100.0;
+            for (var i = 1; i < 100; i++) {
+                var tempWindowPoint = findWindowPositionByPixelInterval(startPoint, endPoint, windowInterval * i);
+                var tempPoint = findCartesian3ByDistance(startWorldPoint, endWorldPoint, worldInterval * i);
+                var surfacePoint = pickCartesian(viewer, tempWindowPoint);
+                var tempRad = Cesium.Cartographic.fromCartesian(tempPoint);
+                var surfaceRad = Cesium.Cartographic.fromCartesian(surfacePoint.cartesian);
+                if (surfaceRad.height > tempRad.height) {
+                    barrierPoint = tempPoint;
+                    break;
+                }
+            }
+            return barrierPoint;
+        }
+
+        function convertCartesian3ToCartesian2(viewer, position) {
+            return Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene, position);
+        }
+        function calculateSpatialDistance(startPoint, endPoint) {
+            return Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2) + Math.pow(endPoint.z - startPoint.z, 2));
+        }
+        function calculateWindowDistance(startPoint, endPoint) {
+            return Math.sqrt(Math.pow(endPoint.y - startPoint.y, 2) + Math.pow(endPoint.x - startPoint.x, 2));
+        }
+        function findWindowPositionByPixelInterval(startPosition, endPosition, interval) {
+            var result = new Cesium.Cartesian2(0, 0);
+            var length = Math.sqrt(Math.pow(endPosition.x - startPosition.x, 2) + Math.pow(endPosition.y - startPosition.y, 2));
+            if (length < interval) {
+                return result;
+            }
+            else {
+                var x = (interval / length) * (endPosition.x - startPosition.x) + startPosition.x;
+                var y = (interval / length) * (endPosition.y - startPosition.y) + startPosition.y;
+                result.x = x;
+                result.y = y;
+            }
+            return result;
+        }
+        function findCartesian3ByDistance(startPosition, endPosition, interval) {
+            var result = new Cesium.Cartesian3(0, 0, 0);
+            var length = Math.sqrt(Math.pow(endPosition.z - startPosition.z, 2) + Math.pow(endPosition.x - startPosition.x, 2) + Math.pow(endPosition.y - startPosition.y, 2));
+            if (length < interval) {
+                return result;
+            }
+            else {
+                var x = (interval / length) * (endPosition.x - startPosition.x) + startPosition.x;
+                var y = (interval / length) * (endPosition.y - startPosition.y) + startPosition.y;
+                var z = (interval / length) * (endPosition.z - startPosition.z) + startPosition.z;
+                result.x = x;
+                result.y = y;
+                result.z = z;
+            }
+            return result;
+        }
+        function pickCartesian(viewer, windowPosition) {
+            //根据窗口坐标，从场景的深度缓冲区中拾取相应的位置，返回笛卡尔坐标。
+            var cartesianModel = viewer.scene.pickPosition(windowPosition);
+            //场景相机向指定的鼠标位置（屏幕坐标）发射射线
+            var ray = viewer.camera.getPickRay(windowPosition);
+            //获取射线与三维球相交的点（即该鼠标位置对应的三维球坐标点，因为模型不属于球面的物体，所以无法捕捉模型表面）
+            var cartesianTerrain = viewer.scene.globe.pick(ray, viewer.scene);
+            // var result = new PickResult();
+            var result = {};
+            if (typeof (cartesianModel) !== 'undefined' && typeof (cartesianTerrain) !== 'undefined') {
+                result.cartesian = cartesianModel || cartesianTerrain;
+                result.CartesianModel = cartesianModel;
+                result.cartesianTerrain = cartesianTerrain;
+                result.windowCoordinates = windowPosition.clone();
+                //坐标不一致，证明是模型，采用绝对高度。否则是地形，用贴地模式。
+                result.altitudeMode = cartesianModel.z.toFixed(0) !== cartesianTerrain.z.toFixed(0) ? Cesium.HeightReference.NONE : Cesium.HeightReference.CLAMP_TO_GROUND;
+            }
+            return result;
+        }
+
+    </script>
+</body>
+
+</html>

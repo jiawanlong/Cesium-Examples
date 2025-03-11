@@ -1,0 +1,144 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./jquery-1.8.3.min.js"></script>
+    <style>
+        input {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <input type="range" min="-100" id="inp" max="100" value="0">
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        let yszb;
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+
+                // 打印出当前模型的位置
+                console.log(getModelInfo())
+                ysgd = getModelInfo()
+                var cartographic = Cesium.Cartographic.fromDegrees(ysgd.x, ysgd.y, ysgd.z);
+                var posi = new Cesium.Cartographic(cartographic.longitude, cartographic.latitude)
+                var height = viewer.scene.globe.getHeight(posi)
+                changePosition(ysgd.x, ysgd.y, height, 0, 0, 0, 1)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        // 获取模型信息
+        function getModelInfo() {
+            var result = {};
+
+            var boundingSphere = tileset.boundingSphere;
+            var position = boundingSphere.center;
+            var catographic = Cesium.Cartographic.fromCartesian(position);
+
+            var height = Number(catographic.height.toFixed(2));
+            var longitude = Number(Cesium.Math.toDegrees(catographic.longitude).toFixed(6));
+            var latitude = Number(Cesium.Math.toDegrees(catographic.latitude).toFixed(6));
+            result = {
+                x: longitude,
+                y: latitude,
+                z: height,
+                heading: 0
+            };
+
+            var mat = Cesium.Matrix4.fromArray(tileset._root.transform);
+            var pos = Cesium.Matrix4.getTranslation(mat, new Cesium.Cartesian3());
+            var wpos = Cesium.Cartographic.fromCartesian(pos);
+            result.x = Number(Cesium.Math.toDegrees(wpos.longitude).toFixed(6));
+            result.y = Number(Cesium.Math.toDegrees(wpos.latitude).toFixed(6));
+            result.z = Number(wpos.height.toFixed(2));
+            return result;
+        }
+        // ----------------------------更改位置------------------------------
+        // rx: 俯仰(pitch)，机头上下摇摆
+        // ry: 滚转(roll)，机身绕中轴线旋转
+        // rz:偏航（heading），即机头朝左右摇摆
+        // scales放大系数
+        function changePosition(tx, ty, tz, rx, ry, rz, scales) {
+            let params = {
+                tx,
+                ty,
+                tz,
+                rx,
+                ry,
+                rz
+            };
+            let mx = Cesium.Matrix3.fromRotationX(Cesium.Math.toRadians(params.rx));
+            let my = Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(params.ry));
+            let mz = Cesium.Matrix3.fromRotationZ(Cesium.Math.toRadians(params.rz));
+            let rotationX = Cesium.Matrix4.fromRotationTranslation(mx);
+            let rotationY = Cesium.Matrix4.fromRotationTranslation(my);
+            let rotationZ = Cesium.Matrix4.fromRotationTranslation(mz);
+            //平移
+            let position = Cesium.Cartesian3.fromDegrees(params.tx, params.ty, params.tz);
+            let m = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+
+            let scale = Cesium.Matrix4.fromUniformScale(scales);
+
+            // //缩放
+            Cesium.Matrix4.multiply(m, scale, m);
+            //旋转、平移矩阵相乘
+            Cesium.Matrix4.multiply(m, rotationX, m);
+            Cesium.Matrix4.multiply(m, rotationY, m);
+            Cesium.Matrix4.multiply(m, rotationZ, m);
+            // return m;
+            console.log(JSON.stringify(m))
+            tileset._root.transform = m;
+        }
+
+
+        $("#inp").change(() => {
+            let v = $("#inp").val();
+            changePosition(ysgd.x, ysgd.y, ysgd.z + Number(v), 0, 0, 0, 1)
+        })
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = false;
+
+        // changePosition(121.5480435,25.0421187,13,0,0,20,1)
+
+        viewer.zoomTo(tileset)
+
+        // 修改位置
+        // changePosition(120,40,-100000,0,0,0,2)
+
+        // 修改模型颜色等
+        // var r = 255;
+        // var g = 0;
+        // var b = 255;
+        // var a = 0.9;
+        // tileset.style = new Cesium.Cesium3DTileStyle({color: "color('rgba(" + r + "," + g + "," + b + ", " + a + ")')"})
+
+    </script>
+</body>
+
+</html>

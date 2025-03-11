@@ -1,0 +1,117 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./../libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+    <script src="./latlng.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // http://cesium.xin/cesium/cn/Documentation1.95/CylinderGraphics.html#.ConstructorOptions
+        let cylinderEntityl;
+        const gui = new dat.GUI();
+        gui.domElement.style = 'position:absolute;top:10px;left:10px;'
+
+        const obj = {
+            x: 120,
+            y: 30,
+            z: 1000,
+            heading: 0,
+            pitch: 0,
+            roll: 0,
+        };
+        gui.add(obj, 'x', -180, 180).name('经度').onChange(function (value) {
+            updateEntity();
+        });
+        gui.add(obj, 'y', -90, 90).name('纬度').onChange(function (value) {
+            updateEntity();
+        });
+        gui.add(obj, 'z', 100, 10000).name('高度').onChange(function (value) {
+            updateEntity();
+        });
+        gui.add(obj, 'heading', 0, 360).name('偏航角-水平').onChange(function (value) {
+            updateEntity();
+        });
+        gui.add(obj, 'pitch', 0, 360).name('俯仰角-上下').onChange(function (value) {
+            updateEntity();
+        });
+        gui.add(obj, 'roll', 0, 360).name('翻滚角-侧向').onChange(function (value) {
+            updateEntity();
+        });
+
+        function updateEntity() {
+            // console.log(obj)
+            var position = Cesium.Cartesian3.fromDegrees(obj.x, obj.y, obj.z);
+            var heading = Cesium.Math.toRadians(obj.heading);
+            var pitch = Cesium.Math.toRadians(obj.pitch);
+            var roll = Cesium.Math.toRadians(obj.roll);
+
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                position,
+                hpr
+            );
+            cylinderEntity.position = position;
+            cylinderEntity.orientation = orientation;
+            viewer.flyTo(viewer.entities)
+        }
+
+        addEntity();
+
+        function addEntity() {
+
+            var position = Cesium.Cartesian3.fromDegrees(obj.x, obj.y, obj.z);
+            var heading = Cesium.Math.toRadians(obj.heading);
+            var pitch = Cesium.Math.toRadians(obj.pitch);
+            var roll = Cesium.Math.toRadians(obj.roll);
+
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                position,
+                hpr
+            );
+            cylinderEntity = new Cesium.Entity({
+                position: position,
+                orientation: orientation,
+                model: {
+                    uri: './feiji.glb',
+                    scale: 5,
+                   
+                }
+            })
+            viewer.entities.add(cylinderEntity);
+
+            viewer.flyTo(viewer.entities)
+        }
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

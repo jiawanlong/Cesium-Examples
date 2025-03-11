@@ -1,0 +1,53 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // add、remove、removeById、removeAll
+
+        var hello = viewer.entities.add({
+            name: '贴地',
+            id: 'test',
+            position: Cesium.Cartesian3.fromDegrees(-75, 39),
+            label: {
+                text: '贴地',
+                font: '14pt monospace',
+                outlineWidth: 2,
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                showBackground: true,
+                backgroundColor: Cesium.Color.WHITE,
+                fillColor: Cesium.Color.RED
+            }
+        });
+
+        var entity1 = viewer.entities.getById('test');
+
+        // viewer.entities.remove(hello); //通过对象删除
+        // viewer.entities.remove(entity1);   //通过id删除
+        // viewer.entities.removeById("test"); //通过id删除
+        // viewer.entities.removeAll();   //删除所有
+
+    </script>
+</body>
+
+</html>

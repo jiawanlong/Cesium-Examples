@@ -1,0 +1,82 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<nav id="nav" class="navbar navbar-static-top default">
+    <div class="nav-header">
+        <div class="navcontentfixed">
+            <div class="navbar-header">
+                <div class="navbar-title">
+                    <a class="navbar-brand">
+                        <h1 style="width: 130px;
+                        text-align: center;">JWL</h1>
+                        <!-- <img class="project-logo" src="../img/svg/logo-dark.svg" style="visibility: visible;" id="logo"> -->
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-rightbar">
+                <ul>
+                    <!-- 版本号 -->
+                    <li>
+                        <span class="project-title vm" id="title">
+                            <a style="color:#fff;" target="_blank" href="https://github.com/jiawanlong">
+                                <img src="../img/github.png" alt=""
+                                    style="display: inline-block;width: 30px;height: 30px;cursor: pointer;"></a>
+                            <img src="https://img.shields.io/github/stars/jiawanlong/Cesium-Examples.svg?" alt="" srcset="">
+                            <img src="https://img.shields.io/github/forks/jiawanlong/Cesium-Examples.svg?style=social" alt="" srcset="">
+
+                        </span>
+                    </li>
+                    <!-- 小尺寸toggle按钮 -->
+                    <!-- <li class="navbar-toggle">
+                        <a href="#" class=" collapsed" data-toggle="collapse" data-target="#navbar-collapse"
+                            aria-expanded="false">
+                        </a>
+                    </li> -->
+
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse navbar-custom-menu" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+
+                    <li class="navbar-menu" id="leaflet-menu">
+                        <a class="center" target="_self" href="../cesiumEx/examples.html">Cesium Demo</a>
+                    </li>
+                    <li class="navbar-menu" id="mapboxgl-menu">
+                        <a class="center" target="_self" href="../threeEx/examples.html">Three Demo</a>
+                    </li>
+                    <li class="navbar-menu" id="mapboxgl-menu">
+                        <a class="center" target="_self" href="../babylonEx/examples.html">Babylon Demo</a>
+                    </li>
+                    <li class="navbar-menu" id="mapboxgl-menu">
+                        <a class="center" target="_self" href="../webglEx/examples.html">Webgl Demo</a>
+                    </li>
+                    <li class="navbar-menu" id="mapboxgl-menu">
+                        <a class="center" target="_self" href="../webgpuEx/examples.html">WebGPU Demo</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<script>
+
+    $('h1').dblclick(()=>{
+        window.open('https://jiawanlong.github.io/Cesium-Examples/code.html')
+    })
+
+</script>
+<!-- <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5zt6s97wu4l&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script> -->
+<style>
+    .navbar-nav li {
+        margin: 0 10px;
+        font-size: 20px;
+    }
+    #dcddd{
+        right: 245px !important;
+    }
+    .navbar-rightbar{
+        margin-right: 0 !important;
+    }
+</style>

@@ -1,0 +1,105 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        .box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+
+        .card {
+            color: white;
+            background: blueviolet;
+            backface-visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CSS3DObject、CSS3DSprite(精灵)、CSS2DObject的区别
+    CSS3D不面向摄像机，场景缩放时，缩小放大跟随着，不被模型遮挡，通过DOM事件点击
+    CSS2D面向摄像机，场景缩放时，缩小放大都一样大，不被模型遮挡，通过DOM事件点击。
+    精灵面向摄像机，场景缩放时，缩小放大跟随着，会被模型遮挡，可以被射线拾取。 -->
+    <!-- 渲染容器 -->
+    <div class="box" id="box"></div>
+
+    <!-- 标签 -->
+    <div class="card" id="cardId">模型标签</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+
+        const scene = new THREE.Scene()
+        let renderer = new THREE.WebGLRenderer({})
+        let cssRenderer = new CSS2DRenderer()
+
+        let box = document.getElementById("box")
+
+        // 坐标轴+灯光
+        const axes = new THREE.AxesHelper(500)
+        scene.add(axes)
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera();
+        camera.position.set(400, 400, 400);
+        camera.lookAt(0, 0, 0);
+
+        //渲染区域
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        box.appendChild(renderer.domElement)
+
+        //css3渲染区域
+        cssRenderer.setSize(window.innerWidth, window.innerHeight)
+        cssRenderer.domElement.style.position = 'absolute'
+        cssRenderer.domElement.style.top = 0 + 'px'
+        box.appendChild(cssRenderer.domElement)
+
+        // ----标注----
+        let tag = new CSS2DObject(document.getElementById('cardId'))
+        tag.position.set(100, 100, 100);
+        scene.add(tag)
+
+
+        // 执行渲染
+        function render() {
+            cssRenderer.render(scene, camera)
+            renderer.render(scene, camera)
+            requestAnimationFrame(render);
+        }
+        render();
+
+        let controls = new OrbitControls(camera, cssRenderer.domElement)
+        controls.addEventListener('change', function () {
+            cssRenderer.render(scene, camera)
+            renderer.render(scene, camera)
+        });
+    </script>
+
+</body>
+
+</html>

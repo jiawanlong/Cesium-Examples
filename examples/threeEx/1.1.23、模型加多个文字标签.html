@@ -1,0 +1,120 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        .box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS3DRenderer, CSS3DObject, CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js';
+
+        let box = document.getElementById("box")
+        const scene = new THREE.Scene();// 创建场景
+
+        // 辅助线
+        const axesHelper = new THREE.AxesHelper(150);
+        scene.add(axesHelper);
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera();  //相机
+        camera.position.set(400, 300, 500); //相机位置
+        camera.lookAt(0, 50, 40);   //相机观察位置
+
+        // 渲染器
+        let renderer = new THREE.WebGLRenderer({})
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        box.appendChild(renderer.domElement)
+
+        //css3渲染区域
+        let cssRenderer = new CSS3DRenderer()
+        cssRenderer.setSize(window.innerWidth, window.innerHeight)
+        cssRenderer.domElement.style.position = 'absolute'
+        cssRenderer.domElement.style.top = 0 + 'px'
+        box.appendChild(cssRenderer.domElement)
+
+
+        // 添加模型
+        const geometry1 = new THREE.BoxGeometry(10, 10, 10);
+        const geometry2 = new THREE.SphereGeometry(10);
+        const geometry3 = new THREE.CylinderGeometry(10, 10, 100);
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const mesh1 = new THREE.Mesh(geometry1, material);
+        mesh1.position.set(0, 0, 0);
+        const mesh2 = new THREE.Mesh(geometry2, material);
+        mesh2.position.set(0, 0, 30);
+        const mesh3 = new THREE.Mesh(geometry3, material);
+        mesh3.position.set(0, 0, 60);
+        scene.add(mesh1);
+        scene.add(mesh2);
+        scene.add(mesh3);
+
+
+        // 添加文字
+        let tag1 = new CSS3DObject(creatDom('矩形'))
+        mesh1.add(tag1)
+        tag1.position.set(30, 0, 0);
+
+        let tag2 = new CSS3DObject(creatDom('球'))
+        mesh2.add(tag2)
+        tag2.position.set(30, 0, 0);
+
+        let tag3 = new CSS3DSprite(creatDom('圆柱体'))
+        mesh3.add(tag3)
+        tag3.position.set(30, 0, 0);
+
+
+        function creatDom(text) {
+            let div = document.createElement('div')
+            div.innerHTML += text
+            div.style.color = 'white'
+            return div
+        }
+
+
+        function render() {
+            renderer.render(scene, camera)
+            cssRenderer.render(scene, camera)
+            requestAnimationFrame(render);
+        }
+        render();
+
+        const controls = new OrbitControls(camera, cssRenderer.domElement);
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera);
+            cssRenderer.render(scene, camera)
+        });
+    </script>
+
+</body>
+
+</html>

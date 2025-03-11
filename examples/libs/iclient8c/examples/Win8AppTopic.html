@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>面向 Windows 8 应用商店开发专题</title>
+        <link href='./css/bootstrap.min.css' rel='stylesheet' />
+        <link href='./css/bootstrap-responsive.min.css' rel='stylesheet' />
+        <link href='./css/sm-extend.css' rel='stylesheet' />
+        <link href='./css/sm-doc.css' rel='stylesheet' />
+    </head>
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+        <!--导航条-->
+        <div class="navbar navbar-fixed-top" id="navbar">
+
+        </div>
+        <div id='container' class='container'>
+            <div class='page-header'>
+                <h1>面向 Windows 8 应用商店开发专题</h1>
+                <hr/>
+                <h2>一、Metro风格地图应用程序开发简介</h2>
+                <div class="pageImage"> <img src="./images/metro_main.png" /></div><br />
+                <p>
+                SuperMap iClient 8C(2017) for JavaScript 是一款在服务式 GIS 架构体系中，面向 HTML5 的应用开发，支持多终端，跨浏览器的客户端开发平台。
+                通过 SuperMap iClient 8C(2017) for JavaScript，无需任何插件，便可以在浏览器上实现美观的地图展现，内容丰富的地图应用。
+                </p>
+                <p>
+                 随着Surface 平板电脑的兴起，借助SuperMap iClient for JavaScript开发平台，我们可以快捷地开发Windows 8下Metro风格的地图应用程序，订制期望的地图应用功能等。
+                </p>
+                <h2>二、Metro风格地图应用程序开发入门</h2>
+                <p>
+                该文档介绍了基于SuperMap iClient for JavaScript 平台如何开发Windows 8下Metro风格的地图应用程序，该地图包含基本的地图浏览、缩放、量算和定位功能。
+				二次开发人员或用户可以在此基础上增加自己的业务需求，丰富地图应用。同时我们会在开发范例中提供Metro风格的地图应用的源码和打包后的应用程序，
+				用户可自行下载安装包试用。
+                </p>
+                <ol> 
+                    <li>配置开发环境
+                        <ul style="list-style-type:disc;">
+                            <li>下载并解压 <a target="new" href="http://www.supermap.com.cn/sup/download_view.asp?id=578&bid=1">SuperMap iClient 8C(2017) for JavaScript</a></li>
+                            <li>安装Windows 8 系统 </li>       
+                            <li>安装Visual Studio 2012 </li>        
+                            <li>注册微软开发者账号(提示：打开Visual Studio 2012即提示注册账号(如果已有账号直接登录即可)) </li>
+                        </ul>
+                    </li>
+                    
+                    <li>Metro风格工程创建
+                        <ul style="list-style-type:disc;">
+                            <li>打开Visual Studio 2012，单击文件，选择新建项目快捷键，弹出如下新建项目对话框：<br />
+							<div class="pageImage"> <img src="./images/metro_new.png"/></div>
+							<p>在新建项目对话框中左侧在已安装的模板中找到JavaScript Windows应用商店，同时在右侧选择导航布局应用程序（当然您也可以选择空白应用程序）。
+							在下方名称一栏中输入应用程序名称（JavaScript for WinRT），在位置一栏中选择应用程序保存的位置（E:\WinRT\）。单击确定按钮即创建了导航布局应用程序。
+							创建好的解决方案目录结构如下：</p>
+							<div class="pageImage"> <img src="./images/metro_directory.png"/></div>
+							</li>
+                            <li>将SuperMap iClient for JavaScript产品包下的libs文件夹和theme文件夹同时拷贝至JavaScript for WinRT的解决方案下，最终目录图示如下：<br />
+								<div class="pageImage"> <img src="./images/metro_directory.png"/></div>
+							</li>
+                            <li>由于我们要使用定位功能，而在Metro风格应用中，定位功能默认情况下是禁用的，我们需要开启它。双击打开package.appxmanifest文件，选择功能选项卡，
+							勾选位置前面的复选框，保存该文件，这样既可启用定位功能，图示如下：<br />
+							<div class="pageImage"> <img src="./images/metro_location.png"/></div>
+							</li>
+                        </ul>
+                    </li>
+                    <li>代码说明
+                        <ul style="list-style-type:disc;">
+                            <li>打开pages/home/home.html页面，引入SuperMap.Include.js文件，修改后html页面, 请查看源码。
+<!-- <pre><code>
+<div class="funcDiv">
+        <ul>
+            <li>
+                <button id="measureLength">量算长度</button></li>
+            <li>
+                <button id="measureArea">量算面积</button></li>
+            <li>
+                <button id="myPosition">我的位置</button></li>
+             <li>
+                <button id="clear">清除</button></li>
+        </ul>
+    </div>
+    <div id="map"></div>
+</code></pre> -->
+                            </li>
+                            <li>打开pages/home/home.css样式文件，修改后的样式文件如下：
+                            <pre>
+.homepage section[role=main] {
+    margin-left: 120px;
+}
+
+.funcDiv {
+    z-index: 9999;
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+    ul li {
+        display: inline-block;
+    }
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (-ms-view-state: snapped) {
+    .homepage section[role=main] {
+        margin-left: 20px;
+    }
+}
+
+@media screen and (-ms-view-state: portrait) {
+    .homepage section[role=main] {
+        margin-left: 100px;
+    }
+}
+                            </pre>
+                            </li> 
+							<li>打开pages/home/home.js文件，修改后的代码如下：
+                            <pre>
+(function () {
+    "use strict";
+
+    var map, layer, positionLayer, lenCtrl, areaCtrl;
+
+    WinJS.UI.Pages.define("/pages/home/home.html", {
+        ready: function (element, options) {
+            // 初始化地图
+            map = new SuperMap.Map("map", {
+                controls: [
+                new SuperMap.Control.ScaleLine(),
+                new SuperMap.Control.Zoom(),
+                new SuperMap.Control.MousePosition(),
+                new SuperMap.Control.Navigation({
+                    dragPanOptions: {
+                        enableKinetic: true
+                    }
+                })], units: "m"
+            });
+            positionLayer = new SuperMap.Layer.Markers();
+            layer = new SuperMap.Layer.CloudLayer();
+            map.addLayers([layer, positionLayer]);
+            map.setCenter(new SuperMap.LonLat(12956286, 4855615), 12);
+
+            //测量控件加入map对象中
+            lenCtrl = new SuperMap.Control.Measure(SuperMap.Handler.Path, { persist: true });
+            areaCtrl = new SuperMap.Control.Measure(SuperMap.Handler.Polygon, { persist: true });
+            lenCtrl.events.on({
+                "measure": handleMeasure
+            });
+            areaCtrl.events.on({
+                "measure": handleMeasure
+            });
+            map.addControls([lenCtrl, areaCtrl]);
+            //功能键单击事件
+            element.querySelector("#measureLength").addEventListener("click", function (event) {
+                lenCtrl.activate();
+            }, false);
+            element.querySelector("#measureArea").addEventListener("click", function (event) {
+                areaCtrl.activate();
+            }, false);
+            element.querySelector("#myPosition").addEventListener("click", function (event) {
+                //实现定位功能
+                var geolocator = Windows.Devices.Geolocation.Geolocator();
+                geolocator.getGeopositionAsync().done(function (position) {
+                    var lon = position.coordinate.longitude,
+                    x = lon * 20037508.342789 / 180,
+                    lat = position.coordinate.latitude,
+                    tempy = Math.log(Math.tan((90 + lat) * Math.PI / 360)) / (Math.PI / 180),
+                    y = tempy * 20037508.34789 / 180,
+                    lonLat = new SuperMap.LonLat(x, y),
+                    size = new SuperMap.Size(44, 33),
+                    offset = new SuperMap.Pixel(-(size.w / 2), -size.h),
+                    icon = new SuperMap.Icon("/theme/image/marker.png", size, offset);
+                    positionLayer.clearMarkers();
+                    positionLayer.addMarker(new SuperMap.Marker(lonLat, icon));
+                    map.setCenter(lonLat);
+                });
+            }, false);
+            element.querySelector("#clear").addEventListener("click", function (event) {
+                positionLayer.clearMarkers();
+            }, false);
+        }
+    });
+
+    //量测结果函数
+    function handleMeasure(event) {
+        lenCtrl.deactivate();
+        areaCtrl.deactivate();
+        var messageDialog = new Windows.UI.Popups.MessageDialog("");
+        if (event.order === 1) {
+            messageDialog.content = "长度测量结果: "+event.measure+" 公里";
+            messageDialog.showAsync();
+        } else if (event.order === 2) {
+            messageDialog.content = "面积测量结果: " + event.measure + " 平方公里";
+            messageDialog.showAsync();
+        }
+    }
+})();
+                            </pre>
+                            </li> 
+                        </ul>
+                    </li>
+					<li>Metro风格示例效果图展示
+                        <p>通过上面的示例，我们就可以基于SuperMap iClient for JavaScript产品快速的构建Metro风格的地图应用。实现基本的地图浏览、缩放、量算、定位等功能。
+						你也可以订制化的实现自己期望的地图应用。</p>
+						<p>将上面的示例打包后，通过windows 8 提供的命令安装应用程序后，在开始界面上出现如下磁贴：</p>
+						<div class="pageImage"> <img src="./images/metro_link.png" /></div>
+						<p>此刻通过单击或者是触摸该磁贴，弹出如下地图应用程序：</p>
+						<div class="pageImage"> <img src="./images/metro_ui.png" style="width:890px;"/></div>
+                    </li>
+				</ol>
+                <h2>三、Metro风格地图应用程序REST交互</h2>
+                <p>
+                我们知道，在SuperMap iClient for JavaScript客户端与REST服交互过程中，涉及到同域与跨域和REST服务交互的问题，这两种情况下需要分别处理。
+				而在Metro风格下与REST服务的交互已不再区分，统一走同域处理。我们可以通过Windows 运行时下提供的API直接调用即可。不过这些我们无需关心，
+				在SuperMap iClient for JavaScript产品中我们已做了封装。将SuperMap iClient for JavaScript产品的API引入到新建的Metro风格项目中后，
+				可以像在浏览器下一样调用API。
+				</p>
+				<p>
+                Metro风格下与REST服务交互的代码如下：
+                </p>
+<pre>
+WinJS.xhr({
+　　url:”url”,
+　　type:”GET”,
+　　headers:object
+}).then(function(responseResult){
+　　
+},function(errorResult){
+　　
+});
+</pre>
+                
+            </div>
+            <div class='footer'>
+                <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+            </div>
+        </div>
+        <script src='./js/jquery.js'></script>
+        <script src='./js/bootstrap.js'></script>
+        <script src="./js/navbar.js"></script>
+        <script src="./js/GoTop.js" id="js_gotop"></script>
+    </body>
+</html>

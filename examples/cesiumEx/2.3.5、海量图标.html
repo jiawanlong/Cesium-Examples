@@ -1,0 +1,92 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+
+        // Cesium地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水体效果所需要的海岸线数据
+            requestVertexNormals: true// 请求地形照明数据
+        });
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // -------------billboardCollection方式加载-----------
+        // 本质就是PrimitiveCollection
+        // https://cesium.com/learn/cesiumjs/ref-doc/PrimitiveCollection.html
+        // pointPrimitiveCollection（点集合）
+        // labelCollection（label 集合）
+
+        var points = turf.randomPoint(50000, { bbox: [-180, -90, 180, 90] })
+        const billboardCollection = viewer.scene.primitives.add(
+            new Cesium.BillboardCollection()
+        );
+        points.features.forEach((k) => {
+            let cor = k.geometry.coordinates;
+            billboardCollection.add({
+                //根据距离缩放
+                scaleByDistance: new Cesium.NearFarScalar(2000000, 1, 8000000, 0.1),
+                position: Cesium.Cartesian3.fromDegrees(cor[0], cor[1]),
+                image: './icon.png',
+                width: 32,
+                height: 32,
+            });
+        })
+
+
+        // -------------entityCollection方式加载，不推荐-----------
+        // var points = turf.randomPoint(10000, { bbox: [-180, -90, 180, 90] })
+        // let myEntityCollection = new Cesium.CustomDataSource("clickEntityCollection");
+        // viewer.dataSources.add(myEntityCollection);
+
+        // points.features.forEach((k) => {
+        //     let cor = k.geometry.coordinates;
+        //     var entity2 = new Cesium.Entity({
+        //         position: Cesium.Cartesian3.fromDegrees(cor[0], cor[1]),
+        //         billboard: {
+        //             image: './icon.png',
+        //             width: 32,
+        //             height: 32,
+        //         }
+        //     });
+        //     myEntityCollection.entities.add(entity2);
+        // })
+
+
+        // axios.get('./weibo.json')//读取区域json
+        //     .then((response) => {
+        //         response.data[0].forEach((k) => {
+        //             let cor = k.geoCoord;
+        //             billboardCollection.add({
+        //                 //根据距离缩放
+        //                 scaleByDistance: new Cesium.NearFarScalar(2000000, 1, 8000000, 0.1),
+        //                 position: Cesium.Cartesian3.fromDegrees(cor[0], cor[1]),
+        //                 image: './icon.png',
+        //                 width: 12,
+        //                 height: 12,
+        //             });
+        //         })
+        //     })
+
+    </script>
+</body>
+
+</html>

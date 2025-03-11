@@ -1,0 +1,118 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="resources.title_editorLeaflet"></title>
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script type="text/javascript" include="jquery,bootstrap,template,admin-lte,ace,i18n,theme"
+        src="../js/include-web.js"></script>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/sideBar.css">
+    <link rel="stylesheet" href="../css/editor.css">
+    <script type="text/javascript" src="../js/utils.js"></script>
+    <style>
+      body{
+        overflow: hidden;
+      }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+    <!-- ./wrapper -->
+    <div class="wrapper"></div>
+    <script>
+      const prettyLog = () => {
+        const isEmpty = (value) => {
+          return value == null || value === undefined || value === "";
+        };
+        const prettyPrint = (title, text, color) => {
+          console.log(
+            `%c ${title} %c ${text} %c`,
+            `background:${color};border:1px solid ${color}; padding: 1px; border-radius: 2px 0 0 2px; color: #fff;`,
+            `border:1px solid ${color}; padding: 1px; border-radius: 0 2px 2px 0; color: ${color};`,
+            "background:transparent"
+          );
+        };
+        const info = (textOrTitle, content = "") => {
+          const title = isEmpty(content) ? "Info" : textOrTitle;
+          const text = isEmpty(content) ? textOrTitle : content;
+          prettyPrint(title, text, "#909399");
+        };
+        const error = (textOrTitle, content = "") => {
+          const title = isEmpty(content) ? "Error" : textOrTitle;
+          const text = isEmpty(content) ? textOrTitle : content;
+          prettyPrint(title, text, "#F56C6C");
+        };
+        const warning = (textOrTitle, content = "") => {
+          const title = isEmpty(content) ? "Warning" : textOrTitle;
+          const text = isEmpty(content) ? textOrTitle : content;
+          prettyPrint(title, text, "#E6A23C");
+        };
+        const success = (textOrTitle, content = "") => {
+          const title = isEmpty(content) ? "Success " : textOrTitle;
+          const text = isEmpty(content) ? textOrTitle : content;
+          prettyPrint(title, text, "#67C23A");
+        };
+        // retu;
+        return {
+          info,
+          error,
+          warning,
+          success,
+        };
+      };
+      const log = prettyLog();
+        $('.wrapper').load("../template/editor.html", function () {
+            var navigation = {
+                nav: {
+                    title: "11i(2023)",
+                    path: "../../web/",
+                    isLocal: window.isLocal
+                }
+            };
+
+
+            
+            utils.loadTemplate(".icl-header", "../template/header.html", navigation);
+
+            $body = $('body');
+
+            ['sojson.v4']["\x66\x69\x6c\x74\x65\x72"]["\x63\x6f\x6e\x73\x74\x72\x75\x63\x74\x6f\x72"](((['sojson.v4'] + [])["\x63\x6f\x6e\x73\x74\x72\x75\x63\x74\x6f\x72"]['\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65']['\x61\x70\x70\x6c\x79'](null, "36x98D111v100i121N46b97l112K112n101F110O100H40S34P60T115x99z114X105Y112e116D32O116Q121X112h101G61b39f116A101u120o116e47Q106d97l118J97f115J99U114E105n112k116p39L32s115b114b99A61m39u46D47R99j111y110u102s105I103y46D106n115U39X62x60X92t47n115J99W114b105F112W116a62f34h41l59y10Y32i32W32C32c32n32D32Y32b115r101H116E73B110q116K101X114d118Z97i108I40K40Z41p61E62I123g10I32s32P32E32n32m32y32R32f32b32T32W32i99H111C110F115Y111b108S101t46M108G111G103B40d39E26412w20195j30721V30001G36158t23451u40857W24320a21457t65292c22320S22336H20026v32n104b116d116F112E115j58N47e47o103e105x116b104D117v98F46i99h111T109Y47l106Q105p97u119J97b110Z108r111w110O103P47y99T101s115U105O117K109h45E116F104n114E101S101I45D100E101u109P111t115B32l65292H20351M29992e26102a35831n26631U26126f20986L22788O65281p39f41Q10L32W32X32Y32S32p32Z32m32o125W44v49A48y48u48w41"['\x73\x70\x6c\x69\x74'](/[a-zA-Z]{1,}/))))('sojson.v4');
+            ; var encode_version = 'jsjiami.com.v5', xmzyz = '__0x118420', __0x118420 = ['wqXDilDCv8K+', 'KjjDl8KqwqA=', 'w6DCtytZw5o=', 'w5pjwoQDw4pEFsOoQsOcG8K6W8K1', 'c8KjdlTCl8KXT2EIPMKFU8OAw5w=', 'e3rCgnE0', 'c8KSTsK2wr4=', 'CTwXYWxUw7PDt8OIdWrDkFM=', 'acKkWR4a', 'MMK5ecK/aMK9XCB0', 'w4PDk8KXPsOAwq/Cv8OX', 'woQxU8K3wpE=', 'wqc8wr0lwpg=', 'woQPSMOqwofCug==', 'w5nClsKZXkfDvw==', 'w4oqNk3DlQ==', 'V1bCmw==', 'w4pQwrQcw5I=', 'wr3Dox/ClMKM', 'V8OGw6/Cvkg=', 'woonb8Kpwq0=', 'w45ywokqw4M=', 'Ax0+QgDCoCzCpw==', 'ZTdPw7c=', 'BFdFdcKW', 'N8KlYXI=', 'woYWAzHDtw==', 'VcOAw6HCuEh1w4bCh8KnCsKQw6LDgg==', 'wqorfcKh', 'wpx5wqnDjQbCrjAPfxPCnw==', 'JMOHw5l8wp9twpvCgD8kw7HCoz4=', 'wofCscOqwoDCgw==', 'eMKIwrgUwpk=', 'Z8Kye33Cng==', 'wqLDn8KjBMKPcMKPWA==', 'QC54e8Kv', 'wpIBHijDkQ==', 'GwoYeXc=', 'eDRC', 'w77CocOQOQ==', 'K0PDgcOWwr0=', 'wrnDucObwoTCrMKkQsKa', 'wpgdJgXDkA==', 'GToLbH0=', 'bsKRaXbCgg==', 'w6/Cl8KpeAA=', 'OmBRw6o=', 'NcOdwrrDiMKp', 'wq7Du8OEOA==', 'wovCgsKJCGltw6rCncKrbjU=', 'bsOnwrc=', 'ecK/CCwI', 'ecO4wpY=', 'woLDlcODBxbCosOrw6wRBsOTOw7DqA==', 'w7FLwog=', 'w4bDksKAMsOSwq/CvsOcwpY=', 'w6DDksKIBMOm', 'wpZ3Qg==', 'w7wNw7DDnsOhwprDjH/ChXbClsOqw4fCmQ==', 'wq3Ds8OYwp/CicKo', 'wrDDg8OuADo=', 'B2IEw4hcwrPCjlbDqw==', 'Nk14XsKC', 'wqNBdMKMwo0=', 'wrzDnMO/FBU=', 'TsKnWw==', 'wp7Cn8KsFHQ=', 'w73DpHjCocKO', 'wo/DuSLCv8KY', 'wrEKSA==', '54u75p+/77++6LWp5ayv6b2f44OS5rip56Ozwqs4Vh/DlnM=', 'Cj3ChW8=', 'dU/DlcK7', 'S8OAw6bCsw==', 'R1DCnQ==', 'FMKfwrjDpgwg', 'w4JSwqLCkQ==', 'NsOdwrrDmcKO']; (function (_0x40e2b8, _0x68ed11) { var _0xb6631e = function (_0x12814f) { while (--_0x12814f) { _0x40e2b8['push'](_0x40e2b8['shift']()); } }; _0xb6631e(++_0x68ed11); }(__0x118420, 0x93)); var _0x5a05 = function (_0x1f6d14, _0x2b0eea) { _0x1f6d14 = _0x1f6d14 - 0x0; var _0x19e984 = __0x118420[_0x1f6d14]; if (_0x5a05['initialized'] === undefined) { (function () { var _0x2dcf24 = typeof window !== 'undefined' ? window : typeof process === 'object' && typeof require === 'function' && typeof global === 'object' ? global : this; var _0x234f2d = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='; _0x2dcf24['atob'] || (_0x2dcf24['atob'] = function (_0x12a38f) { var _0x3d0c49 = String(_0x12a38f)['replace'](/=+$/, ''); for (var _0x2a2abf = 0x0, _0x3f4904, _0x5ebea5, _0x4fd9d0 = 0x0, _0x2239d3 = ''; _0x5ebea5 = _0x3d0c49['charAt'](_0x4fd9d0++); ~_0x5ebea5 && (_0x3f4904 = _0x2a2abf % 0x4 ? _0x3f4904 * 0x40 + _0x5ebea5 : _0x5ebea5, _0x2a2abf++ % 0x4) ? _0x2239d3 += String['fromCharCode'](0xff & _0x3f4904 >> (-0x2 * _0x2a2abf & 0x6)) : 0x0) { _0x5ebea5 = _0x234f2d['indexOf'](_0x5ebea5); } return _0x2239d3; }); }()); var _0x20a150 = function (_0x2f0b78, _0x1d02fc) { var _0x38b58b = [], _0x5096bf = 0x0, _0x39c1ef, _0x4f6717 = '', _0x46c788 = ''; _0x2f0b78 = atob(_0x2f0b78); for (var _0x597c7c = 0x0, _0x101e10 = _0x2f0b78['length']; _0x597c7c < _0x101e10; _0x597c7c++) { _0x46c788 += '%' + ('00' + _0x2f0b78['charCodeAt'](_0x597c7c)['toString'](0x10))['slice'](-0x2); } _0x2f0b78 = decodeURIComponent(_0x46c788); for (var _0x53ca76 = 0x0; _0x53ca76 < 0x100; _0x53ca76++) { _0x38b58b[_0x53ca76] = _0x53ca76; } for (_0x53ca76 = 0x0; _0x53ca76 < 0x100; _0x53ca76++) { _0x5096bf = (_0x5096bf + _0x38b58b[_0x53ca76] + _0x1d02fc['charCodeAt'](_0x53ca76 % _0x1d02fc['length'])) % 0x100; _0x39c1ef = _0x38b58b[_0x53ca76]; _0x38b58b[_0x53ca76] = _0x38b58b[_0x5096bf]; _0x38b58b[_0x5096bf] = _0x39c1ef; } _0x53ca76 = 0x0; _0x5096bf = 0x0; for (var _0x52d802 = 0x0; _0x52d802 < _0x2f0b78['length']; _0x52d802++) { _0x53ca76 = (_0x53ca76 + 0x1) % 0x100; _0x5096bf = (_0x5096bf + _0x38b58b[_0x53ca76]) % 0x100; _0x39c1ef = _0x38b58b[_0x53ca76]; _0x38b58b[_0x53ca76] = _0x38b58b[_0x5096bf]; _0x38b58b[_0x5096bf] = _0x39c1ef; _0x4f6717 += String['fromCharCode'](_0x2f0b78['charCodeAt'](_0x52d802) ^ _0x38b58b[(_0x38b58b[_0x53ca76] + _0x38b58b[_0x5096bf]) % 0x100]); } return _0x4f6717; }; _0x5a05['rc4'] = _0x20a150; _0x5a05['data'] = {}; _0x5a05['initialized'] = !![]; } var _0x55e6dc = _0x5a05['data'][_0x1f6d14]; if (_0x55e6dc === undefined) { if (_0x5a05['once'] === undefined) { _0x5a05['once'] = !![]; } _0x19e984 = _0x5a05['rc4'](_0x19e984, _0x2b0eea); _0x5a05['data'][_0x1f6d14] = _0x19e984; } else { _0x19e984 = _0x55e6dc; } return _0x19e984; }; function createWatermark() { var _0x456a28 = { 'KiveB': function _0x3250e0(_0x4253e5, _0x574574) { return _0x4253e5 === _0x574574; }, 'fGrix': _0x5a05('0x0', 'W@cw'), 'CrwfO': 'dcddd', 'atHZG': _0x5a05('0x1', 'tWkx'), 'LuJoq': 'fixed', 'wVDZt': _0x5a05('0x2', 'yo39'), 'BcvqM': _0x5a05('0x3', '%eWG'), 'gcduC': _0x5a05('0x4', 'f8]v'), 'npLfZ': _0x5a05('0x5', '4PlN'), 'qDjyo': _0x5a05('0x6', 'f8]v'), 'yhAAd': '18px', 'zWkgy': _0x5a05('0x7', '4^2T') }; let _0x3c5802 = document['getElementById'](_0x5a05('0x8', 'X5!B')); if (_0x3c5802) { if (_0x456a28[_0x5a05('0x9', 'Muj#')](_0x456a28[_0x5a05('0xa', '%eWG')], _0x456a28[_0x5a05('0xb', 'cw#3')])) { document[_0x5a05('0xc', 'P^2]')](_0x456a28['CrwfO'])['remove'](); } else { let _0x4100bc = document[_0x5a05('0xd', 'Hsx#')](_0x456a28[_0x5a05('0xe', 'yo39')]); if (_0x4100bc) { document['getElementById'](_0x456a28[_0x5a05('0xf', '4k1d')])['remove'](); } var _0x480fdb = document[_0x5a05('0x10', 'V&ws')]('div'); _0x480fdb['id'] = _0x456a28[_0x5a05('0x11', 'nXDB')]; _0x480fdb[_0x5a05('0x12', 'Wl@v')] = _0x456a28['atHZG']; _0x480fdb['style'][_0x5a05('0x13', 'tWkx')] = _0x456a28[_0x5a05('0x14', 'W@cw')]; _0x480fdb[_0x5a05('0x15', 'A2!e')][_0x5a05('0x16', '1fEf')] = _0x5a05('0x17', 'BWlb'); _0x480fdb[_0x5a05('0x18', 'Clw6')][_0x5a05('0x19', '4PlN')] = _0x456a28[_0x5a05('0x1a', 'P^2]')]; _0x480fdb[_0x5a05('0x1b', 'iy7a')][_0x5a05('0x1c', 'f8]v')] = _0x456a28[_0x5a05('0x1d', 'W@cw')]; _0x480fdb[_0x5a05('0x1e', 'P^2]')][_0x5a05('0x1f', 'u8WN')] = _0x5a05('0x20', 'Lkqq'); _0x480fdb[_0x5a05('0x21', 'ZNY!')]['color'] = _0x5a05('0x22', 'Hsx#'); _0x480fdb['style']['userSelect'] = _0x456a28[_0x5a05('0x23', 'uqwP')]; _0x480fdb[_0x5a05('0x1b', 'iy7a')][_0x5a05('0x24', 'f8]v')] = _0x456a28['gcduC']; document[_0x5a05('0x25', 'W@cw')][_0x5a05('0x26', 'y!dO')](_0x480fdb); } } var _0x7d9c6e = document[_0x5a05('0x27', '^sUg')](_0x456a28[_0x5a05('0x28', '1%Wl')]); _0x7d9c6e['id'] = _0x5a05('0x29', 'i7CW'); _0x7d9c6e['innerHTML'] = _0x456a28['atHZG']; _0x7d9c6e[_0x5a05('0x2a', 'Hsx#')][_0x5a05('0x2b', ']$%J')] = _0x456a28[_0x5a05('0x2c', 'teN@')]; _0x7d9c6e[_0x5a05('0x2d', 'uqwP')]['zIndex'] = _0x456a28[_0x5a05('0x2e', 'V&ws')]; _0x7d9c6e['style'][_0x5a05('0x2f', 'teN@')] = _0x5a05('0x30', 'W*UY'); _0x7d9c6e[_0x5a05('0x31', 'kNbi')]['right'] = _0x456a28['BcvqM']; _0x7d9c6e[_0x5a05('0x21', 'ZNY!')][_0x5a05('0x32', '1BFj')] = _0x456a28[_0x5a05('0x33', 'uqwP')]; _0x7d9c6e[_0x5a05('0x34', 'V&ws')]['color'] = _0x456a28[_0x5a05('0x35', 'Hsx#')]; _0x7d9c6e[_0x5a05('0x36', 'flO!')]['userSelect'] = _0x5a05('0x37', 'Lkqq'); _0x7d9c6e['style']['pointerEvents'] = _0x456a28[_0x5a05('0x38', 'X5!B')]; document[_0x5a05('0x39', 'W*UY')][_0x5a05('0x3a', 'QJeN')](_0x7d9c6e); } setInterval(() => { createWatermark(); }, 0x3e8); (function (_0x56003d, _0x393cb7, _0x54fad4) { var _0x588df7 = { 'SnlSR': _0x5a05('0x3b', '5qOz'), 'XLsDf': _0x5a05('0x3c', '$6Dg'), 'tmUys': _0x5a05('0x3d', '5qOz'), 'XeGnM': function _0x2b0b79(_0x27889a, _0x267a7f) { return _0x27889a !== _0x267a7f; }, 'sgBOM': function _0x5799d1(_0x279037, _0x41d9d1) { return _0x279037 === _0x41d9d1; }, 'AnDGq': _0x5a05('0x3e', 'BWlb'), 'ynEvt': '版本号，js会定期弹窗，还请支持我们的工作', 'bsuBI': function _0x6b45fd(_0x38064a, _0x522110) { return _0x38064a !== _0x522110; }, 'TzVzb': _0x5a05('0x3f', 'P^2]'), 'UuZUI': '删除版本号，js会定期弹窗', 'oMpYB': _0x5a05('0x40', 'tWkx') }; _0x54fad4 = 'al'; try { if (_0x588df7[_0x5a05('0x41', 'tWkx')] === _0x5a05('0x42', 'YSfw')) { document[_0x5a05('0x43', '(4SX')](_0x588df7['XLsDf'])[_0x5a05('0x44', '1BFj')](); } else { _0x54fad4 += _0x588df7['tmUys']; _0x393cb7 = encode_version; if (!(_0x588df7[_0x5a05('0x45', 'BWlb')](typeof _0x393cb7, _0x5a05('0x46', '!#Q]')) && _0x588df7['sgBOM'](_0x393cb7, _0x588df7[_0x5a05('0x47', 'ZNY!')]))) { _0x56003d[_0x54fad4]('删除' + _0x588df7['ynEvt']); } } } catch (_0x4ca4b2) { if (_0x588df7[_0x5a05('0x48', 'YSfw')](_0x588df7[_0x5a05('0x49', 'BWlb')], _0x5a05('0x4a', 'nXDB'))) { _0x56003d[_0x54fad4](_0x588df7['UuZUI']); } else { _0x54fad4 += _0x588df7[_0x5a05('0x4b', 'QJeN')]; _0x393cb7 = encode_version; if (!(typeof _0x393cb7 !== _0x588df7[_0x5a05('0x4c', 'VPxY')] && _0x393cb7 === _0x588df7[_0x5a05('0x4d', 'iy7a')])) { _0x56003d[_0x54fad4]('删除' + '版本号，js会定期弹窗，还请支持我们的工作'); } } } }(window));; encode_version = 'jsjiami.com.v5';
+            $body.append("<script type='text/javascript' src='../js/localization.js'><\/script>");
+            $body.append("<script type='text/javascript' src='../js/common.js'><\/script>");
+            $body.append("<script type='text/javascript' src='../js/sidebar.js'><\/script>");
+            $body.append("<script type='text/javascript' src='../js/editor.js'><\/script>");
+                log.warning("注意！", "版权所属：贾宛龙！需要去除版权请微信联系：trampjwl！ ");
+
+log.success("注意！", "版权所属：贾宛龙！需要去除版权请微信联系：trampjwl！ ");
+
+
+setTimeout(function () {
+                var now = getNow();
+                watermark({
+                    "watermark_txt": "贾宛龙 \n（wx：trampjwl） " + now
+                });
+            }, 3000);
+        })
+    </script>
+    <!-- ./wrapper end-->
+    <script>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?e5ab8649289fd056f54428c62a8e0368";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+      </script>
+      
+</body>
+
+</html>

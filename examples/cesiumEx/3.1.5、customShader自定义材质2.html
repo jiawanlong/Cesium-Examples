@@ -1,0 +1,261 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div style="position: absolute; z-index: 1000; left: 0;top: 0;">
+        <button onclick="customShader1()">贴图</button>
+        <button onclick="customShader2()">贴图2</button>
+        <button onclick="customShader3()">贴图3</button>
+        <button onclick="clears()">清除</button>
+    </div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        function customShader1() {
+            let customShader = new Cesium.CustomShader({
+                // lightingModel: Cesium.LightingModel.UNLIT,
+                //  lightingModel: Cesium.LightingModel.PBR,
+                //设置变量，由顶点着色器传递给片元着色器
+                varyings: {
+                    v_normalMC: Cesium.VaryingType.VEC3,
+                    v_st: Cesium.VaryingType.VEC3
+                },
+                //外部传给顶点着色器或者片元着色器
+                uniforms: {
+                    u_texture: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    },
+                    u_texture1: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall1.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    }
+                },
+                //贴纹理
+                //顶点着色器
+                //将法向量从顶点着色器设置变量传给片元着色器
+                vertexShaderText: `
+                    void vertexMain(VertexInput vsInput, inout czm_modelVertexOutput vsOutput) {
+                            v_normalMC = vsInput.attributes.normalMC;
+                            v_st=vsInput.attributes.positionMC ;   
+                }`,
+                //片元着色器
+                fragmentShaderText: `
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                        vec3 positionMC = fsInput.attributes.positionMC;
+                        //这里是设置要贴图的图片的尺寸，设置小了会重复
+                        float width = 30.0;
+                        float height = 70.0;
+                        vec3 rgb;
+                        //这是是设置了屋顶的颜色，当和法向量平行时，就是屋顶，这里设置0.95，相当于垂直，建筑物四周开始贴图
+                        if (dot(vec3(0.0, 1.0, 0.0), v_normalMC) > 0.95) {
+                            material.diffuse = vec3(0.65, 0.65, 0.65);
+                        } else {
+                            float textureX = 0.0;
+                            float dotYAxis = dot(vec3(0.0, 0.0, 1.0), v_normalMC);
+                            // cos(45deg) 约等于 0.71，这里是建筑物四周的向量与法向量会大于四十五度夹角
+                            if (dotYAxis > 0.71 || dotYAxis < -0.71) {
+                            //x代表的是前后面
+                                textureX = mod(positionMC.x, width) / width;
+                            } else {
+                            //z代表的是左右面
+                                textureX = mod(positionMC.z, width) / width;
+                            }
+                            float textureY = mod(positionMC.y, height) / height;
+                            //我这里是根据建筑物高度贴了两张不同的图片
+                            if (positionMC.y > 40.0) {
+                                rgb = texture(u_texture, vec2(textureX, textureY)).rgb;       
+                            } else {
+                                rgb = texture(u_texture1, vec2(textureX, textureY)).rgb;
+                            }
+                            
+                            material.diffuse = rgb;
+                        }
+                    }`
+            })
+
+            tileset.customShader = customShader
+        }
+
+        function customShader2() {
+
+            let customShader = new Cesium.CustomShader({
+                // lightingModel: Cesium.LightingModel.UNLIT,
+                //  lightingModel: Cesium.LightingModel.PBR,
+                //设置变量，由顶点着色器传递给片元着色器
+                varyings: {
+                    v_normalMC: Cesium.VaryingType.VEC3,
+                    v_st: Cesium.VaryingType.VEC3
+                },
+                //外部传给顶点着色器或者片元着色器
+                uniforms: {
+                    u_texture: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    },
+                    u_texture1: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    }
+                },
+                //贴纹理
+                //顶点着色器
+                //将法向量从顶点着色器设置变量传给片元着色器
+                vertexShaderText: `
+                void vertexMain(VertexInput vsInput, inout czm_modelVertexOutput vsOutput) {
+                        v_normalMC = vsInput.attributes.normalMC;
+                        v_st=vsInput.attributes.positionMC ;   
+                }`,
+                //片元着色器
+                fragmentShaderText: `
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                        vec3 positionMC = fsInput.attributes.positionMC;
+                        //这里是设置要贴图的图片的尺寸，设置小了会重复
+                        float width = 30.0;
+                        float height = 70.0;
+                        vec3 rgb;
+                        //这是是设置了屋顶的颜色，当和法向量平行时，就是屋顶，这里设置0.95，相当于垂直，建筑物四周开始贴图
+                        if (dot(vec3(0.0, 1.0, 0.0), v_normalMC) > 0.95) {
+                            material.diffuse = vec3(0.65, 0.65, 0.65);
+                        } else {
+                            float textureX = 0.0;
+                            float dotYAxis = dot(vec3(0.0, 0.0, 1.0), v_normalMC);
+                            // cos(45deg) 约等于 0.71，这里是建筑物四周的向量与法向量会大于四十五度夹角
+                            if (dotYAxis > 0.71 || dotYAxis < -0.71) {
+                            //x代表的是前后面
+                                textureX = mod(positionMC.x, width) / width;
+                            } else {
+                            //z代表的是左右面
+                                textureX = mod(positionMC.z, width) / width;
+                            }
+                            float textureY = mod(positionMC.y, height) / height;
+                            //我这里是根据建筑物高度贴了两张不同的图片
+                            if (positionMC.y > 30.0) {
+                                rgb = texture(u_texture, vec2(textureX, textureY)).rgb;       
+                            } else {
+                                rgb = texture(u_texture1, vec2(textureX, textureY)).rgb;
+                            }
+                            
+                            material.diffuse = rgb;
+
+                            //此处以下为光线效果
+                            float _baseHeight = 10.0; // 物体的基础高度，需要修改成一个合适的建筑基础高度
+                            float _glowRange = 120.0; // 光环的移动范围(高度)
+
+                            float vtxf_height = fsInput.attributes.positionMC.y - _baseHeight;
+
+                            float vtxf_a13 = fract(czm_frameNumber / 360.0); //此处括号内分母为移动速度，数值越大，速度越慢
+                            float vtxf_h = clamp(vtxf_height / _glowRange, 0.0, 1.0);
+                            vtxf_a13 = abs(vtxf_a13 - 0.5) * 2.0;
+                            float vtxf_diff = step(0.01, abs(vtxf_h - vtxf_a13)); // 0.1 为高亮光条的范围（粗细）
+                            material.diffuse += material.diffuse * (1.0 - vtxf_diff);
+                        }
+                    }`
+            })
+
+            tileset.customShader = customShader
+        }
+        function customShader3() {
+            let customShader = new Cesium.CustomShader({
+                varyings: {
+                    v_normalMC: Cesium.VaryingType.VEC3,
+                    v_st: Cesium.VaryingType.VEC3
+                },
+                //外部传给顶点着色器或者片元着色器
+                uniforms: {
+                    u_texture: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    },
+                    u_texture1: {
+                        value: new Cesium.TextureUniform({
+                            url: "./wall1.jpg"
+                        }),
+                        type: Cesium.UniformType.SAMPLER_2D
+                    }
+                },
+                //贴纹理
+                //顶点着色器
+                //将法向量从顶点着色器设置变量传给片元着色器
+                vertexShaderText: `
+                    void vertexMain(VertexInput vsInput, inout czm_modelVertexOutput vsOutput) {
+                            v_normalMC = vsInput.attributes.normalMC;
+                            v_st=vsInput.attributes.positionMC ;   
+                }`,
+                //片元着色器
+                fragmentShaderText: `
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                        vec3 positionMC = fsInput.attributes.positionMC;
+                        //这里是设置要贴图的图片的尺寸，设置小了会重复
+                        float width = 30.0;
+                        float height = 70.0;
+                        vec3 rgb;
+                        //这是是设置了屋顶的颜色，当和法向量平行时，就是屋顶，这里设置0.95，相当于垂直，建筑物四周开始贴图
+                        if (dot(vec3(0.0, 1.0, 0.0), v_normalMC) > 0.95) {
+                            material.diffuse = vec3(0.65, 0.65, 0.65);
+                        } else {
+                            float textureX = 0.0;
+                            float dotYAxis = dot(vec3(0.0, 0.0, 1.0), v_normalMC);
+                            // cos(45deg) 约等于 0.71，这里是建筑物四周的向量与法向量会大于四十五度夹角
+                            if (dotYAxis > 0.71 || dotYAxis < -0.71) {
+                                textureX = mod(positionMC.x, width) / width;
+                            } else {
+                                textureX = mod(positionMC.z, width) / width;
+                            }
+                            float textureY = mod(positionMC.y, height) / height;
+                            
+                            rgb = texture(u_texture1, vec2(textureX, textureY)).rgb;      
+                            material.diffuse = rgb;
+                        }
+                    }`
+            })
+
+            tileset.customShader = customShader
+        }
+        function clears() {
+            let customShader = new Cesium.CustomShader({})
+            tileset.customShader = customShader
+        }
+
+    </script>
+</body>
+
+</html>

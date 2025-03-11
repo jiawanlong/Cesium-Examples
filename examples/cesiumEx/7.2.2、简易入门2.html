@@ -1,0 +1,75 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute; top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {});
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+
+
+        //具体可见 cesium.com/learn/cesiumjs/ref-doc/Material.html
+        const MaterialType = "CustomMaterialType";
+
+        function CustomMaterialProperty(options) {
+            this._definitionChanged = new Cesium.Event();
+
+            //options参数接收材质参数
+        }
+        Object.defineProperties(CustomMaterialProperty.prototype, {
+            isConstant: {
+                get: function () {
+                    return false;
+                },
+            },
+            definitionChanged: {
+                get: function () {
+                    return this._definitionChanged;
+                },
+            },
+        });
+        CustomMaterialProperty.prototype.getType = function (time) {
+            return MaterialType;
+        };
+        CustomMaterialProperty.prototype.getValue = function (time, result) {
+            if (!Cesium.defined(result)) {
+                result = {};
+            }
+            //将材质参数设置到result对象后返回
+            return result;
+        };
+        CustomMaterialProperty.prototype.equals = function (other) {
+            return (
+                this === other || //
+                (other instanceof CustomMaterialProperty
+                    //&& //判断两个材质对象是否相等 如果类型一致且参数都相同表示相等
+                )
+            );
+        };
+
+
+    </script>
+</body>
+
+</html>

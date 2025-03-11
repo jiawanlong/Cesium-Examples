@@ -1,0 +1,73 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {});
+    viewer.scene.debugShowFramesPerSecond = true;
+
+    var rotation = 0; //纹理旋转角度  
+    var amount = 4;        //旋转变化量  
+    var rader = {
+      position: Cesium.Cartesian3.fromDegrees(114.40372, 30.52252),
+      ellipse: {
+        semiMajorAxis: 300.0,
+        semiMinorAxis: 300.0,
+        //指定材质  
+        // -------------------自己可以调整png------------------------
+        material: new Cesium.ImageMaterialProperty({
+          // image: './color1.png',
+          image: './color.png',
+          color: new Cesium.Color(1.0, 0.0, 0.0, 0.7),
+        }),
+        // 不设置高度则无法渲染外框线  
+        height: 0.0,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,  
+        //外边框  
+        outline: true,
+        outlineWidth: 2,
+        outlineColor: new Cesium.Color(1.0, 1.0, 0.0, 1.0),
+
+        //纹理旋转角度通过CallbackProperty回调  
+        stRotation: new Cesium.CallbackProperty(function () {
+          rotation += amount;
+          if (rotation >= 360 || rotation <= -360) {
+            rotation = 0;
+          }
+          //度数转弧度  
+          return Cesium.Math.toRadians(rotation);
+        }, false)
+      }
+    }
+    //将rader添加进entity集合  
+    viewer.entities.add(rader)
+
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(114.40372, 30.52252, 2000)
+    });
+
+  </script>
+</body>
+
+</html>

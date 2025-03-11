@@ -1,0 +1,87 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <style>
+        #menu {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+        }
+
+        #video_dom {
+            display: none;
+            position: absolute;
+            top: 30vh; 
+            left: 30vw;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div id="menu">
+
+    </div>
+    <video id="video_dom" preload="auto" autoPlay loop>
+        <source src="./video.mp4" type="video/mp4" />
+    </video>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        var videoElement = document.getElementById('video_dom');
+        videoElement.play();
+
+        // 立体的
+        var lt = [
+            114.25985245208585, 30.5752892693654, 14.23,
+            114.25923491594841, 30.5752027998838, 13.62,
+            114.25922774520328, 30.5752225398922, 47.51,
+            114.25985290311769, 30.5753018567495, 47.57,
+            114.25985245208585, 30.5752892693617, 14.23
+        ]
+
+        viewer.entities.add({
+            polygon: {
+                hierarchy: {
+                    positions: Cesium.Cartesian3.fromDegreesArrayHeights(lt)
+                },
+                material: videoElement,
+                perPositionHeight: true,
+                outline: true
+            }
+        });
+
+        // 平面的
+        var pm = [114.26109123956515, 30.575196063095532, 114.26002868416131, 30.575029970052253,
+            114.25995067898559, 30.575610284720895, 114.26093508652325, 30.57571375633287, 114.26109123956515,
+            30.575196063095532
+        ]
+        viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray(pm),
+                material: videoElement
+            }
+        });
+
+        viewer.zoomTo(viewer.entities);
+
+    </script>
+</body>
+
+</html>

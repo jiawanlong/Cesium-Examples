@@ -1,0 +1,474 @@
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url("../images/glyphicons-halflings-regular.eot");
+    src: url("../images/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"),
+    url("../images/glyphicons-halflings-regular.woff") format("woff"),
+    url("../images/glyphicons-halflings-regular.ttf") format("truetype"),
+    url("../images/glyphicons-halflings-regular.svg#fontcustom") format("svg");
+}
+
+.sticklr .notification-count {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: #555;
+    box-shadow: 0 0 3px #999;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    color: #f0f0f0;
+    cursor: default;
+    font-size: 10px;
+    line-height: 12px;
+    text-indent: 3px;
+    position: absolute;
+    top: 2px;
+    left: 200px;
+    z-index: 96;
+}
+
+.sticklr  td {
+    width: 15px;
+    padding-left: 50px;
+}
+
+.sticklr .calendar td:hover {
+    /*background: #eaeaea;*/
+    font-weight: bold;
+}
+.sticklr,
+.sticklr * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #000;
+    vertical-align: baseline;
+}
+
+.sticklr,
+.sticklr > li > ul {
+    list-style-type: none;
+}
+
+.sticklr {
+    position: fixed;
+    top: 40%;
+    left: 0;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    /*border: 1px solid #b7b7b7;*/
+    border-left: none;
+
+    box-shadow: 2px 2px 5px #000;
+    /*-moz-box-shadow: 0 0 5px #ccc;*/
+    /*-webkit-box-shadow: 0 0 5px #ccc;*/
+    width: 25px;
+    overflow: visible;
+    z-index: 90;
+}
+
+.sticklr-right {
+    left: auto;
+    right: 0;
+    border-right: none;
+    /*border-left: 1px solid #b7b7b7;*/
+}
+
+.sticklr > li {
+    position: relative;
+    text-align: center;
+}
+
+
+/*.sticklr > li > a {*/
+    /*display: block;*/
+    /*width: 16px;*/
+    /*height: 16px;*/
+    /*padding: 4px;*/
+    /*图标的背景*/
+    /*background-color: #fff;*/
+    /*background-color: rgba(255, 255, 255, 1);*/
+    /*background-position: 4px 4px;*/
+    /*background-repeat: no-repeat;*/
+/*}*/
+.sticklr > li > a.notArrow >span{
+    display: none;
+}
+.sticklr > li > a:hover{
+    /*border: 1px solid #868686;*/
+    /*box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+    /*-moz-box-shadow:0px 0px 2px 2px  #ccc inset ;*/
+    /*-webkit-box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+    cursor: pointer;
+}
+
+.sticklr > li > input {
+    display: block;
+    width: 16px;
+    height: 16px;
+    padding: 1px;
+    /*background-color: #f0f0f0;*/
+    /*background-color: rgba(240, 240, 240, 0.75);*/
+    background-position: 4px 4px;
+    background-repeat: no-repeat;
+}
+/*边界颜色*/
+.sticklr > li {
+    /*border-bottom: 1px solid #f7f7f7;*/
+    /*border-right: 1px solid #f7f7f7;*/
+    /*border-top: 1px solid #ccc;*/
+}
+
+.sticklr > li:first-child {
+    /*border-top: 1px solid #f7f7f7;*/
+}
+
+.sticklr > li:last-child {
+    border-bottom: 1px solid #f7f7f7;
+    border-bottom: 0px;
+}
+
+.sticklr > li > input:hover {
+    background-color: #eaeaea;
+}
+
+.sticklr > li > ul {
+    display: none;
+    position: absolute;
+    left: 26px;
+    top: -1px;
+    width: 90px;
+    overflow: hidden;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid #b7b7b7;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    box-shadow: 0 0 5px #ccc;
+    -moz-box-shadow: 0 0 5px #ccc;
+    -webkit-box-shadow: 0 0 5px #ccc;
+    z-index: 95;
+}
+
+.sticklr-right > li > ul {
+    left: auto;
+    right: 25px;
+}
+
+.sticklr > li > ul:nth-child(3) {
+    left: 140px;
+}
+
+.sticklr > li > ul:nth-child(4) {
+    left: 387px;
+}
+
+.sticklr > li > ul:nth-child(5) {
+    left: 568px;
+}
+
+.sticklr > li > ul:nth-child(6) {
+    left: 749px;
+}
+
+.sticklr > li > ul:nth-child(7) {
+    left: 930px;
+}
+
+.sticklr-right > li > ul:nth-child(3) {
+    left: auto;
+    right: 206px;
+}
+
+.sticklr-right > li > ul:nth-child(4) {
+    left: auto;
+    right: 387px;
+}
+
+.sticklr-right > li > ul:nth-child(5) {
+    left: auto;
+    right: 568px;
+}
+
+.sticklr-right > li > ul:nth-child(6) {
+    left: auto;
+    right: 749px;
+}
+
+.sticklr-right > li > ul:nth-child(7) {
+    left: auto;
+    right: 930px;
+}
+
+.sticklr > li:hover > ul {
+    display: block;
+    float: left;
+}
+
+.sticklr.sticklr-js > li:hover > ul {
+    display: none;
+}
+
+.sticklr > li > ul > li {
+    border-bottom: 1px solid #f7f7f7;
+    border-right: 1px solid #f7f7f7;
+    border-top: 1px solid #ccc;
+    width: 90px;
+    text-shadow: 1px 1px 1px #fff;
+    padding: 1px;
+    /*margin: 1px;*/
+}
+
+.sticklr > li > ul > li:first-child {
+    border-top: 1px solid #f7f7f7;
+    padding:0px;
+    margin: 0px;
+}
+
+.sticklr > li > ul > li:last-child {
+    border-bottom: 1px solid #f7f7f7;
+}
+
+.sticklr > li > ul > li {
+    border: none !ie;
+}
+
+.sticklr > li > ul > li > a {
+    display: block;
+    padding: 8px 10px 8px 32px;
+    background-color: #f0f0f0;
+    background-color: rgba(240, 240, 240, 0.75);
+    background-position: 10px;
+    background-repeat: no-repeat;
+    color: #555;
+    min-height: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent !ie;
+}
+.sticklr > li > ul > li > span {
+    display: block;
+    padding: 8px 10px 8px 32px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    background-position: 10px;
+    background-repeat: no-repeat;
+    color: #555;
+    font-size: 14px;
+    min-height: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    background-color: transparent !ie;
+}
+
+.sticklr > li > ul > li > input {
+    display: block;
+    padding: 8px 10px 8px 32px;
+    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
+    background-position: 10px;
+    background-repeat: no-repeat;
+    color: #000;
+    min-height: 18px;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    background-color: transparent !ie;
+}
+
+.sticklr > li > ul > li > a:hover {
+    background-color: #eaeaea;
+}
+
+.sticklr > li > ul > li > input:hover {
+    background-color: #ffffff;
+
+    border-bottom: 1px solid #868686;
+    /*box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+    /*-moz-box-shadow:0px 0px 2px 2px  #ccc inset ;*/
+    /*-webkit-box-shadow: 0px 0px 2px 2px  #ccc inset ;*/
+}
+
+.sticklr > li > ul > li.sticklr-title > a {
+    padding-left: 10px;
+    background-color: #e6e6e6;
+    cursor: default;
+    font-weight: bold;
+    background-color: transparent !ie;
+}
+.sticklr > li > ul > li.sticklr-title > span {
+    padding-left: 10px;
+    background-color: rgba(216, 213, 213, 0.9);
+    cursor: default;
+    font-weight: bold;
+}
+
+.sticklr > li > ul > li.sticklr-title > a:hover {
+    background-color: #e6e6e6;
+    background-color: transparent !ie;
+}
+
+.sticklr > li > ul > li.sticklr-title > input:hover {
+    cursor: pointer;
+    background-color: #e6e6e6;
+    background-color: transparent !ie;
+}
+
+.sticklr > li > ul > li > table {
+    border-collapse:collapse;
+    border-spacing: 0;
+}
+
+.sticklr > li > ul > li > form {
+    padding: 8px 10px;
+}
+
+.sticklr > li > ul > li input,
+.sticklr > li > ul > li select,
+.sticklr > li > ul > li textarea,
+.sticklr > li > ul > li button  {
+    margin: 4px 0;
+    padding: 4px;
+}
+
+
+
+.sticklr-arrow {
+    position: absolute;
+    left: 25px;
+    top: 8px;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #8E8D8D;
+    border-right: none;
+}
+
+.sticklr-right .sticklr-arrow {
+    left: auto;
+    right: 25px;
+    border-right: 5px solid #b7b7b7;
+    border-left: none;
+}
+
+/* icons */
+.plotting-lyphicon-save-simulationMap:before {
+    content: "\e172";
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}
+
+.plotting-lyphicon-draw-point:before {
+    content: "\e204";
+    font-size: 20px;
+    color: rgb(68, 58, 58);
+}
+
+.plotting-glyphicon-draw-line:before {
+    content: "\e205";
+    font-size: 20px;
+    color: rgb(68, 58, 58);
+}
+
+.plotting-glyphicon-draw-polygon:before {
+    content: "\e206";
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+.plotting-glyphicon-draw-flag:before {
+    content: "\e301";
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+.plotting-glyphicon-draw-arrow:before {
+    content: "\e302";
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+.plotting-glyphicon-draw-deactivate:before {
+    content: "\e303";
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.plotting-glyphicon-draw-removeAll:before {
+    content: "\e020";
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-plus:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-pencil:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-edit:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-lock:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-check:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-align-justify:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-retweet:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-adjust:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-gift:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-cog:before {
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-arrow-left{
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-arrow-right{
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-th-large{
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}
+
+.glyphicon-th{
+    font-size: 18px;
+    color: rgb(0, 0, 0);
+}

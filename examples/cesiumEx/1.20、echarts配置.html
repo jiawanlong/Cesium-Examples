@@ -1,0 +1,91 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="./echarts/5.4.3/echarts.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%">
+
+    </div>
+    <script type="text/javascript">
+
+        var chartDom = document.getElementById('map');
+        var myChart = echarts.init(chartDom);
+        var option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['name1', 'name2']
+            },
+
+            // -----------------------横轴---------------
+            xAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+
+                // 轴线
+                axisLine: {
+                    show: true
+                },
+                // 轴线上的小刻度线
+                axisTick: {
+                    show: true
+                },
+                // 标签
+                axisLabel: {
+                    show: true,
+                },
+                // 分割线
+                splitLine: {
+                    show: true
+                }
+            },
+
+            // -----------------------纵轴--------------------
+            yAxis: [
+                {   
+                    alignTicks: true, // 可以把多个坐标轴合并在一起，只保留一个轴，刻度与轴重叠。
+                    type: 'value',
+                    name: 'name1',
+                    // 纵轴1配置，可参考横轴的配置（轴线、刻度线、分割线、标签）
+                },
+
+                {
+                    type: 'value',
+                    name: 'name2',
+                    // 纵轴1配置，可参考横轴的配置（轴线、刻度线、分割线、标签）
+                }
+            ],
+
+            // 数据
+            series: [
+                {
+                    data: [150, 230, 224, 218, 135, 147, 260],
+                    type: 'line',
+                    name: 'name1'
+                },
+                {
+                    data: [10, 230, 224, 18, 135, 147, 60],
+                    yAxisIndex: 1,
+                    type: 'line',
+                    name: 'name2'
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+
+        window.addEventListener("resize", function () {
+            myChart.resize();
+        });
+    </script>
+</body>
+
+</html>

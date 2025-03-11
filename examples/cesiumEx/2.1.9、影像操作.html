@@ -1,0 +1,76 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        
+        // 加载单张图片
+        var imageryProvider = new Cesium.SingleTileImageryProvider({
+            "url": "./word.jpg",
+            "credit": "测试",
+        })
+        let lay = viewer.imageryLayers.addImageryProvider(imageryProvider)
+
+
+        // http://cesium.xin/cesium/cn/Documentation1.72/ImageryLayer.html
+        lay.alpha = 0.5; // 0.0  全透明.  1.0 不透明.
+        lay.brightness = 2.0; // > 1.0 增加亮度  < 1.0减少亮度
+        lay.contrast = 2.0;  //对比度
+        lay.hue = 2.0; //色调
+        lay.saturation = 2.0; //饱和度
+
+
+        // http://cesium.xin/cesium/cn/Documentation1.72/ImageryLayerCollection.html?classFilter=ImageryLayerCollection
+
+        // 图层顺序
+        viewer.scene.imageryLayers.lower(lay)
+        viewer.scene.imageryLayers.lowerToBottom(lay)
+        viewer.scene.imageryLayers.raise(lay)
+        viewer.scene.imageryLayers.raiseToTop(lay)
+
+        // 获取图层
+        viewer.scene.imageryLayers.get(0)
+        viewer.scene.imageryLayers.indexOf(lay)
+
+        // 是否包含图层
+        viewer.scene.imageryLayers.contains(lay)
+
+        // 删除图层
+        // viewer.scene.imageryLayers.remove   (lay,true)
+        // viewer.scene.imageryLayers.removeAll    ()
+
+        function getLayerIndexById(layerId) {
+            var imageryLayers = viewer.imageryLayers;
+
+            // 遍历imageryLayers中的图层，查找指定ID的图层
+            for (var i = 0; i < imageryLayers.length; i++) {
+                var layer = imageryLayers.get(i);
+
+                // 检查图层的ID是否与指定ID匹配
+                if (layer.id === layerId) {
+                    // 返回图层在imageryLayers中的索引位置
+                    return i;
+                }
+            }
+
+            // 如果没有找到指定ID的图层，则返回-1
+            return -1;
+        }
+
+    </script>
+</body>
+
+</html>

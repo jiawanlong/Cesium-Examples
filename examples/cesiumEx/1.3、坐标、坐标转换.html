@@ -1,0 +1,87 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./latlng.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 0、常用的坐标系
+        // 笛卡尔坐标：new Cesium.Cartesian3(x, y, z)  443621.9353276883
+        // 弧度坐标：new Cesium.Cartographic(longitude, latitude, height) -1.657287975770561  
+        // 经纬度： Cesium.Cartesian3.fromDegrees(longitude, latitude, height)  120  
+
+        // 1、heading、pitch、roll
+        // 偏航（heading），即机头朝左右摇摆 
+        // 俯仰(pitch)，机头上下摇摆
+        // 滚转(roll)，机身绕中轴线旋转
+
+        // 2、角度转弧度互相转换
+        // 【1】角度转弧度：var radius = Cesium.Math.toRadians(90);
+        // 【2】弧度转角度：var angle = Cesium.Math.toDegrees(1.5707963267948966);
+
+        // 获取当前相机的参数（笛卡尔坐标系）
+        console.log(
+            "x:" + viewer.scene.camera.positionWC.x + "," +
+            "y:" + viewer.scene.camera.positionWC.y + "," +
+            "z:" + viewer.scene.camera.positionWC.z + "," +
+            "heading:" + viewer.scene.camera.heading + "," +
+            "pitch:" + viewer.scene.camera.pitch + "," +
+            "roll:" + viewer.scene.camera.roll + ","
+        )
+
+        //3、 笛卡尔 - 》 弧度 -》  经纬度
+        var ellipsoid = viewer.scene.globe.ellipsoid;
+        var cartesian3 = new Cesium.Cartesian3(viewer.scene.camera.positionWC.x, viewer.scene.camera.positionWC.y, viewer.scene.camera.positionWC.z)
+        var cartographic = ellipsoid.cartesianToCartographic(cartesian3);
+        var lat = Cesium.Math.toDegrees(cartographic.latitude);
+        var lng = Cesium.Math.toDegrees(cartographic.longitude);
+        var height = cartographic.height;
+        var heading = Cesium.Math.toDegrees(viewer.scene.camera.heading);
+        var pitch = Cesium.Math.toDegrees(viewer.scene.camera.pitch);
+        var roll = Cesium.Math.toDegrees(viewer.scene.camera.roll);
+        console.log(lng, lat, height, heading, pitch, roll)
+
+        //4、 经纬度 - 》 弧度 -》 笛卡尔 
+        var ellipsoid = viewer.scene.globe.ellipsoid;
+        var cartographic = Cesium.Cartographic.fromDegrees(lng, lat, height);
+        var cartesian3 = ellipsoid.cartographicToCartesian(cartographic);
+        var heading = Cesium.Math.toRadians(heading);
+        var pitch = Cesium.Math.toRadians(pitch);
+        var roll = Cesium.Math.toRadians(roll);
+        console.log(cartesian3.x, cartesian3.y, cartesian3.z, heading, pitch, roll)
+
+
+        //5、 常用函数库
+        //提取地球中心点坐标
+        console.log(latlng.getCenter(viewer))
+
+        // 提取地球视域边界
+        console.log(latlng.getExtent(viewer))
+
+        // 提取视域边界
+        console.log(latlng.getViewBounds(viewer))
+
+        // 提取相机视角范围参数
+        console.log(latlng.getCameraView(viewer))
+
+
+    </script>
+</body>
+
+</html>

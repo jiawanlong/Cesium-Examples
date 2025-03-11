@@ -1,0 +1,105 @@
+<!--********************************************************************
+* by 优雅永不过时 https://github.com/z2586300277
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/",
+                "three/example/": "./../../three/examples/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from "three";
+        import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+        import { OBJLoader } from 'three/example/jsm/loaders/OBJLoader.js'
+        import { MeshSurfaceSampler } from 'three/example/jsm/math/MeshSurfaceSampler.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 100, 300)
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
+
+        const controls = new OrbitControls(camera, renderer.domElement)
+        controls.autoRotate = true
+
+        let sampler = null
+        let path = null
+       
+        new OBJLoader().load('./woman/woman.obj',(obj) => {
+
+                sampler = new MeshSurfaceSampler(obj.children[0]).build();
+                path = new Path();
+                scene.add(path.line);
+                renderer.setAnimationLoop(render);
+            }
+        )
+
+        const tempPosition = new THREE.Vector3();
+
+        class Path {
+            constructor() {
+                this.vertices = [];
+                this.geometry = new THREE.BufferGeometry();
+                this.material = new THREE.LineBasicMaterial({ color: 0xa58fb5, transparent: true, opacity: 0.5 });
+                this.line = new THREE.Line(this.geometry, this.material);
+                sampler.sample(tempPosition);
+                this.previousPoint = tempPosition.clone()
+            }
+            update() {
+                let pointFound = false;
+                while (!pointFound) {
+                    sampler.sample(tempPosition);
+                    if (tempPosition.distanceTo(this.previousPoint) < 20) {
+                        this.vertices.push(tempPosition.x, tempPosition.y, tempPosition.z);
+                        this.previousPoint = tempPosition.clone();
+                        pointFound = true;
+                    }
+                }
+                this.geometry.setAttribute("position", new THREE.Float32BufferAttribute(this.vertices, 3));
+            }
+        }
+
+        function render() {
+
+            if (path.vertices.length < 50000) {
+                Array.from({ length: 10 }).forEach(() => path.update())
+            }
+            controls.update();
+            renderer.render(scene, camera);
+
+        }
+
+    </script>
+
+</body>
+
+</html>

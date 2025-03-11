@@ -1,0 +1,108 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // flyTo和setView
+
+        // ------------------flyTo--------------
+        viewer.camera.flyTo({
+            //destination : Cesium.Rectangle.fromDegrees(west, south, east, north),
+            destination: Cesium.Cartesian3.fromDegrees(110.511154, 29.362943, 16531517.4),
+
+            // ------------------------------------用这个，不卡顿，否则会在终点卡顿！！！！！！！！--------------------------------------------
+            easingFunction: Cesium.EasingFunction.LINEAR_NONE, 
+            duration: 5,
+            orientation: {
+                heading: Cesium.Math.toRadians(348.3), // 水平旋转，围绕Y轴，0为正北方向
+                pitch: Cesium.Math.toRadians(-89.8),     // 上下旋转，围绕X轴，-90为俯视地面
+                roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
+            },
+            complete: () => {
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(115.585535, 22.016248,
+                        5220342.6),
+                    duration: 5,
+                    easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+                    orientation: {
+                        heading: Cesium.Math.toRadians(
+                            346.4), // east, default value is 0.0 (north)
+                        pitch: Cesium.Math.toRadians(
+                            -79.6),    // default value (looking down)
+                        roll: 0.0                             // default value
+                    }, complete: () => {
+                        viewer.camera.flyTo({
+                            destination: Cesium.Cartesian3.fromDegrees(119.441071, 34.651193,
+                                743459.7),
+                            duration: 5,
+                            easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+                            orientation: {
+                                heading: Cesium.Math.toRadians(
+                                    346.4), // east, default value is 0.0 (north)
+                                pitch: Cesium.Math.toRadians(
+                                    -79.6),    // default value (looking down)
+                                roll: 0.0                             // default value
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        //----------- setView----------------------
+        // 俯视到目的地
+        // viewer.camera.setView({
+        //     destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0)
+        // });
+
+        // latlng.getCameraView(viewer)
+        // // 目的地带方向
+        // viewer.camera.setView({
+        //     destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0),
+        //     orientation: {
+        //         heading: Cesium.Math.toRadians(90.0), // east, default value is 0.0 (north)
+        //         pitch: Cesium.Math.toRadians(-90),    // default value (looking down)
+        //         roll: 0.0                             // default value
+        //     }
+        // });
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(85.788705, 15.165394, 3013490),
+            orientation: {
+                heading: Cesium.Math.toRadians(27.7), // east, default value is 0.0 (north)
+                pitch: Cesium.Math.toRadians(-67.7),    // default value (looking down)
+                roll: 0.0                             // default value
+            }
+        });
+
+
+        // // 只跳转方向
+        // viewer.camera.setView({
+        //     orientation: {
+        //         heading: Cesium.Math.toRadians(90.0), // east, default value is 0.0 (north)
+        //         pitch: Cesium.Math.toRadians(-90),    // default value (looking down)
+        //         roll: 0.0                             // default value
+        //     }
+        // });
+
+    </script>
+</body>
+
+</html>

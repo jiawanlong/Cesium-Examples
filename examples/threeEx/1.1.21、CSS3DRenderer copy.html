@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="importmap">
+    {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+</script>
+    <style>
+        body {
+            margin: 0;
+            padding: 1px;
+            box-sizing: border-box;
+            background-color: #1f1f1f;
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+
+            color: white;
+            background: blueviolet;
+            backface-visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card" id="cardId">模型标签</div>
+    <div id="box"></div>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS3DRenderer, CSS3DObject, CSS3DSprite } from 'three/addons/renderers/CSS3DRenderer.js';
+
+        const box = document.getElementById('box')
+
+        const scene = new THREE.Scene()
+        const camera = new THREE.PerspectiveCamera();
+        camera.position.set(200, 200, 400);
+
+        scene.add(new THREE.AxesHelper(500))
+
+        const renderer = new THREE.WebGLRenderer()
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        box.appendChild(renderer.domElement)
+
+
+        const css3DRender = new CSS3DRenderer()
+        css3DRender.setSize(window.innerWidth, window.innerHeight)
+        css3DRender.domElement.style.position = 'absolute'
+        css3DRender.domElement.style.top = 0 + 'px'
+        box.appendChild(css3DRender.domElement)
+
+
+        const mesh = new CSS3DObject(document.getElementById('cardId'))
+        mesh.position.copy({ x: 50, y: 50, z: 50 })
+        scene.add(mesh)
+
+        animate()
+
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+            css3DRender.render(scene, camera) // Css3D渲染
+        }
+        let controls = new OrbitControls(camera, css3DRender.domElement)
+        controls.addEventListener('change', function () {
+            css3DRender.render(scene, camera)
+            renderer.render(scene, camera)
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

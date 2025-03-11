@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>热点格网图专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>热点格网图专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+        <ul style="list-style-type:disc;">
+            <li>原理：按照格网大小将区域进行划分，由一个矩形格网替代当前范围内的数据，由格网中心数字代替格网的权重（可以为格网中数据的数量，数据某权重的平均值、最大值、最小值等），
+                由格网之间颜色的不同表达渐变性</li>
+            <li>特点：结合了热点图和聚散的特性，具有热点图的对权重的层次渐变直观性以及聚散解决数据量过大的优势。</li>
+            <li>应用场景：热点格网图将大量数据以格网显示，减少了浏览器的负荷，在格网扩展开后又能保证数据的完整性，并且具有热点图的部分颜色渐变趋势带来的视觉直观性，
+                该功能主要用于渲染大数据量点数据，可以应用于人口密度、温度监控、高原地势成像、海底海拔成像等行业。</li>
+        </ul>
+    <h2>二、使用</h2>
+    <p>
+        首先我们得做一些准备：
+        <br />
+        <div>
+            <ul style="list-style-type:disc;">
+                <li>保证存在可用的数据，如果我们的格网只代表数量，那么用户只需要提前准备一个非空的点数据集即可，确保每一个点数据存在地理坐标，
+                    如果我们的格网不是代表数量，而是权重平均值（或者最大最小值等），那么还需要保证每一个点数据存在权重字段，假如为 weightName ，
+                    此字段的数据必须为数字类型，在客户端需要设置heatGridLayer.dataField = weightName ；以便获取权重进行计算。</li>
+                <li>由于热点格网图只是渲染矢量数据，所以不能作为底图，我们需要在map添加一个 TiledDynamicRESTLayer </li>
+            </ul>
+        </div>
+    </p>
+    <h4>1、创建热点格网图图层</h4>
+    <p></p>
+    <p>
+        首先创建一个热点格网图对象。由于热点格网图只负责矢量数据的渲染，所以初始化只需要设置一个图层的名称即可。
+    </p>
+    <p>
+        <pre>
+//创建一个名为“myHeatGrid”的热点格网图层。
+var heatGridLayer = new SuperMap.Layer.HeatGridLayer("myHeatGrid");
+        </pre>
+    </p>
+    <h4>2、添加到地图</h4>
+    <p></p>
+    <p>
+        然后将此图层添加到map里面。
+    </p>
+    <p>
+        <pre>
+//向map中添加图层
+map.addLayers([heatGridLayer]);
+        </pre>
+    </p>
+    <h4>3、添加数据</h4>
+    <p></p>
+
+    <p>
+        首先需要获取一个点数组（SuperMap.Feature.Vector数组）， 数据可以从服务器查询我们之前准备好的点数据集，也可以使用本地数据，不过都只能是点数据。
+        如下的形式：
+    </p>
+    <p>
+        <pre>
+var heatFeatures = [feature1,feature2,......,featureN];
+        </pre>
+    </p>
+    <p>
+        其次需要一个格网子对象数组主要用于对数据进行分段渲染。此数组的每一个子对象必须有如下三个属性：
+        <br />
+        <div>
+            <ul style="list-style-type:disc;">
+                <li>start：代表格网表示的数据的下限（包含）;</li>
+                <li>end：代表格网表示的数据的上限（不包含）;</li>
+                <li>style：代表需要赋值给格网的style。style详细属性请查看SuperMap.Feature.Vector.style</li>
+            </ul>
+        </div>
+    </p>
+    <pre>
+//创建一个格网子对向数组
+var items = [
+    {
+        //在此例子中代表格网中点数据数量的下限，也就是至少为0个
+        start:0,
+        //在此例子中代表格网中点数据数量的上限，也就是至多不超过5个（不包含5个）
+        end:5,
+        //代表满足一个格网中数据数量大于等于0且小于5的格网按照如下的style进行渲染
+        style:{
+            //格网的边框颜色
+            strokeColor: "#C69944",
+            //格网边框的宽度
+            strokeWidth: 1,
+            //格网内部填充色
+            fillColor: "#B8E4B8",
+            //格网的透明度
+            fillOpacity: 0.5
+        }
+    },
+    {
+        start:5,
+        end:10,
+        style:{
+            strokeColor: "#C69944",
+            strokeWidth: 1,
+            fillColor: "#66dd66",
+            fillOpacity: 0.5
+        }
+    },
+    ...
+];
+    </pre>
+    <p>设置相关参数：</p>
+    <pre>
+//设置热点格网图的格网子对象数组，如果不设置则所有格网都是统一默认style
+heatGridLayer.items=items;
+//将数据添加到图层中
+heatGridLayer.addFeatures(heatFeatures);
+    </pre>
+    <p>然后一个简单的热点格网图我们就创建成功了，如下是查询的全球各国首都制作的格网图效果：</p>
+    <div class="pageImage"><img src="images/heatGridLayerTopic1.png"/></div>
+
+    <h4>4、其他常用属性</h4>
+    <p></p>
+    <h5>4.1 labelMode 与 dataField </h5>
+    <p>此范例默认表示的是数量，也就是 labelMode 为默认0，可以用于与人口密度的展示方面。</p>
+    <p>当 labelMode 属性设置为非0时，dataField 属性也必须设置，需要制定一下数据的来源，如：</p>
+    <pre>
+//设置为格网中所有数据的平均值
+heatGridLayer.labelMode = SuperMap.Layer.HeatGridLayer.LABELMODE_MEAN ;
+//假设我们的点数据集的权重字段weightName为“temperature”，那么此处需要指定
+//如果数据时查询出来的，那么在 feature.attributes 里面会自动存放权重，如果是自己创建的Feature，那么必须自己往feature.attributes里添加权重值。
+heatGridLayer.dataField = "temperature";
+    </pre>
+    <p>保证数据存在权重，客户端相应设置权重字段就能使用平均值、最大最小的模式</p>
+    <p></p>
+    <h5>4.2 gridHeight 与 gridWidth </h5>
+    <p>
+        这两个参数用于设置格网的高度和宽度，单位是像素，默认都是50像素的大小。热点格网图中的点数据聚散计算就是由格网的宽高决定的，
+        聚散计算时会将格网大小换算为地理范围，将内部所有点聚散为一个格网，所以格网的宽高越大，相对来说聚散的点越多，而格网数量会越少，
+        格网过少效果不好，过多影响浏览器性能，从而用户需要根据自己的需求设置宽高。格网宽高必须都大于0，格网宽高可随意设置，如：
+    </p>
+      <pre>
+//设置格网的高度
+heatGridLayer.gridHeight = 10 ;
+//设置格网的宽度
+heatGridLayer.gridWidth = 25;
+    </pre>
+    <p></p>
+    <h5>4.3 isZoomIn 与 zoomInNumber </h5>
+    <p>
+        这两个参数用于控制点击格网时的放大效果， isZoomIn 默认为true，代表默认情况点击格网地图会进行放大， zoomInNumber 默认为1，代表点击格网时地图放大一级。
+        这两个参数可以控制点击格网是否放大以及放大的程度，如：
+    </p>
+    <pre class="code">
+//设置点击格网时可以放大地图
+heatGridLayer.isZoomIn = true ;
+//设置点击格网时地图放大2级
+heatGridLayer.zoomInNumber = 2;
+    </pre>
+    <p></p>
+    <h5>4.4 spreadZoom  </h5>
+    <p>设置热点格网图的扩散级别，当地图放大到这一级时格网会进行扩散，还原为点数据，默认为3，如：</p>
+    <pre class="code">
+        //设置格网图放大到第4级时进行格网扩散
+        heatGridLayer.spreadZoom = 4 ;
+    </pre>
+    <p>扩散后的效果如下：</p>
+    <div class="pageImage"><img src="images/heatGridLayerTopic2.png"/></div>
+    <h4>5、事件使用</h4>
+
+    <p>
+        热点格网图支持很多事件，如：
+        <br />
+        <div>
+            <ul style="list-style-type:disc;">
+                <li>clickFeature：点击点事件</li>
+                <li>clickGrid：点击网格事件</li>
+                <li>clickout：点击要素外</li>
+                <li>mouseoverFeature：移进点事件</li>
+                <li>mouseoverGrid：移进网格事件</li>
+                <li>mouseoutFeature：移出点事件</li>
+                <li>dblclickFeature：双击点事件</li>
+                <li>dblclickGrid：双击网格事件</li>
+            </ul>
+        </div>
+    </p>
+    <p>这里举例说明一下最常用的clickFeature事件，当地图、底图以及heatGridLayer都准备完毕时注册事件如下：</p>
+      <pre class="code">
+//初始化格网选择事件控件
+var select = new SuperMap.Control.SelectGrid(heatGridLayer,{
+  callbacks:{
+      //绑定clickFeature
+      clickFeature:function(f){
+            //初始化信息框
+            openInfoWin(f);
+      }
+  }
+});
+//将控件添加进map
+map.addControl(select);
+//激活控件
+select.activate();
+      </pre>
+    <p>弹出信息框的代码如下：</p>
+     <pre class="code">
+function openInfoWin(feature){
+//获取feature的几何对象
+ var geo = feature.geometry;
+//获取geo的bounds
+ var bounds = geo.getBounds();
+//获取bounds的中心点
+ var center = bounds.getCenterLonLat();
+//创建popup的内容
+ var contentHTML = "&#60;div style='font-size:.8em; opacity: 0.8; overflow-y:hidden;'&#62;";
+ contentHTML += "&#60;div&#62;"+"SMID："+feature.data.SMID+"&#60;br /&#62;"+"国家："+feature.data.COUNTRY+"&#60;br /&#62;"+"首都："+feature.data.CAPITAL+"&#60;/div&#62;&#60;/div&#62;";
+ //创建一个popup弹出信息框
+ var popup = new SuperMap.Popup.FramedCloud("popwin",
+     new SuperMap.LonLat(center.lon,center.lat),
+     null,
+     contentHTML,
+     null,
+     true);
+
+ feature.popup = popup;
+//将信息框添加进map
+ map.addPopup(popup);
+}
+     </pre>
+    <p>然后当我们点击点数据时就能获取如下效果：</p>
+    <div class="pageImage"><img src="images/heatGridLayerTopic3.png"/></div>
+    <br />
+    <p>
+        这样我们就可以使用热点格网图功能了，完整范例请见 示范程序->可视化->可视化图层->热点格网图。
+    </p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

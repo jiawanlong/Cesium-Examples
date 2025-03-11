@@ -1,0 +1,1274 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+  <script src="./cesium.map.min.js"></script>
+  <script src="./CircleScanSystem.js"></script>
+  <script src="./CircleWaveMaterialProperty.js"></script>
+  <script src="./DynamicWallMaterialProperty.js"></script>
+  <script src="./popup.js"></script>
+  <script src="./latlng.js"></script>
+  <style>
+    .cesium-viewer-bottom,
+    .cesium-viewer-animationContainer,
+    .cesium-animation-theme,
+    .cesium-viewer-timelineContainer {
+      display: none;
+    }
+
+    .bx-popup-ctn2 {
+      position: absolute;
+      z-index: 999;
+      color: #fff;
+      /* margin: -80px 0 0; */
+      margin: 0 0 0 0;
+      transform: translate(-50%, -100%);
+    }
+
+    .bx-popup-ctn2 .divpoint-wrap {
+      padding: 0;
+      width: max-content;
+    }
+
+    .bx-popup-ctn2 .divpoint-center {
+      background: linear-gradient(45deg,
+          #4f869d,
+          rgba(18, 93, 120, 0.65),
+          40%,
+          rgba(30, 127, 162, 0.65));
+      border: 1px solid #40aee2;
+      border-radius: 5px;
+      box-shadow: 0 0 10px 2px #29baf1;
+    }
+
+    .bx-popup-ctn2 .bx-popup-tip {
+      width: 17px;
+      background: #fff;
+      height: 17px;
+      padding: 1px;
+      margin: -10px auto 0;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+
+    .bx-popup-ctn2 .bx-popup-header-ctn {
+      background: rgba(0, 173, 255, 0.49);
+      color: #fff;
+      font-size: 15px;
+      padding: 4px;
+    }
+
+    .bx-popup-ctn2 .bx-popup-close {
+      position: absolute;
+      top: 4px;
+      right: 2px;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+    }
+
+    .bx-popup-ctn2 .bx-popup-content-ctn {
+      padding: 10px;
+    }
+
+    .bx-popup-ctn2 .directional {
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      height: 40px;
+      background-color: #28bbf0;
+      transform: none;
+      margin: 0 0 0px 50%;
+    }
+
+    .bx-popup-ctn2 .divpoint-border {
+      transition: 0.3s ease-in;
+      background: linear-gradient(0, #8cdee5 2px, #8cdee5 0) no-repeat,
+        linear-gradient(-90deg, #8cdee5 2px, #8cdee5 0) no-repeat,
+        linear-gradient(-180deg, #8cdee5 2px, #8cdee5 0) no-repeat,
+        linear-gradient(-270deg, #8cdee5 2px, #8cdee5 0) no-repeat;
+      background-size: 0 2px, 2px 0, 0 2px, 2px 0;
+      background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    }
+
+    .bx-popup-ctn2 .divpoint-border:hover {
+      background-size: 100% 2px, 2px 100%, 100% 2px, 2px 100%;
+    }
+  </style>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {
+      animation: true, //是否创建动画小器件，左下角仪表
+
+      baseLayerPicker: false, //是否显示图层选择器
+      fullscreenButton: false, //是否显示全屏按钮
+      geocoder: false, //是否显示geocoder小器件，右上角查询按钮
+      homeButton: false, //是否显示Home按钮
+      infoBox: false, //是否显示信息框
+      sceneModePicker: false, //是否显示3D/2D选择器
+      selectionIndicator: false, //是否显示选取指示器组件
+      timeline: true, //是否显示时间轴
+      navigationHelpButton: false, //是否显示右上角的帮助按钮
+      scene3DOnly: true, //如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
+      clock: new Cesium.Clock(), //用于控制当前时间的时钟对象
+      selectedImageryProviderViewModel: undefined, //当前图像图层的显示模型，仅baseLayerPicker设为true有意义
+      imageryProviderViewModels:
+        Cesium.createDefaultImageryProviderViewModels(), //可供BaseLayerPicker选择的图像图层ProviderViewModel数组
+      selectedTerrainProviderViewModel: undefined, //当前地形图层的显示模型，仅baseLayerPicker设为true有意义
+      terrainProviderViewModels:
+        Cesium.createDefaultTerrainProviderViewModels(), //可供BaseLayerPicker选择的地形图层ProviderViewModel数组
+      fullscreenElement: document.body, //全屏时渲染的HTML元素,
+      useDefaultRenderLoop: true, //如果需要控制渲染循环，则设为true
+      targetFrameRate: undefined, //使用默认render loop时的帧率
+      showRenderLoopErrors: false, //如果设为true，将在一个HTML面板中显示错误信息
+      automaticallyTrackDataSourceClocks: true, //自动追踪最近添加的数据源的时钟设置
+
+      contextOptions: {
+        // 支持html2cavas截图
+        webgl: {
+          preserveDrawingBuffer: true, // 设置为 true 来启用
+        },
+      },
+
+      //传递给Scene对象的上下文参数（scene.options）
+      sceneMode: Cesium.SceneMode.SCENE3D, //初始场景模式
+      mapProjection: new Cesium.WebMercatorProjection(), //地图投影体系
+      dataSources: new Cesium.DataSourceCollection(),
+    });
+
+    // 清除默认底图
+    viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+
+    // 清除默认地形
+    viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+
+    // 加载单张图片
+    var imageryProvider = new Cesium.SingleTileImageryProvider({
+      url: "./world_b.jpg",
+      id: "1",
+    });
+    viewer.imageryLayers.addImageryProvider(imageryProvider);
+
+    var options = {
+      crs: "WGS84", // 使用84坐标系，默认为：GCJ02
+      style: 4,
+    };
+    viewer.imageryLayers.add(
+      new Cesium.ImageryLayer(new Cesium.TencentImageryProvider(options))
+    );
+    let tileset;
+
+    let czmldata = new Cesium.CzmlDataSource.load("./wx.czml");
+    viewer.dataSources.add(czmldata);
+    viewer.clock.shouldAnimate = true;
+
+    let inters = 3;
+    let lon = 110;
+    let quan = 1;
+    let timer = setInterval(() => {
+      lon = lon - inters;
+      if (lon < -180) {
+        lon = 180;
+        quan = quan + 1;
+      }
+      if (quan == 2 && lon > 110) {
+        clearInterval(timer);
+        viewer.camera.flyTo({
+          destination: Cesium.Cartesian3.fromDegrees(110, 10, 50000000.0),
+          orientation: {
+            heading: Cesium.Math.toRadians(358.0),
+            pitch: Cesium.Math.toRadians(-89.5),
+            roll: 0.0,
+          },
+          easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+          complete: () => {
+            viewer.camera.flyTo({
+              destination: Cesium.Cartesian3.fromDegrees(
+                121.549708,
+                25.036475,
+                2662.5
+              ),
+              // easingFunction: Cesium.EasingFunction.LINEAR_NONE,
+              duration: 5,
+              orientation: {
+                heading: Cesium.Math.toRadians(2.8),
+                pitch: Cesium.Math.toRadians(-84.8),
+                roll: 0.0,
+              },
+              complete: () => {
+                loadsss();
+                loadTX();
+                loadHuo();
+                setTimeout(function () {
+                  loadFJ();
+                  loadFJ1();
+                  loadMsg();
+                  loadXFC();
+                  loadXJC();
+                }, 1000);
+              },
+            });
+          },
+        });
+      } else {
+        viewer.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(lon, 10, 50000000.0),
+          orientation: {
+            heading: Cesium.Math.toRadians(358.0),
+            pitch: Cesium.Math.toRadians(-89.5),
+            roll: 0.0,
+          },
+        });
+      }
+    }, 30);
+    // loadsss();
+    // loadTX();
+    // loadHuo();
+    // setTimeout(function () {
+    //   loadFJ();
+    //   loadFJ1();
+    //   loadMsg();
+    //   loadXFC();
+    //   loadXJC();
+    // }, 1000);
+
+    function loadTX() {
+      var circleScanSystem = new CircleScanSystem(viewer, {
+        type: "Circle",
+        lon: "121.554532",
+        lat: "25.042364",
+        radius: 100,
+      });
+      // var circleScanSystem1 = new CircleScanSystem(viewer, {
+      //   type: "Circle",
+      //   lon: "121.552956",
+      //   lat: "25.037859",
+      //   radius: 100,
+      // });
+      var circleScanSystem2 = new CircleScanSystem(viewer, {
+        type: "Radar",
+        lon: "121.5463",
+        lat: "25.041775",
+        radius: 200,
+      });
+      var circleScanSystem2 = new CircleScanSystem(viewer, {
+        type: "Radar",
+        lon: "121.55649",
+        lat: "25.034101",
+        radius: 80,
+      });
+
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(121.552956, 25.037859, 1),
+        ellipse: {
+          semiMinorAxis: 150,
+          semiMajorAxis: 150,
+          height: 10,
+          material: new Cesium.CircleWaveMaterialProperty({
+            color: "#0858D6",
+            duration: 2000,
+            gradient: 0,
+            count: 3,
+          }),
+        },
+      });
+
+      viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(121.546405, 25.037277, 1),
+        ellipse: {
+          semiMinorAxis: 150,
+          semiMajorAxis: 150,
+          height: 10,
+          material: new Cesium.CircleWaveMaterialProperty({
+            color: "#FFCB33",
+            duration: 3000,
+            gradient: 0,
+            count: 4,
+          }),
+        },
+      });
+
+      let source = `czm_material czm_getMaterial(czm_materialInput materialInput)
+            {
+                czm_material material = czm_getDefaultMaterial(materialInput);
+                vec2 st = materialInput.st;
+                vec4 colorImage = texture(image, vec2(fract((st.s - speed * czm_frameNumber * 0.001)), st.t));
+                material.alpha = colorImage.a * color.a;
+                material.diffuse = color.rgb;
+                return material;
+        }`;
+
+      let material = new Cesium.Material({
+        fabric: {
+          uniforms: {
+            color: Cesium.Color.fromCssColorString("#7ffeff"),
+            image: "./line1.png",
+            speed: 10,
+          },
+          source: source,
+        },
+        translucent: function () {
+          return true;
+        },
+      });
+
+      var appearance = new Cesium.PolylineMaterialAppearance();
+      appearance.material = material;
+
+      viewer.scene.primitives.add(
+        new Cesium.Primitive({
+          geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.PolylineGeometry({
+              positions: Cesium.Cartesian3.fromDegreesArray([
+                121.54383710651683, 25.04158767318846, 121.54886660576454,
+                25.041520778338935, 121.5489302661648, 25.037809764195416,
+                121.55763292042423, 25.037610190383617,
+              ]),
+              width: 5.0,
+            }),
+          }),
+          appearance: appearance,
+        })
+      );
+      viewer.scene.primitives.add(
+        new Cesium.Primitive({
+          geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.PolylineGeometry({
+              positions: Cesium.Cartesian3.fromDegreesArray([
+                121.55375466873483, 25.044150811019648, 121.55544465416511,
+                25.037715002796432, 121.54867305622793, 25.037870016863494,
+                121.54871015658512, 25.033391988086763,
+              ]),
+              width: 5.0,
+            }),
+          }),
+          appearance: appearance,
+        })
+      );
+
+      viewer.scene.primitives.add(
+        new Cesium.Primitive({
+          geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.PolylineGeometry({
+              positions: Cesium.Cartesian3.fromDegreesArray([
+                121.54896133676533, 25.044688605691732, 121.54907493228905,
+                25.041491821748266, 121.55760945852529, 25.041291233041818,
+                121.55747389009491, 25.033084480003765, 121.543669229817,
+                25.033348047963145, 121.54380690184257, 25.038091540100325,
+                121.54874670371714, 25.03798076751336, 121.54905974002901,
+                25.044688605691732, 121.54652610721564, 25.04506985487869,
+                121.54386854531765, 25.044935266844632, 121.54368432924542,
+                25.03824665858879, 121.5575974570097, 25.037847869365393,
+                121.55782052058595, 25.04495769594847, 121.55375546574658,
+                25.044262809177837, 121.54905987101426, 25.044733445131712,
+              ]),
+              width: 5.0,
+            }),
+          }),
+          appearance: appearance,
+        })
+      );
+
+      viewer.scene.primitives.add(
+        new Cesium.Primitive({
+          geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.PolylineGeometry({
+              positions: Cesium.Cartesian3.fromDegreesArray([
+                121.55247102172734, 25.033294114977295, 121.5525021244456,
+                25.036184694941213, 121.5511111493363, 25.037979511647478,
+                121.54379246879625, 25.038023901030698, 121.54384621066026,
+                25.041653508137443, 121.5461551006216, 25.041497151878872,
+                121.54599566446967, 25.0379573182758, 121.55297123215576,
+                25.03793512578399, 121.55298088865737, 25.04145248665732,
+                121.55296365188275, 25.044138703413196,
+              ]),
+              width: 5.0,
+            }),
+          }),
+          appearance: appearance,
+        })
+      );
+
+      viewer.scene.primitives.add(
+        new Cesium.Primitive({
+          geometryInstances: new Cesium.GeometryInstance({
+            geometry: new Cesium.PolylineGeometry({
+              positions: Cesium.Cartesian3.fromDegreesArray([
+                121.54375455026866, 25.036029857442244, 121.54610032336575,
+                25.035985626035824, 121.54598728823271, 25.03340416800252,
+                121.54881491346185, 25.033382155659254, 121.54878833220863,
+                25.035565602229056, 121.55252458735305, 25.035344663858893,
+                121.55250253652764, 25.036361704627197, 121.55299202722222,
+                25.036605184507167, 121.55292156212147, 25.037668884495375,
+                121.55566169439066, 25.0375801655385, 121.55560211090364,
+                25.035499311540576, 121.55739387018264, 25.033206088198455,
+              ]),
+              width: 5.0,
+            }),
+          }),
+          appearance: appearance,
+        })
+      );
+
+      let data = [
+        [121.5435972916668, 25.03335124407222],
+        [121.55758689992729, 25.03305850196061],
+        [121.5578765706079, 25.045082938309875],
+        [121.55308216929683, 25.044389044803737],
+        [121.54911574643842, 25.04483902108565],
+        [121.54648299411446, 25.045158015241427],
+        [121.54397513270857, 25.04493282041925],
+        [121.54359717389292, 25.033369546587437],
+      ];
+      let coor = Array.prototype.concat.apply([], data);
+      let datasouce = map_common_addDatasouce("wall");
+
+      datasouce.entities.add({
+        wall: {
+          positions: Cesium.Cartesian3.fromDegreesArray(coor),
+          positions: Cesium.Cartesian3.fromDegreesArray(coor),
+          maximumHeights: new Array(data.length).fill(50),
+          minimunHeights: new Array(data.length).fill(0),
+
+          // 动态
+          material: new Cesium.DynamicWallMaterialProperty({
+            trailImage: "./wall.png",
+            color: Cesium.Color.CYAN,
+            duration: 1500,
+          }),
+        },
+      });
+    }
+
+    function loadFJ() {
+      let start = new Cesium.JulianDate.fromDate(new Date());
+
+      // 开始时间  cesium用的JulianDate:代表天文朱利安时间,用的是世界协调时,比北京时间晚8个小时, 加上东8时，就是当前的真正时间
+      start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+      const center = Cesium.JulianDate.addSeconds(
+        start,
+        90,
+        new Cesium.JulianDate()
+      );
+      const center2 = Cesium.JulianDate.addSeconds(
+        start,
+        180,
+        new Cesium.JulianDate()
+      );
+      const center3 = Cesium.JulianDate.addSeconds(
+        start,
+        270,
+        new Cesium.JulianDate()
+      );
+      const stop = Cesium.JulianDate.addSeconds(
+        start,
+        360,
+        new Cesium.JulianDate()
+      );
+
+      // 设置时钟范围
+      viewer.clock.startTime = start.clone();
+      viewer.clock.stopTime = stop.clone();
+      viewer.clock.currentTime = start.clone();
+
+      // 循环结束时后续动作
+      viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+      // 时间速率控制速度，时间调快多少倍，比如原来用时360秒，调整10倍后，现在用时36秒
+      viewer.clock.multiplier = 10;
+      //给下方时间线设置边界
+      viewer.timeline.zoomTo(start, stop);
+
+      const position = new Cesium.SampledPositionProperty();
+
+      const startPos = Cesium.Cartesian3.fromDegrees(
+        121.54502359550423,
+        25.04103506115554,
+        300
+      );
+      const centerPos = Cesium.Cartesian3.fromDegrees(
+        121.55653842563282,
+        25.040757514098885,
+        300
+      );
+      const centerPos2 = Cesium.Cartesian3.fromDegrees(
+        121.55626812445513,
+        25.033279833487114,
+        300
+      );
+      const centerPos3 = Cesium.Cartesian3.fromDegrees(
+        121.54412259158227,
+        25.0335247429108,
+        300
+      );
+      const endPos = Cesium.Cartesian3.fromDegrees(
+        121.54502359550423,
+        25.04103506115554,
+        300
+      );
+
+      position.addSample(start, startPos);
+      position.addSample(center, centerPos);
+      position.addSample(center2, centerPos2);
+      position.addSample(center3, centerPos3);
+      position.addSample(stop, endPos);
+
+      const entity = viewer.entities.add({
+        // 将实体availability设置为与模拟时间相同的时间间隔。
+        availability: new Cesium.TimeIntervalCollection([
+          new Cesium.TimeInterval({
+            start: start,
+            stop: stop,
+          }),
+        ]),
+        position: position, // 计算实体位置属性
+        orientation: new Cesium.VelocityOrientationProperty(position),
+        model: {
+          uri: "missile/scene.gltf",
+          scale: 10,
+          minimumPixelSize: 32,
+        },
+
+        // 路径
+        path: {
+          show: false,
+          resolution: 1,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: 0.3,
+            color: Cesium.Color.BLUE,
+          }),
+          width: 5,
+        },
+      });
+    }
+    function loadFJ1() {
+      let start = new Cesium.JulianDate.fromDate(new Date());
+
+      // 开始时间  cesium用的JulianDate:代表天文朱利安时间,用的是世界协调时,比北京时间晚8个小时, 加上东8时，就是当前的真正时间
+      start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+      const center = Cesium.JulianDate.addSeconds(
+        start,
+        90,
+        new Cesium.JulianDate()
+      );
+      const center2 = Cesium.JulianDate.addSeconds(
+        start,
+        180,
+        new Cesium.JulianDate()
+      );
+      const center3 = Cesium.JulianDate.addSeconds(
+        start,
+        270,
+        new Cesium.JulianDate()
+      );
+      const stop = Cesium.JulianDate.addSeconds(
+        start,
+        360,
+        new Cesium.JulianDate()
+      );
+
+      // 设置时钟范围
+      viewer.clock.startTime = start.clone();
+      viewer.clock.stopTime = stop.clone();
+      viewer.clock.currentTime = start.clone();
+
+      // 循环结束时后续动作
+      viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+      // 时间速率控制速度，时间调快多少倍，比如原来用时360秒，调整10倍后，现在用时36秒
+      viewer.clock.multiplier = 10;
+      //给下方时间线设置边界
+      viewer.timeline.zoomTo(start, stop);
+
+      const position = new Cesium.SampledPositionProperty();
+
+      const startPos = Cesium.Cartesian3.fromDegrees(
+        121.54502359550423,
+        25.04103506115554,
+        210
+      );
+      const centerPos = Cesium.Cartesian3.fromDegrees(
+        121.55653842563282,
+        25.040757514098885,
+        210
+      );
+      const centerPos2 = Cesium.Cartesian3.fromDegrees(
+        121.55626812445513,
+        25.033279833487114,
+        210
+      );
+      const centerPos3 = Cesium.Cartesian3.fromDegrees(
+        121.54412259158227,
+        25.0335247429108,
+        210
+      );
+      const endPos = Cesium.Cartesian3.fromDegrees(
+        121.54502359550423,
+        25.04103506115554,
+        210
+      );
+
+      position.addSample(start, startPos);
+      position.addSample(center, centerPos);
+      position.addSample(center2, centerPos2);
+      position.addSample(center3, centerPos3);
+      position.addSample(stop, endPos);
+
+      const entity = viewer.entities.add({
+        // 将实体availability设置为与模拟时间相同的时间间隔。
+        availability: new Cesium.TimeIntervalCollection([
+          new Cesium.TimeInterval({
+            start: start,
+            stop: stop,
+          }),
+        ]),
+        position: position, // 计算实体位置属性
+        orientation: new Cesium.VelocityOrientationProperty(position),
+        // model: {
+        //   uri: 'missile/scene.gltf',
+        //   scale: 10,
+        //   minimumPixelSize: 32
+        // },
+        cylinder: {
+          material: Cesium.Color.fromCssColorString("rgba(255,240,0, 0.35)"),
+          length: 200, //圆柱体的长度
+          topRadius: 0, //顶部半径
+          bottomRadius: 70,
+        },
+        // 路径
+        path: {
+          show: false,
+          resolution: 1,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: 0.3,
+            color: Cesium.Color.BLUE,
+          }),
+          width: 5,
+        },
+      });
+    }
+    function loadXFC() {
+      let start = new Cesium.JulianDate.fromDate(new Date());
+
+      start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+      const center = Cesium.JulianDate.addSeconds(
+        start,
+        90,
+        new Cesium.JulianDate()
+      );
+      const center2 = Cesium.JulianDate.addSeconds(
+        start,
+        180,
+        new Cesium.JulianDate()
+      );
+      const center3 = Cesium.JulianDate.addSeconds(
+        start,
+        270,
+        new Cesium.JulianDate()
+      );
+      const stop = Cesium.JulianDate.addSeconds(
+        start,
+        360,
+        new Cesium.JulianDate()
+      );
+
+      // 设置时钟范围
+      viewer.clock.startTime = start.clone();
+      viewer.clock.stopTime = stop.clone();
+      viewer.clock.currentTime = start.clone();
+
+      // 循环结束时后续动作
+      viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+      // 时间速率控制速度，时间调快多少倍，比如原来用时360秒，调整10倍后，现在用时36秒
+      viewer.clock.multiplier = 20;
+      //给下方时间线设置边界
+      viewer.timeline.zoomTo(start, stop);
+
+      const position = new Cesium.SampledPositionProperty();
+
+      const startPos = Cesium.Cartesian3.fromDegrees(
+        121.54883989579417,
+        25.04435068135976,
+        1
+      );
+      const centerPos = Cesium.Cartesian3.fromDegrees(
+        121.54891310254465,
+        25.041764022763047,
+        1
+      );
+      const centerPos2 = Cesium.Cartesian3.fromDegrees(
+        121.54886429804492,
+        25.039707921882993,
+        1
+      );
+      const centerPos3 = Cesium.Cartesian3.fromDegrees(
+        121.54886429804492,
+        25.037696004860265,
+        1
+      );
+      const endPos = Cesium.Cartesian3.fromDegrees(
+        121.55147533881802,
+        25.03767389569815,
+        1
+      );
+
+      position.addSample(start, startPos);
+      position.addSample(center, centerPos);
+      position.addSample(center2, centerPos2);
+      position.addSample(center3, centerPos3);
+      position.addSample(stop, endPos);
+
+      const entity = viewer.entities.add({
+        availability: new Cesium.TimeIntervalCollection([
+          new Cesium.TimeInterval({
+            start: start,
+            stop: stop,
+          }),
+        ]),
+        position: position, // 计算实体位置属性
+        orientation: new Cesium.VelocityOrientationProperty(position),
+        model: {
+          uri: "./xiaofangche.gltf",
+          scale: 10,
+          minimumPixelSize: 32,
+        },
+
+        path: {
+          show: false,
+        },
+      });
+    }
+    function loadXJC() {
+      let start = new Cesium.JulianDate.fromDate(new Date());
+
+      start = Cesium.JulianDate.addHours(start, 1, new Cesium.JulianDate());
+      const center = Cesium.JulianDate.addSeconds(
+        start,
+        120,
+        new Cesium.JulianDate()
+      );
+      const center2 = Cesium.JulianDate.addSeconds(
+        start,
+        240,
+        new Cesium.JulianDate()
+      );
+      const stop = Cesium.JulianDate.addSeconds(
+        start,
+        360,
+        new Cesium.JulianDate()
+      );
+
+      // 设置时钟范围
+      viewer.clock.startTime = start.clone();
+      viewer.clock.stopTime = stop.clone();
+      viewer.clock.currentTime = start.clone();
+
+      // 循环结束时后续动作
+      viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+      // 时间速率控制速度，时间调快多少倍，比如原来用时360秒，调整10倍后，现在用时36秒
+      viewer.clock.multiplier = 20;
+      //给下方时间线设置边界
+      viewer.timeline.zoomTo(start, stop);
+
+      const position = new Cesium.SampledPositionProperty();
+
+      const startPos = Cesium.Cartesian3.fromDegrees(
+        121.54884167619042,
+        25.033273079716622,
+        1
+      );
+      const centerPos = Cesium.Cartesian3.fromDegrees(
+        121.54859722416842,
+        25.037776601420433,
+        1
+      );
+      const centerPos2 = Cesium.Cartesian3.fromDegrees(
+        121.55544188079375,
+        25.037721231255958,
+        1
+      );
+
+      const endPos = Cesium.Cartesian3.fromDegrees(
+        121.55391405565354,
+        25.043590329597393,
+        1
+      );
+
+      position.addSample(start, startPos);
+      position.addSample(center, centerPos);
+      position.addSample(center2, centerPos2);
+      position.addSample(stop, endPos);
+
+      const entity = viewer.entities.add({
+        availability: new Cesium.TimeIntervalCollection([
+          new Cesium.TimeInterval({
+            start: start,
+            stop: stop,
+          }),
+        ]),
+        position: position, // 计算实体位置属性
+        orientation: new Cesium.VelocityOrientationProperty(position),
+        model: {
+          uri: "./wajueji.glb",
+          scale: 10,
+          minimumPixelSize: 32,
+        },
+
+        path: {
+          show: false,
+        },
+      });
+    }
+    function loadMsg() {
+      var popup = new Popup({
+        viewer: viewer,
+        className: "bx-popup-ctn2",
+      });
+
+      popup.add({
+        geometry: Cesium.Cartesian3.fromDegrees(121.551034, 25.036803, 30),
+        content: {
+          header: "事件提醒",
+          content: `
+              <div><span>事件名称：</span><span>沃尔玛发生火灾</span></div>
+              <div><span>监控编号：</span><span>${parseInt(
+            Math.random() * 100
+          )}</span></div>
+              <div><span>发生时间：</span><span>2024-08-03 12:00:33</span></div>
+              <div><span>火灾等级：</span><span>一般</span></div>
+                  `,
+        },
+        isclose: true,
+      });
+
+      popup.add({
+        // lon: "121.554532",
+        // lat: "25.042364",
+        geometry: Cesium.Cartesian3.fromDegrees(121.554532, 25.042364, 30),
+        content: {
+          header: "事件提醒",
+          content: `
+              <div><span>事件名称：</span><span>仁和路发生打架斗殴</span></div>
+              <div><span>监控编号：</span><span>${parseInt(
+            Math.random() * 100
+          )}</span></div>
+              <div><span>发生时间：</span><span>2024-08-03 14:00:33</span></div>
+              <div><span>案件等级：</span><span>紧急！</span></div>
+                  `,
+        },
+        isclose: true,
+      });
+    }
+
+    function loadHuo() {
+      //火焰特效
+      class FireEffect {
+        constructor(viewer, obj) {
+          this.viewer = viewer;
+          this.viewModel = {
+            emissionRate: 5,
+            gravity: 0.0, //设置重力参数
+            minimumParticleLife: 1,
+            maximumParticleLife: 6,
+            minimumSpeed: 1.0, //粒子发射的最小速度
+            maximumSpeed: 4.0, //粒子发射的最大速度
+            startScale: 0.0,
+            endScale: 10.0,
+            particleSize: 25.0,
+          };
+          this.emitterModelMatrix = new Cesium.Matrix4();
+          this.translation = new Cesium.Cartesian3();
+          this.rotation = new Cesium.Quaternion();
+          this.hpr = new Cesium.HeadingPitchRoll();
+          this.trs = new Cesium.TranslationRotationScale();
+          this.scene = this.viewer.scene;
+          this.particleSystem = "";
+          this.entity = this.viewer.entities.add({
+            //选择粒子放置的坐标
+            position: Cesium.Cartesian3.fromDegrees(obj.lng, obj.lat),
+          });
+
+          this.init();
+        }
+
+        init() {
+          const _this = this;
+          this.viewer.clock.shouldAnimate = true;
+          this.viewer.scene.globe.depthTestAgainstTerrain = false;
+          // this.viewer.trackedEntity = this.entity;
+          var particleSystem = this.scene.primitives.add(
+            new Cesium.ParticleSystem({
+              image: "./fire.png", //生成所需粒子的图片路径
+              //粒子在生命周期开始时的颜色
+              startColor: new Cesium.Color(1, 1, 1, 1),
+              //粒子在生命周期结束时的颜色
+              endColor: new Cesium.Color(0.5, 0, 0, 0),
+              //粒子在生命周期开始时初始比例
+              startScale: _this.viewModel.startScale,
+              //粒子在生命周期结束时比例
+              endScale: _this.viewModel.endScale,
+              //粒子发射的最小速度
+              minimumParticleLife: _this.viewModel.minimumParticleLife,
+              //粒子发射的最大速度
+              maximumParticleLife: _this.viewModel.maximumParticleLife,
+              //粒子质量的最小界限
+              minimumSpeed: _this.viewModel.minimumSpeed,
+              //粒子质量的最大界限
+              maximumSpeed: _this.viewModel.maximumSpeed,
+              //以像素为单位缩放粒子图像尺寸
+              imageSize: new Cesium.Cartesian2(
+                _this.viewModel.particleSize,
+                _this.viewModel.particleSize
+              ),
+              //每秒发射的粒子数
+              emissionRate: _this.viewModel.emissionRate,
+              //粒子系统发射粒子的时间（秒）
+              lifetime: 16.0,
+              //粒子系统是否应该在完成时循环其爆发
+              loop: true,
+              //设置粒子的大小是否以米或像素为单位
+              sizeInMeters: true,
+              //系统的粒子发射器
+              emitter: new Cesium.ConeEmitter(Cesium.Math.toRadians(45.0)), //BoxEmitter 盒形发射器，ConeEmitter 锥形发射器，SphereEmitter 球形发射器，CircleEmitter圆形发射器
+            })
+          );
+          this.particleSystem = particleSystem;
+          this.preUpdateEvent();
+        }
+
+        //场景渲染事件
+        preUpdateEvent() {
+          let _this = this;
+          this.viewer.scene.preUpdate.addEventListener(function (
+            scene,
+            time
+          ) {
+            //发射器地理位置
+            _this.particleSystem.modelMatrix = _this.computeModelMatrix(
+              _this.entity,
+              time
+            );
+            //发射器局部位置
+            _this.particleSystem.emitterModelMatrix =
+              _this.computeEmitterModelMatrix();
+            // 将发射器旋转
+            if (_this.viewModel.spin) {
+              _this.viewModel.heading += 1.0;
+              _this.viewModel.pitch += 1.0;
+              _this.viewModel.roll += 1.0;
+            }
+          });
+        }
+
+        computeModelMatrix(entity, time) {
+          return entity.computeModelMatrix(time, new Cesium.Matrix4());
+        }
+
+        computeEmitterModelMatrix() {
+          this.hpr = Cesium.HeadingPitchRoll.fromDegrees(
+            0.0,
+            0.0,
+            0.0,
+            this.hpr
+          );
+          this.trs.translation = Cesium.Cartesian3.fromElements(
+            -4.0,
+            0.0,
+            1.4,
+            this.translation
+          );
+          this.trs.rotation = Cesium.Quaternion.fromHeadingPitchRoll(
+            this.hpr,
+            this.rotation
+          );
+
+          return Cesium.Matrix4.fromTranslationRotationScale(
+            this.trs,
+            this.emitterModelMatrix
+          );
+        }
+
+        removeEvent() {
+          this.viewer.scene.preUpdate.removeEventListener(
+            this.preUpdateEvent,
+            this
+          );
+          this.emitterModelMatrix = undefined;
+          this.translation = undefined;
+          this.rotation = undefined;
+          this.hpr = undefined;
+          this.trs = undefined;
+        }
+
+        //移除粒子特效
+        remove() {
+          () => {
+            return this.removeEvent();
+          }; //清除事件
+          this.viewer.scene.primitives.remove(this.particleSystem); //删除粒子对象
+          this.viewer.entities.remove(this.entity); //删除entity
+        }
+      }
+      class smokeEffect {
+        constructor(viewer, obj) {
+          this.viewer = viewer;
+          this.viewModel = {
+            emissionRate: 12,
+            gravity: 2.0, //设置重力参数
+            minimumParticleLife: 2,
+            maximumParticleLife: 2,
+            minimumSpeed: 1.0, //粒子发射的最小速度
+            maximumSpeed: 2.0, //粒子发射的最大速度
+            startScale: 2.0,
+            endScale: 11.0,
+            particleSize: 7.0,
+          };
+          this.emitterModelMatrix = new Cesium.Matrix4();
+          this.translation = new Cesium.Cartesian3();
+          this.rotation = new Cesium.Quaternion();
+          this.hpr = new Cesium.HeadingPitchRoll();
+          this.trs = new Cesium.TranslationRotationScale();
+          this.scene = this.viewer.scene;
+          this.particleSystem = "";
+          this.entity = this.viewer.entities.add({
+            //选择粒子放置的坐标
+            position: Cesium.Cartesian3.fromDegrees(obj.lng, obj.lat, 10),
+          });
+          this.init();
+        }
+
+        init() {
+          const _this = this;
+          this.viewer.clock.shouldAnimate = true;
+          this.viewer.scene.globe.depthTestAgainstTerrain = false;
+          // this.viewer.trackedEntity = this.entity;
+          var particleSystem = this.scene.primitives.add(
+            new Cesium.ParticleSystem({
+              image: "./smoke.png", //生成所需粒子的图片路径
+              //粒子在生命周期开始时的颜色
+              startColor: Cesium.Color.BLACK.withAlpha(0.7),
+              //粒子在生命周期结束时的颜色
+              endColor: Cesium.Color.WHITE.withAlpha(0.3),
+              //粒子在生命周期开始时初始比例
+              startScale: _this.viewModel.startScale,
+              //粒子在生命周期结束时比例
+              endScale: _this.viewModel.endScale,
+              //粒子发射的最小速度
+              minimumParticleLife: _this.viewModel.minimumParticleLife,
+              //粒子发射的最大速度
+              maximumParticleLife: _this.viewModel.maximumParticleLife,
+              //粒子质量的最小界限
+              minimumSpeed: _this.viewModel.minimumSpeed,
+              //粒子质量的最大界限
+              maximumSpeed: _this.viewModel.maximumSpeed,
+              //以像素为单位缩放粒子图像尺寸
+              imageSize: new Cesium.Cartesian2(
+                _this.viewModel.particleSize,
+                _this.viewModel.particleSize
+              ),
+              //每秒发射的粒子数
+              emissionRate: _this.viewModel.emissionRate,
+              //粒子系统发射粒子的时间（秒）
+              lifetime: 161.0,
+              //设置粒子的大小是否以米或像素为单位
+              sizeInMeters: true,
+              //系统的粒子发射器
+              emitter: new Cesium.CircleEmitter(2.0), //BoxEmitter 盒形发射器，ConeEmitter 锥形发射器，SphereEmitter 球形发射器，CircleEmitter圆形发射器
+              //回调函数，实现各种喷泉、烟雾效果
+              updateCallback: (p, dt) => {
+                return this.applyGravity(p, dt);
+              },
+            })
+          );
+          this.particleSystem = particleSystem;
+          this.preUpdateEvent();
+        }
+
+        //场景渲染事件
+        preUpdateEvent() {
+          let _this = this;
+          this.viewer.scene.preUpdate.addEventListener(function (
+            scene,
+            time
+          ) {
+            //发射器地理位置
+            _this.particleSystem.modelMatrix = _this.computeModelMatrix(
+              _this.entity,
+              time
+            );
+            //发射器局部位置
+            _this.particleSystem.emitterModelMatrix =
+              _this.computeEmitterModelMatrix();
+            // 将发射器旋转
+            if (_this.viewModel.spin) {
+              _this.viewModel.heading += 1.0;
+              _this.viewModel.pitch += 1.0;
+              _this.viewModel.roll += 1.0;
+            }
+          });
+        }
+
+        computeModelMatrix(entity, time) {
+          return entity.computeModelMatrix(time, new Cesium.Matrix4());
+        }
+
+        computeEmitterModelMatrix() {
+          this.hpr = Cesium.HeadingPitchRoll.fromDegrees(
+            0.0,
+            0.0,
+            0.0,
+            this.hpr
+          );
+          this.trs.translation = Cesium.Cartesian3.fromElements(
+            -4.0,
+            0.0,
+            1.4,
+            this.translation
+          );
+          this.trs.rotation = Cesium.Quaternion.fromHeadingPitchRoll(
+            this.hpr,
+            this.rotation
+          );
+
+          return Cesium.Matrix4.fromTranslationRotationScale(
+            this.trs,
+            this.emitterModelMatrix
+          );
+        }
+
+        applyGravity(p, dt) {
+          var gravityScratch = new Cesium.Cartesian3();
+          var position = p.position;
+          Cesium.Cartesian3.normalize(position, gravityScratch);
+          Cesium.Cartesian3.fromElements(
+            20 * dt,
+            30 * dt,
+            gravityScratch.y * dt,
+            gravityScratch
+          );
+          p.velocity = Cesium.Cartesian3.add(
+            p.velocity,
+            gravityScratch,
+            p.velocity
+          );
+        }
+
+        removeEvent() {
+          this.viewer.scene.preUpdate.removeEventListener(
+            this.preUpdateEvent,
+            this
+          );
+          this.emitterModelMatrix = undefined;
+          this.translation = undefined;
+          this.rotation = undefined;
+          this.hpr = undefined;
+          this.trs = undefined;
+        }
+
+        //移除粒子特效
+        remove() {
+          () => {
+            return this.removeEvent();
+          }; //清除事件
+          this.viewer.scene.primitives.remove(this.particleSystem); //删除粒子对象
+          this.viewer.entities.remove(this.entity); //删除entity
+        }
+      }
+      new FireEffect(viewer, {
+        lng: 121.55001,
+        lat: 25.039343,
+      });
+      new FireEffect(viewer, {
+        lng: 121.551034,
+        lat: 25.036803,
+      });
+      new smokeEffect(viewer, {
+        lng: 121.551034,
+        lat: 25.036803,
+      });
+    }
+
+    function loadsss() {
+      tileset = new Cesium.Cesium3DTileset({
+        url: "./data/tileset.json",
+      });
+      tileset.readyPromise
+        .then(function (tileset) {
+          viewer.scene.primitives.add(tileset);
+
+          viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(
+              121.549884,
+              25.025771,
+              1050.6
+            ),
+            duration: 2,
+            orientation: {
+              heading: Cesium.Math.toRadians(0.7),
+              pitch: Cesium.Math.toRadians(-38.7),
+              roll: 0.0,
+            },
+          });
+
+          customShader2(tileset);
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+    function customShader2(tileset) {
+      let customShader = new Cesium.CustomShader({
+        //片元着色器
+        fragmentShaderText: `
+                        void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                            vec3 positionMC = fsInput.attributes.positionMC;
+                            material.diffuse = vec3(0.0, 1.0-positionMC.y*0.005, 1.0-positionMC.y*0.0015);
+
+                            float _baseHeight = 18.0; // 物体的基础高度，需要修改成一个合适的建筑基础高度
+                            float _heightRange = 60.0; // 高亮的范围(_baseHeight ~ _baseHeight + _heightRange) 默认是 0-60米
+                            float _glowRange = 120.0; // 光环的移动范围(高度)
+
+                            float vtxf_height = fsInput.attributes.positionMC.y - _baseHeight;
+                            float vtxf_a11 = fract(czm_frameNumber / 360.0) * 3.14159265 * 2.0; //此处括号内分母为移动速度
+                            float vtxf_a12 = vtxf_height / _heightRange + sin(vtxf_a11) * 0.1;
+                            material.diffuse *= vec3(vtxf_a12, vtxf_a12, vtxf_a12);
+
+                            float vtxf_a13 = fract(czm_frameNumber / 360.0); //此处括号内分母为移动速度，数值越大，速度越慢
+                            float vtxf_h = clamp(vtxf_height / _glowRange, 0.0, 1.0);
+                            vtxf_a13 = abs(vtxf_a13 - 0.5) * 2.0;
+                            float vtxf_diff = step(0.01, abs(vtxf_h - vtxf_a13)); // 0.1 为高亮光条的范围（粗细）
+                            material.diffuse += material.diffuse * (1.0 - vtxf_diff);
+                        }`,
+      });
+      tileset.customShader = customShader;
+      viewer.scene.globe.depthTestAgainstTerrain = true; //（开启）
+    }
+  </script>
+</body>
+
+</html>

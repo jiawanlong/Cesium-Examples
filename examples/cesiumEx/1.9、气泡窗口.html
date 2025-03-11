@@ -1,0 +1,113 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .aaa {
+            width: 200px;
+            height: 100px;
+            pointer-events: none;
+            position: absolute;
+            color: aqua;
+            z-index: 99;
+        }
+
+        .arrow_box {
+            position: relative;
+            background: #0e00d5;
+            border: 4px solid #f50b02;
+            left: -50%;
+            top: -80%;
+        }
+
+        .arrow_box:after,
+        .arrow_box:before {
+            top: 100%;
+            left: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .arrow_box:after {
+            border-color: rgba(14, 0, 213, 0);
+            border-top-color: #0e00d5;
+            border-width: 30px;
+            margin-left: -30px;
+        }
+
+        .arrow_box:before {
+            border-color: rgba(245, 11, 2, 0);
+            border-top-color: #f50b02;
+            border-width: 36px;
+            margin-left: -36px;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div class="aaa" id="test">
+        <div class='arrow_box'>
+            <h1 class='logo'>测试！！！！</h1>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        var hello = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883),
+            point: {
+                pixelSize: 5,
+                color: Cesium.Color.RED,
+                outlineColor: Cesium.Color.WHITE,
+                outlineWidth: 2,
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            }
+        });
+        //js
+        var htmlOverlay = document.getElementById('test');
+        var scratch = new Cesium.Cartesian2();
+        viewer.scene.preRender.addEventListener(function () {
+            var position = Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883);
+            var canvasPosition = viewer.scene.cartesianToCanvasCoordinates(position, scratch);
+            if (Cesium.defined(canvasPosition)) {
+                htmlOverlay.style.top = canvasPosition.y + 'px';
+                htmlOverlay.style.left = canvasPosition.x + 'px';
+            }
+        });
+    </script>
+</body>
+
+</html>

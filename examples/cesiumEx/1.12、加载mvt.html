@@ -1,0 +1,46 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.72/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.72/Cesium.js"></script>
+    <script src="./CesiumVectorTile.js"></script>
+    <script src="./ol.js"></script>
+    <script src="./mvt.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // var mvtLayer = mvt.create({
+        //     url: 'https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/{z}/{x}/{y}.vector.pbf?access_token={k}',
+        //     key: 'pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w',
+        //     style: mvt.StreetsV6Style
+        // });
+        // viewer.imageryLayers.addImageryProvider(mvtLayer)
+
+        // 样式要修改mvt.js文件
+        var mvtLayer = mvt.create({
+            url:'http://58.218.244.204:30080/dynamic_vector/server/maps/l081dbd44d0ce1000/tiles?type=1&z={z}&x={x}&y={y}',
+            style: mvt.StreetsV6Style
+        });
+        viewer.imageryLayers.addImageryProvider(mvtLayer)
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(111.5, 30.5, 50000.0)
+        });
+
+    </script>
+</body>
+
+</html>

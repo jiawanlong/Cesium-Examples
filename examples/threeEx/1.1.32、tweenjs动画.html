@@ -1,0 +1,93 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+    <script src="./tween.umd.js"></script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+        import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+
+        const camera = new THREE.PerspectiveCamera();  //相机
+        camera.position.set(50, 20, 100); //相机位置
+        camera.lookAt(150, 0, 10); //相机位置
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        scene.add(new THREE.AmbientLight(0xffffff, 4))
+        scene.add(new THREE.AxesHelper(1000))
+
+        // 加载模型 gltf/ glb 
+        const loader = new GLTFLoader()
+        loader.load('./zhanji.glb', (gltf) => {
+            scene.add(gltf.scene)
+            gltf.scene.scale.set(0.005, 0.005, 0.005)
+
+            //绕x轴旋转π/4
+            gltf.scene.rotateY(Math.PI / 4);
+
+            //创建一段平移的动画
+            const tween = new TWEEN.Tween(gltf.scene.position);
+            tween.to({ x: 100, y: 50, z: 100 }, 10000);
+
+            //创建一段缩放的动画
+            const tween2 = new TWEEN.Tween(gltf.scene.scale);
+            tween2.to({ x: 0.01, y: 0.01, z: 0.01 }, 10000);
+
+            tween.start();
+            tween2.start();
+
+
+        })
+
+
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+        new OrbitControls(camera, renderer.domElement)
+
+        animate()
+        function animate() {
+            TWEEN.update();
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+        }
+
+    </script>
+
+</body>
+
+</html>

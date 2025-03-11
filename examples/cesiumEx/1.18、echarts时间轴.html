@@ -1,0 +1,108 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./echarts/5.4.3/echarts.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div style="    position: absolute;bottom: 100px;left: 200px; z-index: 1000;">
+        <div id="timelines" style="width: 800px;height:50px;"></div>
+    </div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        let arrTileLayer = [];
+        const urlArr = [
+            "./timeMap/20200522145400_20200522145400_0c972b7abe4f4b4fbdbe909f5c1ca17a.png",
+            "./timeMap/20200522145400_20200522150000_55c4adac7ac8460db3d893866897bd6d.png",
+            "./timeMap/20200522145400_20200522162400_8b949a9d47fd4f289bd51afe9e009ab9.png",
+            "./timeMap/20200522145400_20200522163000_9f234335ae2c42ac91d5dfc62b72f3db.png",
+            "./timeMap/20200522145400_20200522163600_a808919c4a5a4142b188520a74dacf75.png",
+            "./timeMap/20200522145400_20200522170600_964ada943fcf4a13aa59364b1efd0b1b.png",
+            "./timeMap/20200522145400_20200522152400_4ad54289d6f64f5aaa160f453a99b14a.png",
+            "./timeMap/20200522145400_20200522170600_964ada943fcf4a13aa59364b1efd0b1b.png",
+        ];
+        for (let i = 0, len = urlArr.length; i < len; i++) {
+            var imageryProvider = new Cesium.SingleTileImageryProvider({
+                url: urlArr[i],
+                rectangle: Cesium.Rectangle.fromDegrees(63.8148899733, 12.7700338517, 143.536486117, 56.3833398551),
+            });
+
+            let options = {
+                alpha: 0
+            }
+            var imageryLayer = new Cesium.ImageryLayer(imageryProvider, options);
+            viewer.imageryLayers.add(imageryLayer)
+
+            arrTileLayer.push(imageryLayer);
+        }
+
+        var myChart = echarts.init(document.getElementById('timelines'));
+
+        // echarts时间轴，超级强大！
+        var option = {
+            baseOption: {
+                timeline: {
+                    axisType: 'category',
+                    autoPlay: true,
+                    playInterval: 2000,
+                    data: [
+                        '2002-01-01',
+                        '2003-01-01',
+                        '2004-01-01',
+                        '2006-01-01',
+                        '2007-01-01',
+                        '2008-01-01',
+                        '2009-01-01',
+                        '2010-01-01'
+                    ],
+                    label: {
+                        formatter: function (s) {
+                            return new Date(s).getFullYear();
+                        }
+                    }
+                }
+            }
+        };
+
+        myChart.setOption(option);
+
+        myChart.on('timelinechanged', function (event) {
+            console.log('当前:', event);
+            console.log('当前索引:', event.currentIndex);
+            closeAll();
+            arrTileLayer[event.currentIndex].alpha = 1;
+        });
+
+        function closeAll() {
+            arrTileLayer.forEach((k, i) => {
+                arrTileLayer[i].alpha = 0;
+            })
+        }
+
+        viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(110.511154, 29.362943, 5531517.4),
+            duration: 2,
+            orientation: {
+                heading: Cesium.Math.toRadians(348.3), // 水平旋转，围绕Y轴，0为正北方向
+                pitch: Cesium.Math.toRadians(-89.8),     // 上下旋转，围绕X轴，-90为俯视地面
+                roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
+            },
+            complete: () => {
+               
+            }
+        });
+
+    </script>
+</body>
+
+</html>

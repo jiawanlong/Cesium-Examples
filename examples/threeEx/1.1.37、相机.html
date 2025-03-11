@@ -1,0 +1,103 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        const getColor = () => '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0')
+
+        // 场景
+        const scene = new THREE.Scene();// 创建场景
+        const geometry = new THREE.BoxGeometry(5, 5, 5);
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                for (let k = 0; k < 10; k++) {
+                    const material = new THREE.MeshBasicMaterial({ color: getColor() }); //材质 
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set(i * 20, k * 20, j * 20);
+                    scene.add(mesh);
+                }
+            }
+        }
+
+        // AxesHelper
+        const axesHelper = new THREE.AxesHelper(300);
+        scene.add(axesHelper);
+
+
+        // 透视投影可以模拟人眼观察世界的视觉效果，人在场景中漫游，或是在高处俯瞰整个园区或工厂
+        // 正投影相机可以做 中国地图的效果，或者一个2D可视化的效果
+
+        /*
+        1、透视投影相机 PerspectiveCamera（远小近大投影规律）
+            fov (Field of View)：垂直视野角度，通常以度为单位。
+            aspect：宽高比，通常是渲染器的宽度除以高度。
+            near：近裁剪面距离，小于这个距离的物体将不可见。
+            far：远裁剪面距离，大于这个距离的物体将不可见。
+        */
+        // const camera = new THREE.PerspectiveCamera();  //相机
+        // const camera = new THREE.PerspectiveCamera(75, document.body.clientWidth / document.body.clientHeight, 0.1, 3000)
+        // camera.position.set(500, 500, 500);
+        // camera.lookAt(0, 0, 0);
+
+        /*
+       2、正投影相机 OrthographicCamera( left, right, top, bottom, near, far )
+            left	渲染空间的左边界
+            right	渲染空间的右边界
+            top	渲染空间的上边界
+            bottom	渲染空间的下边界
+            near	near属性表示的是从距离相机多远的位置开始渲染，一般情况会设置一个很小的值。 默认值0.1
+            far	far属性表示的是距离相机多远的位置截止渲染，如果设置的值偏小小，会有部分场景看不到。 默认值2000
+        */
+        const width = window.innerWidth; //canvas画布宽度
+        const height = window.innerHeight; //canvas画布高度
+        const k = width / height; //canvas画布宽高比
+        const s = 600;//控制left, right, top, bottom范围大小
+        const camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 8000);
+        camera.position.set(500, 500, 500);//相机放在了y轴上
+        camera.lookAt(0, 0, 0);//指向坐标原点
+
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer(); // 创建渲染器
+        renderer.setSize(window.innerWidth, window.innerHeight); //渲染区域
+        renderer.render(scene, camera); //执行渲染
+        document.body.appendChild(renderer.domElement);
+
+        // 设置相机控件轨道控制器OrbitControls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        // 如果OrbitControls改变了相机参数，重新调用渲染器渲染三维场景
+        controls.addEventListener('change', function () {
+            renderer.render(scene, camera); //执行渲染操作
+            console.log(camera.position)
+        });//监听鼠标、键盘事件
+    </script>
+
+</body>
+
+</html>

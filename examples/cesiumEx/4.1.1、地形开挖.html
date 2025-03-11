@@ -1,0 +1,70 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./excavateTerrain.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 加载默认地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水掩膜以实现水体效果
+            requestVertexNormals: true // 请求法线以实现光照效果
+        });
+
+
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        viewer.camera.setView({
+            destination: new Cesium.Cartesian3(-2409728.6420393116, 4694838.793290997, 3570221.295666795)
+        });
+
+        var mr = [{
+            x: -2409728.6420393116,
+            y: 4694838.793290997,
+            z: 3570221.295666795
+        },
+        {
+            x: -2409788.2788523836,
+            y: 4694808.716559992,
+            z: 3570220.598452356
+        },
+        {
+            x: -2409813.389689466,
+            y: 4694859.279606352,
+            z: 3570137.7191554685
+        },
+        {
+            x: -2409755.7791936737,
+            y: 4694886.737790491,
+            z: 3570140.4776008143
+        }
+        ];
+
+        new excavateTerrain(viewer, {
+            positions: mr,
+            height: 30,
+            bottom: "./ter_analysis/excavationregion_side.jpg",
+            side: "./ter_analysis/excavationregion_top.jpg",
+        })
+
+    </script>
+</body>
+
+</html>

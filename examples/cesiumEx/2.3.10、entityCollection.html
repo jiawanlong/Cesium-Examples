@@ -1,0 +1,62 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        let myEntityCollection = new Cesium.CustomDataSource("clickEntityCollection");
+        viewer.dataSources.add(myEntityCollection);
+
+        var entity1 = new Cesium.Entity({
+            id: 'Entity1',
+            name: 'Entity1',
+            position: Cesium.Cartesian3.fromDegrees(-100, 40),
+            billboard: {
+                image: './icon.png',
+                width: 32,
+                height: 32,
+            },
+            label: {
+                text: '1号指挥所',
+                font: '19px sans-serif',
+            }
+        });
+
+        myEntityCollection.entities.add(entity1);
+
+        // 移除
+        // myEntityCollection.entities.remove(entity1)
+
+
+        // add(entity): 向EntityCollection中添加实体对象。
+        // remove(entity): 从EntityCollection中移除实体对象。
+        // removeAll(): 移除所有实体对象。
+        // get(index): 返回指定索引处的实体对象。
+        // getLength(): 返回EntityCollection中实体对象的数量。
+        // getOrCreateEntity(id): 返回指定ID的实体对象，如果不存在则创建一个新的实体对象并返回。
+        // getById(id): 返回指定ID的实体对象，如果不存在则返回undefined。
+        // contains(entity): 判断EntityCollection中是否包含指定的实体对象。
+        // raiseToTop(entity): 将指定的实体对象移动到EntityCollection的顶部，使其显示在其他实体对象之上。
+
+
+    </script>
+</body>
+
+</html>

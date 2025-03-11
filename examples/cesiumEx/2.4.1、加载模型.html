@@ -1,0 +1,66 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 取消默认的单击和双击事件，右上角弹窗很丑
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+        var position = Cesium.Cartesian3.fromDegrees(-95.0, 40.0, 200000.0);
+        var heading = Cesium.Math.toRadians(0);
+        var pitch = Cesium.Math.toRadians(0);
+        var roll = Cesium.Math.toRadians(0);
+
+        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+        var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+            position,
+            hpr
+        );
+
+        // http://cesium.xin/cesium/cn/Documentation1.95/ModelGraphics.html#.ConstructorOptions
+        var entity = viewer.entities.add({
+            position: position,
+            orientation: orientation,
+            model: {
+                uri: './feiji.glb',
+                scale: 10,
+                color: Cesium.Color.fromCssColorString("rgba(254, 129, 6, 0.65)"), //混合色
+                silhouetteColor: Cesium.Color.fromCssColorString("#001aff"), //边框
+                silhouetteSize: 5, //边框大小
+                colorBlendMode: Cesium.ColorBlendMode.MIX,
+                runAnimations: true,
+                shadows: Cesium.ShadowMode.CAST_ONLY,
+                colorBlendAmount: 0
+            }
+        });
+
+        // 控制模型运动
+        // entity.model.runAnimations = 1
+        // entity.model.runAnimations = 0
+
+        viewer.flyTo(entity)
+        // viewer.trackedEntity  =  entity
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1143 @@
+@font-face {
+    font-family: 'supermap-icon';
+    src:    url('./fonts/supermap-icon.eot?ttrekr');
+    src:    url('./fonts/supermap-icon.eot?ttrekr#iefix') format('embedded-opentype'),
+    url('./fonts/supermap-icon.ttf?ttrekr') format('truetype'),
+    url('./fonts/supermap-icon.woff?ttrekr') format('woff'),
+    url('./fonts/supermap-icon.svg?ttrekr#supermap-icon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="supermapol-icons-"], [class*=" supermapol-icons-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'supermap-icon', 'sans-serif' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.supermapol-icons-material_design_beenhere:before {
+  content: "\e958";
+}
+.supermapol-icons-material_design_directions:before {
+  content: "\e959";
+}
+.supermapol-icons-material_design_directions_bike:before {
+  content: "\e95a";
+}
+.supermapol-icons-material_design_directions_bus:before {
+  content: "\e95b";
+}
+.supermapol-icons-material_design_directions_car:before {
+  content: "\e95c";
+}
+.supermapol-icons-material_design_directions_ferry:before {
+  content: "\e95d";
+}
+.supermapol-icons-material_design_directions_train:before {
+  content: "\e95e";
+}
+.supermapol-icons-material_design_directions_transit:before {
+  content: "\e95f";
+}
+.supermapol-icons-material_design_directions_walk:before {
+  content: "\e960";
+}
+.supermapol-icons-material_design_flight:before {
+  content: "\e961";
+}
+.supermapol-icons-material_design_hotel:before {
+  content: "\e962";
+}
+.supermapol-icons-material_design_local_airport:before {
+  content: "\e963";
+}
+.supermapol-icons-material_design_local_atm:before {
+  content: "\e964";
+}
+.supermapol-icons-material_design_local_attraction:before {
+  content: "\e965";
+}
+.supermapol-icons-material_design_local_bar:before {
+  content: "\e966";
+}
+.supermapol-icons-material_design_local_cafe:before {
+  content: "\e967";
+}
+.supermapol-icons-material_design_local_car_wash:before {
+  content: "\e968";
+}
+.supermapol-icons-material_design_local_convenience_store:before {
+  content: "\e969";
+}
+.supermapol-icons-material_design_local_drink:before {
+  content: "\e96a";
+}
+.supermapol-icons-material_design_local_florist:before {
+  content: "\e96b";
+}
+.supermapol-icons-material_design_local_gas_station:before {
+  content: "\e96c";
+}
+.supermapol-icons-material_design_local_grocery_store:before {
+  content: "\e96d";
+}
+.supermapol-icons-material_design_local_hospital:before {
+  content: "\e96e";
+}
+.supermapol-icons-material_design_local_laundry_service:before {
+  content: "\e96f";
+}
+.supermapol-icons-material_design_local_library:before {
+  content: "\e970";
+}
+.supermapol-icons-material_design_local_mall:before {
+  content: "\e971";
+}
+.supermapol-icons-material_design_local_movies:before {
+  content: "\e972";
+}
+.supermapol-icons-material_design_local_offer:before {
+  content: "\e973";
+}
+.supermapol-icons-material_design_local_parking:before {
+  content: "\e974";
+}
+.supermapol-icons-material_design_local_pharmacy:before {
+  content: "\e975";
+}
+.supermapol-icons-material_design_local_phone:before {
+  content: "\e976";
+}
+.supermapol-icons-material_design_local_pizza:before {
+  content: "\e977";
+}
+.supermapol-icons-material_design_local_play:before {
+  content: "\e978";
+}
+.supermapol-icons-material_design_local_post_office:before {
+  content: "\e979";
+}
+.supermapol-icons-material_design_local_print_shop:before {
+  content: "\e97a";
+}
+.supermapol-icons-material_design_local_restaurant:before {
+  content: "\e97b";
+}
+.supermapol-icons-material_design_local_see:before {
+  content: "\e97c";
+}
+.supermapol-icons-material_design_local_shipping:before {
+  content: "\e97d";
+}
+.supermapol-icons-material_design_local_taxi:before {
+  content: "\e97e";
+}
+.supermapol-icons-material_design_location_history:before {
+  content: "\e97f";
+}
+.supermapol-icons-material_design_my_location:before {
+  content: "\e980";
+}
+.supermapol-icons-material_design_navigation:before {
+  content: "\e981";
+}
+.supermapol-icons-material_design_pin_drop:before {
+  content: "\e982";
+}
+.supermapol-icons-material_design_place:before {
+  content: "\e983";
+}
+.supermapol-icons-material_design_rate_review:before {
+  content: "\e984";
+}
+.supermapol-icons-material_design_restaurant_menu:before {
+  content: "\e985";
+}
+.supermapol-icons-material_design_satellite:before {
+  content: "\e986";
+}
+.supermapol-icons-material_design_store_mall_directory:before {
+  content: "\e987";
+}
+.supermapol-icons-material_design_terrain:before {
+  content: "\e988";
+}
+.supermapol-icons-material_design_traffic:before {
+  content: "\e989";
+}
+.supermapol-icons-server:before {
+  content: "\e98b";
+}
+.supermapol-icons-others:before {
+  content: "\e98a";
+}
+.supermapol-icons-maps:before {
+  content: "\e954";
+}
+.supermapol-icons-new:before {
+  content: "\e955";
+}
+.supermapol-icons-feedback:before {
+  content: "\e956";
+}
+.supermapol-icons-homepage:before {
+  content: "\e957";
+}
+.supermapol-icons-ruler:before {
+  content: "\e950";
+}
+.supermapol-icons-menu:before {
+  content: "\e952";
+}
+.supermapol-icons-rename:before {
+  content: "\e953";
+}
+.supermapol-icons-field:before {
+  content: "\e951";
+}
+.supermapol-icons-export:before {
+  content: "\e94d";
+}
+.supermapol-icons-zone:before {
+  content: "\e94c";
+}
+.supermapol-icons-copy:before {
+  content: "\e94b";
+}
+.supermapol-icons-qqblog:before {
+  content: "\e94e";
+}
+.supermapol-icons-sina:before {
+  content: "\e94f";
+}
+.supermapol-icons-play:before {
+  content: "\e949";
+}
+.supermapol-icons-pause:before {
+  content: "\e94a";
+}
+.supermapol-icons-search-thin:before {
+  content: "\e948";
+}
+.supermapol-icons-layerStyle:before {
+  content: "\e947";
+}
+.supermapol-icons-cad:before {
+  content: "\e944";
+}
+.supermapol-icons-grid:before {
+  content: "\e945";
+}
+.supermapol-icons-image:before {
+  content: "\e946";
+}
+.supermapol-icons-eye-closed:before {
+  content: "\e915";
+}
+.supermapol-icons-dropdown:before {
+  content: "\e943";
+}
+.supermapol-icons-solid-triangle:before {
+  content: "\e941";
+}
+.supermapol-icons-eye:before {
+  content: "\e942";
+}
+.supermapol-icons-opacity:before {
+  content: "\e940";
+}
+.supermapol-icons-table:before {
+  content: "\e93f";
+}
+.supermapol-icons-upload:before {
+  content: "\e93d";
+}
+.supermapol-icons-solid-point:before {
+  content: "\e93a";
+}
+.supermapol-icons-flag:before {
+  content: "\e93b";
+}
+.supermapol-icons-target:before {
+  content: "\e93c";
+}
+.supermapol-icons-legend:before {
+  content: "\e93e";
+}
+.supermapol-icons-select:before {
+  content: "\e939";
+}
+.supermapol-icons-logo:before {
+  content: "\e938";
+}
+.supermapol-icons-tag:before {
+  content: "\e934";
+}
+.supermapol-icons-new_home:before {
+  content: "\e935";
+}
+.supermapol-icons-update:before {
+  content: "\e936";
+}
+.supermapol-icons-info:before {
+  content: "\e937";
+}
+.supermapol-icons-unfold:before {
+  content: "\e930";
+}
+.supermapol-icons-fold:before {
+  content: "\e931";
+}
+.supermapol-icons-right:before {
+  content: "\e932";
+}
+.supermapol-icons-left:before {
+  content: "\e933";
+}
+.supermapol-icons-edit:before {
+  content: "\e92c";
+}
+.supermapol-icons-home:before {
+  content: "\e92d";
+}
+.supermapol-icons-share:before {
+  content: "\e92e";
+}
+.supermapol-icons-back:before {
+  content: "\e92f";
+}
+.supermapol-icons-rest-api:before {
+  content: "\e929";
+}
+.supermapol-icons-javascript-api:before {
+  content: "\e92a";
+}
+.supermapol-icons-desktop-dev:before {
+  content: "\e92b";
+}
+.supermapol-icons-open:before {
+  content: "\e91f";
+}
+.supermapol-icons-overlay:before {
+  content: "\e920";
+}
+.supermapol-icons-point-layer:before {
+  content: "\e921";
+}
+.supermapol-icons-hamburg:before {
+  content: "\e922";
+}
+.supermapol-icons-triangle:before {
+  content: "\e923";
+}
+.supermapol-icons-polygon-layer:before {
+  content: "\e924";
+}
+.supermapol-icons-close:before {
+  content: "\e925";
+}
+.supermapol-icons-add:before {
+  content: "\e926";
+}
+.supermapol-icons-more:before {
+  content: "\e927";
+}
+.supermapol-icons-line-layer:before {
+  content: "\e928";
+}
+.supermapol-icons-polygon:before {
+  content: "\e91e";
+}
+.supermapol-icons-triangle-old:before {
+  content: "\e910";
+  color: #474747;
+}
+.supermapol-icons-save:before {
+  content: "\e900";
+}
+.supermapol-icons-baselayer:before {
+  content: "\e901";
+}
+.supermapol-icons-marker:before {
+  content: "\e902";
+}
+.supermapol-icons-uncheck:before {
+  content: "\e903";
+}
+.supermapol-icons-checked:before {
+  content: "\e904";
+}
+.supermapol-icons-zoom-in:before {
+  content: "\e905";
+}
+.supermapol-icons-clear:before {
+  content: "\e906";
+}
+.supermapol-icons-setting:before {
+  content: "\e907";
+}
+.supermapol-icons-zoom-to:before {
+  content: "\e908";
+}
+.supermapol-icons-default-layer:before {
+  content: "\e909";
+}
+.supermapol-icons-group:before {
+  content: "\e90a";
+}
+.supermapol-icons-delete:before {
+  content: "\e90b";
+}
+.supermapol-icons-up:before {
+  content: "\e90c";
+}
+.supermapol-icons-warning:before {
+  content: "\e90d";
+}
+.supermapol-icons-retract:before {
+  content: "\e90e";
+}
+.supermapol-icons-search:before {
+  content: "\e90f";
+}
+.supermapol-icons-zoom-out:before {
+  content: "\e911";
+}
+.supermapol-icons-layers:before {
+  content: "\e912";
+}
+.supermapol-icons-add-old:before {
+  content: "\e913";
+}
+.supermapol-icons-brush:before {
+  content: "\e914";
+}
+.supermapol-icons-down:before {
+  content: "\e916";
+}
+.supermapol-icons-line:before {
+  content: "\e917";
+}
+.supermapol-icons-pen:before {
+  content: "\e918";
+}
+.supermapol-icons-user:before {
+  content: "\e919";
+}
+.supermapol-icons-down-end:before {
+  content: "\e91a";
+}
+.supermapol-icons-up-end:before {
+  content: "\e91b";
+}
+.supermapol-icons-text:before {
+  content: "\e91c";
+}
+.supermapol-icons-customize:before {
+  content: "\e91d";
+}
+
+
+
+div.smMap {
+    z-index: 0;
+    padding: 0px!important;
+    margin: 0px!important;
+    /* cursor: url("../images/cursors/Pan.cur"),default; */
+  background-color: #f5f3f0;
+}
+
+div.smMapViewport {
+    text-align: left;
+}
+
+div.smLayerDiv {
+    -moz-user-select: none;
+}
+
+.smLayerGoogleCopyright {
+    left: 2px;
+    bottom: 2px;
+}
+.smLayerGooglePoweredBy {
+    left: 2px;
+    bottom: 15px;
+}
+.smControlAttribution {
+    font-size: smaller;
+    right: 3px;
+    bottom: 0.5em;
+    position: absolute;
+    display: block;
+}
+.smControlScale {
+    right: 3px;
+    bottom: 3em;
+    display: block;
+    position: absolute;
+    font-size: smaller;
+}
+.smControlScaleLine {
+    display: block;
+    position: absolute;
+    left: 10px;
+    bottom: 15px;
+    font-size: xx-small;
+}
+.smControlScaleLineBottom {
+    border: solid 2px black;
+    border-bottom: none;
+    margin-top:-2px;
+    text-align: center;
+}
+.smControlScaleLineTop {
+    border: solid 2px black;
+    border-top: none;
+    text-align: center;
+}
+
+.smControlPermalink {
+    right: 3px;
+    bottom: 1.5em;
+    display: block;
+    position: absolute;
+    font-size: smaller;
+}
+
+div.smControlMousePosition {
+    bottom: 0em;
+    right: 3px;
+    display: block;
+    position: absolute;
+    font-family: 'Arial', 'sans-serif';
+    font-size: smaller;
+}
+
+.smControlOverviewMapContainer {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: #e5f3ff;
+}
+
+
+.smControlOverviewMapElement {
+    border-left:1px solid #3473b7;
+    border-top:1px solid #3473b7;
+    padding-top: 4px;
+    padding-left: 4px;
+}
+
+.smControlOverviewMapMinimizeButton {
+    right: 0px;
+    bottom: 1px;
+    cursor: pointer;
+}
+
+.smControlOverviewMapMaximizeButton {
+    right: 0px;
+    bottom: 1px;
+    cursor: pointer;
+}
+
+.smControlOverviewMapExtentRectangle {
+    overflow: hidden;
+    /*background-image:url(../../image/blank.gif);*/
+    border: 1px solid red;
+    background:#69F;
+    filter:alpha(opacity=50);/* IE */
+    -moz-opacity:0.5;/* Moz + FF */
+    opacity: 0.5; /* 支持CSS3的浏览器（FF 1.5也支持）*/
+}
+.smControlOverviewMapRectReplacement {
+    overflow: hidden;
+    cursor: url("../images/cursors/PanDown.cur"),move;
+    background-image: url(../images/overview_replacement.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.smLayerGeoRSSDescription {
+    float:left;
+    width:100%;
+    overflow:auto;
+    font-size:1.0em;
+}
+.smLayerGeoRSSClose {
+    float:right;
+    color:gray;
+    font-size:1.2em;
+    margin-right:6px;
+    font-family:sans-serif;
+}
+.smLayerGeoRSSTitle {
+    float:left;font-size:1.2em;
+}
+
+.smPopupContent {
+    padding:5px;
+    overflow: auto;
+}
+
+.smHandlerBoxZoomBox {
+    border: 2px solid red;
+    position: absolute;
+    background-color: white;
+    opacity: 0.50;
+    font-size: 1px;
+    filter: alpha(opacity=50);
+}
+.smHandlerBoxSelectFeature {
+    border: 2px solid blue;
+    position: absolute;
+    background-color: white;
+    opacity: 0.50;
+    font-size: 1px;
+    filter: alpha(opacity=50);
+}
+
+.smPopupCloseBox {
+    background: url("../images/close.gif") no-repeat;
+    cursor: pointer;
+}
+
+.smFramedCloudPopupContent {
+    padding: 5px;
+    overflow: auto;
+}
+
+.smImageLoadError {
+    background-color: pink;
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* IE */
+    display: none;
+}
+
+/**
+ * Cursor styles
+ */
+.smDefault {
+    cursor: default;
+}
+.smCursorWait {
+    cursor: wait;
+}
+.smDragDown {
+    cursor: url("../images/cursors/PanDown.cur"),move;
+}
+.smDragDownCanvas {
+    cursor: move;
+}
+.smDragUp {
+    cursor: url("../images/cursors/Pan.cur"),auto;
+}
+
+.smCursorPointer {
+    cursor: pointer;
+}
+
+.smDrawBox {
+    cursor: crosshair;
+}
+.smControlDragFeatureOver {
+    /*cursor: move;*/
+}
+.smControlDragFeatureActive.smControlDragFeatureOver.smDragDown {
+    /* cursor: -moz-grabbing;*/
+}
+
+/**
+ * Layer switcher
+ */
+.smControlLayerSwitcher {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    width: 20em;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    font-size: smaller;
+    color: white;
+    background-color: transparent;
+    cursor: default;
+}
+
+.smControlLayerSwitcher .layersDiv {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    background-color: darkblue;
+    width: 100%;
+    height: 100%;
+}
+/*白色样式下*/
+.smControlLayerSwitcher .layersDivWhite {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    background-color: darkblue;
+    width: 100%;
+    height: 100%;
+}
+
+.smControlLayerSwitcher .layersDiv .baseLbl,
+.smControlLayerSwitcher .layersDiv .dataLbl {
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+}
+
+.smControlLayerSwitcher .layersDiv .baseLayersDiv,
+.smControlLayerSwitcher .layersDiv .dataLayersDiv {
+    padding-left: 3px;
+}
+
+.smControlLayerSwitcher .maximizeDiv,
+.smControlLayerSwitcher .minimizeDiv {
+    top: 0px;
+    right: 0px;
+    text-align: left;
+    cursor: pointer;
+}
+.smControlLayerSwitcher .maximizeDiv{
+    border: 3px solid #a5c8ec;
+}
+
+.smControlLayerSwitcher .maximizeDivWhite{
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+}
+
+div.smControlLayerSwitcher {
+    position: absolute;
+    top: 50px;
+    right: 0px;
+    width: 171px;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin: 0px 3px 3px;
+    font-size: smaller;
+    font-size: 13px;
+    color: #4083c2;
+    background-color: transparent;
+    border: 3px solid #a5c8ec;
+}
+div.smControlLayerSwitcher div.layersDiv {
+    padding-top: 25px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    background-color: #FFFFFF;
+    width: 166px;
+    height: 100%;
+}
+div.smControlLayerSwitcher div.layersDivWhite {
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+    background-color: #FFFFFF;
+    width: 166px;
+    height: 100%;
+    color: #565656;
+    box-shadow:0px 0px 3px #ababab;
+    border:1px solid #d7d7d7;
+    border-radius:4px;
+}
+
+.layerSwitcherHR{
+    width: 95%;
+    margin: 7px auto 7px auto;
+}
+
+input.inputElem {
+    width: 14px;
+    height:14px;
+    margin-left: 3px;
+    margin-right:4px;
+    margin-bottom: 4px;
+    margin-top: 4px;
+    vertical-align: middle;
+    border: 0px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0%,0%;
+    cursor: pointer;
+}
+span.labelSpan {
+    margin-left: 5px;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    height:20px;
+    vertical-align: middle;
+}
+div.minimizeDiv .layerSwitcherContent{
+    position: absolute;
+    padding: 2px 40px;
+}
+
+
+/**
+ * Animations
+ */
+
+.smLayerDiv .smTileImage {
+    -webkit-transition: opacity 0.2s linear;
+    -moz-transition: opacity 0.2s linear;
+    -o-transition: opacity 0.2s linear;
+    transition: opacity 0.2s linear;
+}
+
+#popwin img{
+    max-width: none;
+}
+/**
+*绘制矩形框
+*/
+.qByBoundsBoxDiv {
+    background-color: #304DBE;
+    border: 2px solid #060abe;
+    opacity: 0.3;
+}
+/**
+* TiledVectorLayerEditor
+*/
+.smControlTiledVectorLayerEditor{
+    width: 850px;
+    height: 0px;
+    cursor: default;
+    color: #34495e;
+}
+.smControlTiledVectorLayerEditor form{
+    width: 92%;
+    margin: auto;
+}
+.smControlTiledVectorLayerEditor li{
+    margin: 3px 0 3px;
+    padding: 2px;
+    text-indent: 4px;
+}
+.smControlTiledVectorLayerEditor li[data-layertype="point"]{
+    list-style-image: url("../images/point.png");
+}
+.smControlTiledVectorLayerEditor li[data-layertype="line"]{
+    list-style-image: url("../images/line.png");
+}
+.smControlTiledVectorLayerEditor li[data-layertype="region"]{
+    list-style-image: url("../images/region.png");
+}
+.smControlTiledVectorLayerEditor li[data-layertype="text"]{
+    list-style-image: url("../images/text.png");
+}
+.smSubPanel-body>ul>li{
+    margin-bottom: 7px;
+}
+.smSubPanel-body ul>li li{
+    list-style: circle;
+}
+/*.smShowHideBtn-container{
+    content: "";
+    height: 32px;
+    width: 32px;
+    background-image: url("../images/radial.png");
+    border-radius: 5px;
+}
+.smShowHideBtn-container.move{
+    cursor: move;
+    opacity: 0.8;
+}
+.smShowHideBtn-container.move:hover{
+    opacity: 1;
+}
+.smShowHideBtn-container.hidebtn{
+    content: "";
+    height: 16px;
+    width: 16px;
+    //background-image: url("../images/hide.png");
+    border-radius: 0px;
+    top: 10px;
+    right: 28px;
+    opacity: 0.8;
+    z-index: 999;
+
+}
+.smShowHideBtn-container.hidebtn:hover{
+    background-image: url("../images/hide_hover.png");
+    opacity: 0.9;
+}
+.smShowHideBtn-container .smShowHideBtn{
+    content: "";
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    float: left;
+}*/
+span.smCloseBtn-container{
+    height: 15px;
+    width: 15px;
+    top: 13px;
+    right: 25px;
+    opacity: 0.6;
+    z-index: 999;
+    position: absolute;
+}
+.smMainPanel{
+    width: 100%;
+    height: 0;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: "Microsoft YaHei", "sans-serif";
+}
+.smMainPanel.hide{
+    display: none;
+}
+.smPanel-header{
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background-color:#0083cb;
+    height:41px;
+    padding:10px 10px 10px 10px;
+    border-bottom-color: rgb(229,229,229);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    box-sizing: border-box;
+    cursor: move;
+}
+.smMainPanel-title{
+    margin: 0;
+    font-size: 15px;
+    color: white;
+    height: 21px;
+    line-height: 21px;
+    padding: 0;
+    font-weight: normal;
+}
+.smMainPanel-body{
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    background-color: white;
+    color:#7c7c7c;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+.smPanelPointer{
+    border: 2px solid rgba(0,0,0,0);
+}
+.smPanelPointer:hover{
+    background-color: #f2f2f2;
+}
+.smPanelPointer.select{
+    cursor: pointer;
+    border: 1px solid #56b781;
+}
+.smLayerInfoPanel{
+    width: 40%;
+    display: inline-block;
+}
+.smSubPanel{
+    border: 2px solid #ddd;
+    margin: 3px 5px 5px 5px;
+    overflow-y: auto;
+}
+.smSubPanel ul{
+    margin: 0px 3px 0 0;
+    overflow: hidden;
+}
+.smPanel-title{
+    padding-left: 14px;
+    padding-top: 14px;
+    color: #7c7c7c;
+}
+.smSubPanel-header {
+    background-color: #fff;
+    z-index: 99;
+    padding-bottom: 8px;
+}
+.smSubPanel-body{
+    height: 270px;
+    margin-top: 11px;
+}
+.smLayerInfoLI{
+    height: inherit;
+}
+.smLayerInfoLI ul{
+    height: 0px;
+    transition: 300ms height;
+}
+.smEditPanel{
+    display: none;
+    width: 56.6%;
+    float: right;
+    right: 0px
+}
+.smEditPanel table{
+    color: #7c7c7c;
+}
+.smEditPanel.show{
+    display: block;
+}
+.smEditPanelControl{
+
+    vertical-align:middle !important;
+}
+.smPanelCheckbox{
+    float:left;
+    margin-right: 10px;
+    width: 32px;
+}
+.smEditPanel .smEditPanelInputContainer{
+    height: 24px;
+    width: 51px;
+    border: 1px solid #888;
+    margin: 5px;
+}
+.smEditPanel .smEditPanelInputContainer .smEditPanelInput{
+    width: 25px;
+    height: 18px !important;
+    position: relative;
+    margin: 2px;
+    float: left;
+    border: 1px solid;
+}
+.smEditPanel .smEditPanelInputContainer .smEditPanelInput.activebtn:hover{
+    border: 1px inset #aaa;
+}
+.smEditPanel .smEditPanelInputBtn{
+    content: "";
+    height: 16px;
+    width: 16px;
+    position: relative;
+    background: url("../images/colorbtn.png") 3px 4px no-repeat;
+    float: right;
+    right: 2px;
+    top: 1px;
+    margin: 2px;
+}
+.smEditPanel .smEditPanelInputBtn.activebtn:hover{
+    background-color: #ebeff2;
+}
+.smEditPanel .smEditPanelInput,.smEditPanel input{
+    margin: 5px;
+    padding: 0px;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    text-indent: 1px;
+}
+.smToolSlider.smEditPanelInput{
+    top: 4px;
+}
+.smEditPanel input:not([type="checkbox"]){
+    height: 25px;
+    border: 1px solid #aaa;
+}
+input.smPanelValueInput[type="text"]{
+    width: 40px;
+    margin-left: 7px;
+    text-align: center;
+    border: 1px solid #dddddd;
+}
+.smControlTiledVectorLayerEditor .smAdvanceTable{
+    display: none;
+}
+.smControlTiledVectorLayerEditor .smAdvanceTable tr{
+    overflow: hidden;
+    transition: 20ms height;
+}
+.smControlTiledVectorLayerEditor .smSecondTd{
+    text-align: right;
+}
+.smRegularTable .smSecondTd{
+    width: 104px;
+}
+.smAdvanceTable .smSecondTd{
+    width: 136px;
+}
+.smControlTiledVectorLayerEditor .smSplitLine{
+    border-top: 1px solid #ececec;
+    text-align: right;
+    padding-top: 15px;
+    margin-top: 15px;
+    color: #eee;
+}
+.smSplitLineBottom{
+    margin-bottom: 18px;
+}
+.smSplitLine a{
+    color: white;
+    text-decoration: blink;
+    background-color: #0083cb;
+    display: inline-block;
+    padding: 0;
+    width: 108px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    border-radius: 2px;
+}
+.smSplitLine a:hover{
+    background-color: #0075b7;
+}
+.smControlTiledVectorLayerEditor .smSplitLineTop.hide{
+    display: none;
+}
+
+/**
+* SuperMap.Tool.Slider
+*/
+.smToolSlider{
+    height: 4px;
+    position: relative;
+    display: inline-block;
+    background-color: rgb(178, 185, 191);
+    border-bottom-left-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+    border-top-left-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+    box-sizing: border-box;
+    cursor: pointer;
+
+}
+
+.smToolSlider .smToolSliderBar{
+    content: " ";
+    height: 14px;
+    width: 14px !important;
+    position: absolute;
+    top: -6px;
+    color: rgb(124,124,124);
+    background-color: rgb(124,124,124);
+    cursor: pointer;
+    border-color: rgb(124,124,124) ;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+
+}
+.smToolSlider .smToolSliderBar.down{
+    cursor: pointer;
+    opacity: 1;
+    background-color:rgb(77,145,189);
+}
+span.supermapol-icons-clear{
+    opacity: 0.7;
+    cursor: default;
+}
+span.supermapol-icons-clear:hover{
+    opacity: 1.0;
+}

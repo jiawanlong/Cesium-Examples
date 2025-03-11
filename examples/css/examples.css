@@ -1,0 +1,121 @@
+.main-header {
+    position: fixed;
+    width: 100%;
+    top:0;
+}
+
+.examples-container {
+    background-color: #f5f6f6;
+    margin-top: 72px;
+    overflow: auto;
+}
+
+#charts-list {
+    margin: 0;
+    padding: 0 20px;
+    list-style: none;
+    overflow: inherit;
+    background-color: #f5f6f6;;
+}
+
+h3.category-title {
+    margin-top: 0px;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 0;
+    margin-left: 2px;
+    color: #555555
+}
+
+#suffix-title {
+    margin-left: 5px;
+    color: var(--text-color);
+}
+
+@media (min-width: 1400px) {
+    .col-xlg-2 {
+        width: 16.66666667%;
+        padding-bottom: 5px;
+    }
+}
+
+#charts-list .chart {
+    width: 100%;
+    max-width: 260px;
+    margin: 4px auto;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(150, 150, 150, 0.5);
+    -webkit-box-shadow: 0 0 3px rgba(150, 150, 150, 0.5);
+}
+
+#charts-list .chart:hover, #charts-list .chart:focus {
+    transform: scale(1.1) translateZ(0);
+    z-index: 100;
+    -webkit-transform: scale(1.1) translateZ(0);
+    transition-duration: .4s;
+    box-shadow: 1px 1px 6px rgba(150, 150, 150, 0.6);
+    -webkit-box-shadow: 1px 1px 6px rgba(150, 150, 150, 0.6);
+}
+
+#charts-list .chart .chart-link {
+    position: relative;
+    display: block;
+}
+
+#charts-list .chart .chart-link .chart-title {
+    color: #2c3b41;
+    text-align: center;
+    padding: 2px;
+    overflow: hidden;
+    height: 36px;
+    line-height: 36px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    font-weight: normal;
+}
+
+#charts-list .chart .chart-link .chart-thumb {
+    width: 100%;
+}
+
+.box {
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+}
+
+.box.box-default {
+    border: 0;
+    margin-bottom: 20px;
+    padding-top: 45px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e14d57;
+}
+
+.box-title {
+    padding-top: 10px;
+    padding-bottom: 0;
+    color: #111111;
+    font-family: 'Microsoft Yahei';
+}
+
+.box-header {
+    padding-top: 22px;
+    padding-bottom: 5px;
+    padding-left: 0;
+    background-color: #f9f9f9;
+}
+
+.box-body {
+    background-color: #f9f9f9;
+    padding-top: 5px;
+}
+
+.nav > li > a:hover, .nav > li > a:active, .nav > li > a:focus {
+    background: #e14d57;
+}
+
+.category {
+    padding-top: 72px;
+}

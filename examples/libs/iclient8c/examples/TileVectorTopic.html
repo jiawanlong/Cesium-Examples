@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>矢量分块专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+    <style type="text/css">
+
+        .table{
+            display: inline-block;
+            float: left;
+            vertical-align: top;
+            width:450px;
+            margin: 2px;
+        }
+        .CDescriptionList {
+            margin: .5em 5ex 0 5ex
+        }
+
+        .CDLEntry {
+            color: #808080;
+            font: 10pt "Courier New",Courier,monospace;
+            padding-bottom: 0.25em;
+            white-space: nowrap;
+        }
+        .CDLDescription {
+            font-size: 10pt;
+            padding-bottom: 0.5em;
+            padding-left: 5ex;
+        }
+        table {
+            background-color: transparent;
+            border-collapse: collapse;
+            border-spacing: 0;
+            max-width: 100%;
+            width: 700px;
+        }
+        td {
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        .img{
+            width:450px;
+            height:310px;
+        }
+    </style>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar"></div>
+<script src="js/navbar.js"></script>
+<div id='container' class='container'>
+    <div class='page-header'>
+        <h1>矢量分块专题</h1>
+        <hr/>
+        <h2>一、背景</h2>
+        <p>自从谷歌地图以来，很多地图服务商都根据谷歌地图的金字塔模型，实现了一套切图系统。这种方式在客户端只需要根据地理范围以及缩放级别，就可以请求相应的地图瓦片,
+            然后再把瓦片拼接起来，就完成了地图在客户端的地图的展示。这种方式很好的避免了网络带宽以及客户端渲染能力弱的问题，这在当时也是WebGIS出图的一个好的解决方案。</p>
+        <p>但是，当需要修改地图的显示风格时，必须关闭服务器，然后用对地图数据进行重新处理并重新配图，然后再打开服务器重新切图，最后才能在客户端进行新地图的展示。
+            这样就带来了一些不必要的维护问题。随着网络带宽的日益增长，以及客户端渲染能力的增强，我们可以考虑利用客户端对地图进行实时的渲染，让用户可以直接在客户端完成地图的风格的定制，
+            方便人们通过互联网轻松地完成地图配图工作，从而免去一些服务器维护工作。矢量分块就是客户端矢量地图实时渲染的一个实现。</p>
+        <h2>二、简介</h2>
+        <p>矢量分块属于客户端的矢量地图，地图的渲染全部都在客户端完成。服务器提供地图矢量数据，以及地图的渲染风格属性信息，这样客户端就可以将地图渲染出来。
+            矢量分块的实现也类似于金字塔模型，只不过这些切片都是一块一块的矢量切片数据，每个矢量切片数据都是按照瓦片的范围进行裁剪得到。
+            客户端根据瓦片的位置以及比例尺向服务器请求矢量切片。每个矢量切片都包含多个数据集，一个数据集相当于一个图层，每个数据集都包含了多个要素，包括点、线、面和文本要素。
+            此外，服务器上还包含有每个图层的渲染风格信息，比如线宽，面的颜色等等信息。客户端根据这些信息就可以将矢量切片数据渲染成地图。</p>
+        <p>矢量分块除了提供根据服务端的渲染风格信息对地图进行渲染之外，还提供了用户自定义的渲染风格信息的渲染接口。这种渲染风格信息就是一种类CSS的地图风格样式表——
+            <a href="https://www.mapbox.com/tilemill/docs/manual/carto/">CartoCSS</a>。其中，矢量分块只实现了CartoCSS标准中的一部分，除外，
+            还对标准的CartoCSS进行了相应的扩展。利用CartoCSS，用户可以方便地定义地图的渲染方式，从而定制属于自己的个性地图。
+        </p>
+        <h2>三、地图样式表的实现</h2>
+        <h3>CartoCSS的变量:</h3><p> 在CartoCSS中，用户可以定义一个变量，然后在CartoCSS代码中使用，例如:</p>
+       <pre class="prettyprint">@color:#000;
+@width:2;
+#China_Road_L___China400{
+    line-color:@color;
+    line-width:@width;
+}</pre>
+        <h3>CartoCSS的选择器: </h3>
+        <h4>ID选择器:</h4>
+        <p>图层ID默认为将图层名中的"@"与"#"符号替换为"___"双划线，例如：图层名为："China_Road_L@China400#1"会替换为："China_Road_L___China400___1"</p>
+       <pre class="prettyprint">#China_Road_L___China400{
+}</pre>
+        <h4>类选择器:</h4>
+        <p>图层类名默认为与图层ID保持一致</p>
+       <pre class="prettyprint">.China_Road_L___China400{
+}</pre>
+        <h4>要素ID属性选择器:</h4>
+        <p>目前只支持featureID要素属性</p>
+       <pre class="prettyprint">#China_Road_L___China400{
+    [featureID=1]{
+        line-width:3;
+    }
+}</pre>
+        <h4>缩放级别控制: </h4>
+        <p>可以通过zoom来控制图层在不同缩放级别下的样式符号</p>
+       <pre class="prettyprint">#China_Road_L___China400{
+    [zoom&gt;4]{
+        line-width:2;
+    }
+}</pre>
+        <h4>高亮显示: </h4>
+        <p>点击高亮以及鼠标移动高亮</p>
+       <pre class="prettyprint">#China_Road_L___China400{
+    ::click{
+        line-color:#f00;
+    }
+    ::hover{
+        line-color:#0f0;
+    }
+}</pre>
+        <h4>伪类: </h4>
+        <p>当要素对同一图层定义不同的样式时可用到，如下，就定义了一根边框为红色，中间为黑色的线</p>
+       <pre class="prettyprint">#China_Road_L___China400::one{
+    line-color:#f00;
+    line-width:10;
+}
+#China_Road_L___China400::tow{
+    line-color:#000;
+    line-width:2;
+}</pre>
+        <h4>效果如下</h4>
+        <div class="pageImage"><img style="width: 80%;height:400px;" src="./images/lineSymbol.png"/></div>
+        <br>
+        <h3 class="CHeading">CartoCSS实现的属性</h3>
+        <p>其中的Color类型可为十六进行字符串：#000，也可为rgb：rgb(0,0,0)或者rgba：rgba(0,0,0,1)类型，和hsl类型：hsl(0.5,0.5,0.5)。 而point-comp-op的值可为以下几种：src-over、dst-over、src-in、dst-in、src-out、dst-atop、xor、plus、lighten。</p>
+        <h4 class="CHeading">点图层属性：</h4>
+        <table border="0" cellspacing="0" cellpadding="0" class="CDescriptionList">
+            <tbody>
+            <tr>
+                <td class="CDLEntry">point-file</td>
+                <td class="CDLDescription">{URL} 点符号的文件url，格式为：url(“./examples/images/marker.png”)。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">point-fill</td>
+                <td class="CDLDescription">{Color} 矢量点符号的颜色值，只有当point-file为空时点才会被渲染成矢量点，格式为：#000。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">point-dx</td>
+                <td class="CDLDescription">{Number} 点在x轴上的偏移值，单位为px，正值为右移，负值为左移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">point-dy</td>
+                <td class="CDLDescription">{Number} 点在y轴上的偏移值，单位为px，正值为下移，负值为上移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">point-opacity</td>
+                <td class="CDLDescription">{Number} 点的透明度，值的范围为0~1。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">point-comp-op</td>
+                <td class="CDLDescription">{String} 属性设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上，其中源图像是指您打算放置到地图上的绘图，而目标图像则指您已经放置在地图上的绘图。</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="CHeading">线图层属性：</h4>
+        <table border="0" cellspacing="0" cellpadding="0" class="CDescriptionList">
+            <tbody>
+            <tr>
+                <td class="CDLEntry">line-color</td>
+                <td class="CDLDescription">{Color} 线的颜色值，格式为：#000。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-width</td>
+                <td class="CDLDescription">{Number} 线宽度，单位为px。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-cap</td>
+                <td class="CDLDescription">{String} 线端点的样式，值可为：平头”butt”、圆头”round”、方头”square”。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-join</td>
+                <td class="CDLDescription">{String} 线的拐角处的样式，值可为：泄角”bevel”、圆角”round”、尖角”miter”。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-miterlimit</td>
+                <td class="CDLDescription">{Number} 线的最大斜接长度。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-dash-offset</td>
+                <td class="CDLDescription">{Number} 虚线模式的偏移值，即虚线从偏移值处才开始虚线的绘制，被偏移掉的一段为实线。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-opacity</td>
+                <td class="CDLDescription">{Number} 线的透明度，值为0~1。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-dasharray</td>
+                <td class="CDLDescription">{Array} 虚线的模式，格式为：10,10，其中第0个值为第一段实线的长度，第1个值为第一段空线的长度，后面的虚线按照这个模式重复。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-offset</td>
+                <td class="CDLDescription">{Number} 线的偏移，单位为px，正值为向左偏移，负值为向右偏移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">line-comp-op</td>
+                <td class="CDLDescription">{String} 同point-comp-op。</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="CHeading">面图层属性(面支持除了line-offset、line-comp-op和line-opacity之外的所有线属性)：</h4>
+        <table border="0" cellspacing="0" cellpadding="0" class="CDescriptionList">
+            <tbody>
+            <tr>
+                <td class="CDLEntry">polygon-fill</td>
+                <td class="CDLDescription">{Color} 面填充的颜色，格式为：#000。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">polygon-dx</td>
+                <td class="CDLDescription">{Number} 面在x轴上的偏移值，单位为px，正值为向右偏移，负值为向左偏移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">polygon-dy</td>
+                <td class="CDLDescription">{Number} 面在y轴上的偏移值，单位为px，正值为向下偏移，负值为向上偏移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">polygon-comp-op</td>
+                <td class="CDLDescription">{String} 同point-comp-op。</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 class="CHeading">文本图层属性：</h4>
+        <table border="0" cellspacing="0" cellpadding="0" class="CDescriptionList">
+            <tbody>
+            <tr>
+                <td class="CDLEntry">text-size</td>
+                <td class="CDLDescription">{Number} 文本的尺寸，单位为px。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-face-name</td>
+                <td class="CDLDescription">{String} 文本的字体名称，如：Times New Roman。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-align</td>
+                <td class="CDLDescription">{String} 文本在水平方向的对齐方式，值可为：center、left、right。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-vertical-alignment</td>
+                <td class="CDLDescription">{String} 文本在垂直方向上的对齐方式，值可为：top、middle、baseLine、bottom。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-halo-radius</td>
+                <td class="CDLDescription">{Number} 文本外围边框的宽度。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-fill</td>
+                <td class="CDLDescription">{Color} 文本的颜色。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-opacity</td>
+                <td class="CDLDescription">{Number} 文本的透明度，值为0~1。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-dx</td>
+                <td class="CDLDescription">{Number} 文本在x轴上的偏移值，单位为px，正值为向右偏移，负值为向左偏移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-dy</td>
+                <td class="CDLDescription">{Number} 文本在y轴上的偏移值，单位为px，正值为向下偏移，负值为向上偏移。</td>
+            </tr>
+            <tr>
+                <td class="CDLEntry">text-comp-op</td>
+                <td class="CDLDescription">{String} 同point-comp-op。</td>
+            </tr>
+            </tbody>
+        </table>
+        <h2>四、使用说明</h2>
+        <p>使用矢量分块进行客户端地图的配图非常容易上手，只需要创建一个矢量分块图层，然后编辑地图样式表就可以配出一幅好地图了，但是要配好一幅地图对用户对地图样式表——CartoCSS
+        的掌握程度要求比较高，因此，想在客户端配出一幅好地图，必须掌握好CartoCSS。以下为矢量分块客户端配图的详细步骤：</p>
+        <h4>1、创建TiledVectorLayer图层</h4>
+        <p>要使用矢量分块功能，必须先创建一个TiledVectorLayer图层并添加到地图中，例如：</p>
+        <pre>
+    layer = new SuperMap.Layer.TiledVectorLayer("China", url,{cacheEnabled:true}});
+    layer.events.on({"layerInitialized": addLayer});
+
+    function addLayer() {
+         map.addLayers([layer]);
+        var center = new SuperMap.LonLat(0,0);
+        map.setCenter(center, 0);
+    }</pre>
+        <h4>2、编辑CartoCSS样式表</h4>
+        <pre>
+    var cartoCss=["#World_Continent___China400{",
+        "polygon-fill:rgb(245,243,240);",
+        "line-width:1;",
+        "line-color:#ddd;",
+        "::hover[featureID=73]{",
+        "polygon-fill:#f00;",
+        "}",
+    "}"].join("\n");</pre>
+        <h4>3、应用CartoCSS</h4>
+        <pre>
+    layer.setCartoCSS(cartoCss);</pre>
+        <h4>4、其他用法</h4>
+        <p>其中的CartoCSS样式文件也可以在创建TiledVectorLayer图层时传递进去，例如：</p>
+        <pre>
+    layer = new SuperMap.Layer.TiledVectorLayer("China", url,{cacheEnabled:true},{cartoCss:cartoCss});</pre>
+        <p>也可以将cartoCSS样式保存在一个script标签里（把标签的type属性设置为"text"），然后获取下来，并设置到TiledVectorLayer上，例如：</p>
+        <pre>
+    &lt;script type="text" id="cartoCssStr"&gt;
+        @color:#111;
+        #China_Railway_L___China400::one{
+        line-color:@color;
+        line-width:2;
+        }
+        #China_Railway_L___China400::two{
+        line-dasharray:15,15;
+        line-color:#DDDDDD;
+        line-width:1.5;
+        }
+    &lt;/script&gt;
+
+    &lt;script&gt;
+        var cartoCss=document.getElementById("cartoCssStr").text;
+        layer.setCartoCSS(cartoCss);
+    &lt;/script&gt;</pre>
+        <h4>效果如下</h4>
+        <div class="pageImage"><img style="width: 80%;height:400px;" src="./images/tileVector.png"/></div>
+        <br>
+        <p>此完整范例请见 示范程序-&gt;可视化-&gt;矢量分块-&gt;线符号。</p>
+        <h2>三、其他示例</h2>
+        <br>
+        <p>利用矢量分块地图，通过精心地对地图进行配色，以及其他地图风格的调整，我们可以配出一些精美的地图，以下即是利用矢量分块的客户端配图功能配出来的几种不同风格地图</p>
+        <div style="width: 100%;height: 380px" >
+            <div class="table">
+                <h4>&nbsp&nbsp1、淡雅绿风格</h4>
+                <div> <img class="img" src="./images/greenStyle.png"/></div>
+                <br>
+                <p>此完整范例请见 示范程序-&gt;可视化-&gt;矢量分块-&gt;淡雅绿风格。</p>
+            </div>
+            <div  class="table">
+                <h4>&nbsp&nbsp2、月夜风格</h4>
+                <div> <img class="img" src="./images/blackStyle.png"/> </div>
+                <br>
+                <p>此完整范例请见 示范程序-&gt;可视化-&gt;矢量分块-&gt;月夜风格。</p>
+            </div>
+        </div>
+        <div style="width: 100%;height: 380px">
+            <div class="table">
+                <h4>&nbsp&nbsp3、深夜蓝黑风格</h4>
+                <div> <img class="img" src="./images/darkblueStyle.png"/> </div>
+                <br>
+                <p>此完整范例请见 示范程序-&gt;可视化-&gt;矢量分块-&gt;深夜蓝黑风格。</p>
+            </div>
+            <div class="table">
+                <h4>&nbsp&nbsp4、强边界风格</h4>
+                <div> <img class="img" src="./images/boundryStyle.png"/> </div>
+                <br>
+                <p>此完整范例请见 示范程序-&gt;可视化-&gt;矢量分块-&gt;强边界风格。</p>
+            </div>
+        </div>
+        </div>
+</div>
+        <div class='footer'>
+            <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+        </div>
+    </div>
+    <script src='./js/jquery.js'></script>
+    <script src='./js/bootstrap.js'></script>
+    <script src="./js/navbar.js"></script>
+    <script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+    <script src="./latlng.js"></script>
+    <script src="./echarts/5.4.3/echarts.min.js"></script>
+    <script src=""></script>
+    <style>
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            padding: 10px;
+            background: #72a8eafa;
+            border-radius: 3px;
+            border: 1px solid rgba(128, 128, 128, 0.5);
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 3px 14px rgba(128, 128, 128, 0.5);
+            z-index: 9999;
+            width: 100%;
+            height: 300px;
+            background: #ccc;
+            ;
+        }
+    </style>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <div id="menu">
+
+    </div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // 加载默认地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水掩膜以实现水体效果
+            requestVertexNormals: true // 请求法线以实现光照效果
+        });
+
+        viewer.camera.flyTo({
+            destination: Cesium.Rectangle.fromDegrees(90, 30, 92, 32),
+            duration: 3,
+            complete: () => {
+                setTimeout(() => {
+                    initPM();
+                }, 10000)
+            }
+        });
+
+        `
+        实现思路：
+            插值获取不同点的高度
+            1、cesium插值 Cesium.Math.lerp
+            2、turf插值 https://turfjs.fenxianglu.cn/category/misc/lineChunk.html
+        `
+
+        function initPM() {
+            initLabel();
+
+            let arr = [[90.5, 30.5], [91, 31], [91.5, 31.5], [90.5, 31.5]];
+
+            let arr2 = [];
+            let arr3 = [];
+            let step = 100;
+
+            arr.forEach((ele, index) => {
+
+                for (var i = 0; i < step; ++i) {
+
+                    if (index < arr.length - 1) {
+                        let offset = i / (step - 1);
+
+                        let startx = arr[index][0]
+                        let starty = arr[index][1]
+                        let endx = arr[index + 1][0]
+                        let endy = arr[index + 1][1]
+
+                        var lon = Cesium.Math.lerp(startx, endx, offset);
+                        var lat = Cesium.Math.lerp(starty, endy, offset);
+
+                        var cartographic = Cesium.Cartographic.fromDegrees(lon, lat);
+                        var posi = new Cesium.Cartographic(cartographic.longitude, cartographic.latitude)
+                        var height = viewer.scene.globe.getHeight(posi)
+
+                        arr2.push([lon, lat])
+
+                        var length = 0
+                        if (arr2.length > 1) {
+                            var line = turf.lineString(arr2);
+                            length = turf.length(line, { units: 'miles' });
+                        }
+
+                        arr3.push([lon, lat, height, length])
+
+                    }
+                }
+
+            })
+
+            console.log(arr3)
+            initCharts(arr3)
+        }
+
+        function initCharts(arr3) {
+            var myChart = echarts.init(document.getElementById('menu'));
+            let name = []
+            let data = []
+            arr3.forEach((k) => {
+                name.push(k[3])
+                data.push(k[2])
+            })
+            var option = {
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: name
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: data,
+                        type: 'line',
+                        areaStyle: {}
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+
+        function initLabel() {
+
+            viewer.entities.add({
+                name: '起点',
+                position: Cesium.Cartesian3.fromDegrees(90.5, 30.5),
+                point: {
+                    pixelSize: 5,
+                    color: Cesium.Color.RED,
+                    outlineColor: Cesium.Color.WHITE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.TOP,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+
+                },
+                label: {
+                    text: '起点',
+                    font: '14pt monospace',
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.TOP,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                }
+            });
+
+            viewer.entities.add({
+                name: '终点',
+                position: Cesium.Cartesian3.fromDegrees(90.5, 31.5),
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.RED,
+                    outlineColor: Cesium.Color.WHITE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.TOP,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                },
+                label: {
+                    text: '终点',
+                    font: '14pt monospace',
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.TOP,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                }
+            });
+
+            viewer.entities.add({
+                polyline: {
+                    positions: Cesium.Cartesian3.fromDegreesArray([90.5, 30.5, 91, 31, 91.5, 31.5, 90.5, 31.5]),
+                    width: 3,
+                    material: Cesium.Color.RED,
+                    clampToGround: true,
+                }
+            });
+
+        }
+
+    </script>
+</body>
+
+</html>

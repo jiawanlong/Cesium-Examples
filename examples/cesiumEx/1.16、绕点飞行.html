@@ -1,0 +1,61 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        let position = new Cesium.Cartesian3.fromDegrees(120, 30, 100000);
+        // 给定飞行一周所需时间，比如10s, 那么每秒转动度数
+        var angle = 360 / 10;
+        // 给定相机距离点多少距离飞行，这里取值为5000m
+        var distance = 500000;
+        var heading = Cesium.Math.toRadians(0);
+        var pitch = Cesium.Math.toRadians(-30);
+
+        var startTime = Cesium.JulianDate.fromDate(new Date());
+
+        var stopTime = Cesium.JulianDate.addSeconds(startTime, 10, new Cesium.JulianDate());
+
+        viewer.clock.startTime = startTime.clone();  // 开始时间
+        viewer.clock.stopTime = stopTime.clone();     // 结速时间
+        viewer.clock.currentTime = startTime.clone(); // 当前时间
+        viewer.clock.clockRange = Cesium.ClockRange.CLAMPED; // 行为方式
+        viewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK; // 时钟设置为当前系统时间; 忽略所有其他设置。
+        // 相机的当前heading
+        var initialHeading = viewer.camera.heading;
+        var Exection = function TimeExecution() {
+            // 当前已经过去的时间，单位s
+            var delTime = Cesium.JulianDate.secondsDifference(viewer.clock.currentTime, viewer.clock.startTime);
+            var heading = Cesium.Math.toRadians(delTime * angle) + initialHeading;
+            viewer.scene.camera.setView({
+                destination: position, // 点的坐标
+                orientation: {
+                    heading: heading,
+                    pitch: pitch,
+
+                }
+            });
+            viewer.scene.camera.moveBackward(distance);
+            if (Cesium.JulianDate.compare(viewer.clock.currentTime, viewer.clock.stopTime) >= 0) {
+                viewer.clock.onTick.removeEventListener(Exection);
+            }
+        };
+
+        viewer.clock.onTick.addEventListener(Exection);
+    </script>
+</body>
+
+</html>

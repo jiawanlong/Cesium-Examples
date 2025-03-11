@@ -1,0 +1,11 @@
+Model Information:
+* title:	Airplane CRJ-900 Cityjet
+* source:	https://sketchfab.com/3d-models/airplane-crj-900-cityjet-02c4fa44604243c2bb48db64506a39af
+* author:	CityJet Training (https://sketchfab.com/artoud)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Airplane CRJ-900 Cityjet" (https://sketchfab.com/3d-models/airplane-crj-900-cityjet-02c4fa44604243c2bb48db64506a39af) by CityJet Training (https://sketchfab.com/artoud) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,70 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./cesium-wind.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // ！！！！！！！！！！！！！！教程！！！！！！！！！！！！！！！！！！！！！
+        /*
+            1、数据获取 
+                数据源：https://nomads.ncep.noaa.gov/ （记得要grid转json）
+                简单方式：方式https://github.com/jiawanlong/wind-js-server（记得配java_home）
+
+            2、利用WindLayer插件
+                链接：https://github.com/jiawanlong/cesium-wind
+        
+        */
+
+        const windOptions = {
+            colorScale: [
+                'rgb(36,104, 180)',
+                'rgb(60,157, 194)',
+                'rgb(128,205,193 )',
+                'rgb(151,218,168 )',
+                'rgb(198,231,181)',
+                'rgb(238,247,217)',
+                'rgb(255,238,159)',
+                'rgb(252,217,125)',
+                'rgb(255,182,100)',
+                'rgb(252,150,75)',
+                'rgb(250,112,52)',
+                'rgb(245,64,32)',
+                'rgb(237,45,28)',
+                'rgb(220,24,32)',
+                'rgb(180,0,35)',
+            ],
+            frameRate: 16,
+            maxAge: 60,
+            globalAlpha: 0.9,
+            velocityScale: 1 / 30,
+            paths: 2000
+        };
+        let windLayer;
+        fetch('./2024122600.json')
+            .then(res => res.json())
+            .then(res => {
+                windLayer = new CesiumWind.WindLayer(res, { windOptions });
+                windLayer.addTo(viewer);
+                // windLayer.remove();
+            });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>动态标绘专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+    <h1>动态标绘专题</h1>
+    <hr/>
+    <h2>一、简介</h2>
+        <p>SuperMap iClient for JavaScript提供了动态标绘图层（PlottingLayer），用于动态的绘制和编辑标号。</p>
+        <ul style="list-style-type:disc;">
+            <li>技术特点：动态标绘技术可以动态的绘制点标号和线面标号，并能够独立修改每个标号的风格，也可以灵活的修改标号位置和细节。</li>
+            <li>应用场景：主要用于结合电子地图实现军事作战方案、应急处置方案、公安围捕方案等指挥调度方案的二维动态标绘。</li>
+        </ul>
+    
+    <h2>二、使用说明</h2>
+    <p>
+        首先我们得做一些准备：
+        <br />
+        <div>
+            <ul style="list-style-type:disc;">
+                <li>保证服务器存在可用的标绘服务。或者我们可以自行去服务器服务管理页面，通过关联一个可用的标号库快速发布一个标绘服务。</li>
+                <li>由于动态标绘只是渲染矢量数据，所以不能作为底图，我们需要在map上添加一个 TiledDynamicRESTLayer，具体使用方法可以参见开发指南。 </li>
+            </ul>
+        </div>
+    </p>
+    <h4>1、创建标绘图层</h4>
+    <p></p>
+    <p>
+        首先创建一个标绘图层对象。初始化需要设置图层的名称和标绘服务的URL地址。
+    </p>
+    <p>
+        <pre>
+//标绘服务地址
+var plottingUrl = "http://supermapiserver:8090/iserver/services/plot-jingyong/rest/plot/";
+//创建一个名为“plottingLayer”的标绘图层。
+var plottingLayer = new SuperMap.Layer.PlottingLayer("plottingLayer", plottingUrl);
+        </pre>
+    </p>
+    <h4>2、添加图层到地图</h4>
+    <p></p>
+    <p>
+        然后将此图层添加到map里面。
+    </p>
+    <p>
+        <pre>
+//向map中添加图层
+map.addLayers([plottingLayer]);
+        </pre>
+    </p>
+    <h4>3、创建绘制标号控件</h4>
+    <p></p>
+
+    <p>
+        创建一个Handler类型为SuperMap.Handler.GraphicObject的DrawFeature控件，并将标绘图层传进去。
+    </p>
+    <p>
+        <pre>
+var drawGraphicObject = new SuperMap.Control.DrawFeature(plottingLayer, SuperMap.Handler.GraphicObject);
+        </pre>
+    </p>
+    <h4>4、创建编辑标号控件</h4>
+    <p></p>
+
+    <p>
+        标号的编辑控件，用标绘图层初始化。没有编辑控件无法对标号进行编辑。
+    </p>
+    <p>
+        <pre>
+var plottingEdit = new SuperMap.Control.PlottingEdit(plottingLayer);
+        </pre>
+    </p>
+    <h4>5、添加控件到地图</h4>
+    <p></p>
+    <p>
+        然后将控件添加到map里面。
+    </p>
+    <p>
+        <pre>
+//向map中添加控件
+map.addControls([plottingEdit,drawGraphicObject]);
+        </pre>
+    </p>
+    <h4>6、初始化标绘面板和属性面板</h4>
+    <p></p>
+    <p>
+        SuperMap iClient for JavaScript提供了标绘和属性两个面板，使用户更加方便的绘制和编辑标号。使用方法如下：
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>首先在html页面的&lt;body&gt;标签内部创建标绘面板和属性面板的div</li>
+    </ul>
+    <p>
+        <pre>
+&lt;body onLoad = "init()"&gt;
+    &lt;!--标绘面板显示的div--&gt;
+    &lt;div id="plotPanel" title="标绘面板" style="background-color: #ffffff;position: absolute; width: 19.8%; height: 90%;overflow: hidden"&gt;&lt;/div&gt;
+    &lt;!--属性面板显示的div--&gt;
+    &lt;div id="stylePanel" title="属性面板" style="background-color: #ffffff;position: absolute; width: 19.8%; height: 100%;overflow: hidden"&gt;&lt;/div&gt;
+&lt;/body&gt;
+        </pre>
+    </p>
+    <ul style="list-style-type:disc;">
+        <li>然后用标绘服务地址、地图及div初始化标绘面板和属性面板</li>
+    </ul>
+    <p>
+        <pre>
+//创建标绘面板并初始化
+plotPanel = new SuperMap.Plotting.PlotPanel("plotPanel", serverUrl, map);
+plotPanel.events.on({"initializeCompleted": initializeCompleted});
+plotPanel.initializeAsync();
+
+//标绘面板初始化成功后设置标绘控件，切换图层绘制时需要将相应的绘制控件传给标绘面板
+function initializeCompleted(evt){
+    plotPanel.setDrawFeature(drawGraphicObject);
+}
+//创建属性面板并将准备编辑的对象所在相应图层传入属性面板
+stylePanel = new SuperMap.Plotting.StylePanel("stylePanel");
+stylePanel.addEditLayer(plottingLayer);
+        </pre>
+    </p>
+    <p>到这里为止，动态标绘初始化已经完成。可以在标绘面板上点击想要标绘的标号后，在地图的任意位置进行标绘，标绘完成后选中标号就可以进行鼠标编辑或通过属性面板修改属性。那么如果不使用提供的标绘面板和属性面板，用户还需要做哪些工作呢，具体参见
+        <a calss="contentLink" href="InitPlottingWithoutPanel.html">动态标绘专题--不使用标绘和属性面板</a>
+    </p>
+    <h2>三、效果展示</h2>
+    <h4>1、鼠标标绘展示</h4>
+    <p></p>
+    <p>鼠标左键单击标绘面板任一标号后，即可在图层上绘制相应标号：</p>
+    <div class="pageImage"><img src="images/plotPanel.png"/></div>
+    <br/>
+    <h4>2、属性修改展示</h4>
+    <p></p>
+    <p>标号绘制完成后，鼠标左键单击选中标号，属性面板会显示该选中对象的属性值，即可在属性面板上直接修改：</p>
+    <div class="pageImage"><img src="images/stylePanel.png"/></div>
+    <br/>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

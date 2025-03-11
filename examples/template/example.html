@@ -1,0 +1,85 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!--头部导航-->
+<style>
+  .sssss a {
+    color: red !important;
+  }
+</style>
+<header class="header-wrapper main-header icl-header">
+
+  <nav class="navbar navbar-static-top">
+    <div class="nav-header"></div>
+  </nav>
+</header>
+<!--头部导航 end-->
+
+<!-- 侧边栏 -->
+<!-- <script type="text/javascript"
+src="//rf.revolvermaps.com/0/0/8.js?i=5mdz18j6m0u&amp;m=1&amp;c=ff0000&amp;cr1=fff600&amp;f=arial&amp;l=33&amp;s=227"
+async="async"></script>  -->
+<aside class="sidebar-wrapper main-sidebar" id="scrollSpy">
+
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar" id="sidebar">
+    <!-- <a href="#" class="sidebar-toggle " data-toggle="offcanvas" role="button" title="fold">
+      <div class="fa  fa-bars fold"></div>
+      <span id="suffix-title"></span>
+    </a> -->
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class=" sidebar-menu nav  nav-stacked" id="sidebar-menu">
+
+    </ul>
+    <script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=DiQI9zCUVQvLhkKvAilHXiuos6wFMVbzQ-duJzMR7T8"></script>
+
+  </section>
+  <!-- /.sidebar -->
+
+</aside>
+<!--侧边栏 end-->
+
+<!-- 内容区 -->
+<div class="content-wrapper examples-container" id="main">
+  <ul id="charts-list"></ul>
+</div>
+<!--内容区 end-->
+
+<!-- footer -->
+<footer class="main-footer icl-footer simple-footer"></footer>
+
+<!--footer end-->
+<script>
+  $(document).ready(function () {
+    var notFor = ['iClient Classic', '3D-WebGL'];
+    var productArr = ['Leaflet', 'OpenLayers', 'MapboxGL', 'MapLibreGL', 'component', 'iClient Classic', '3D-WebGL']
+    var path = window.location.pathname.split('/');
+    var examplesStrIndex = path.indexOf('examples');
+    var identification = productArr.filter(function (name) { return name.toLowerCase().includes(path[examplesStrIndex + 1]) })[0];
+    if (identification) {
+      var suffixHeader = document.getElementById('suffix-title');
+      suffixHeader.innerText = (notFor.indexOf(identification) < 0 ? 'for ' : '') + identification;
+    }
+
+    setTimeout(() => {
+      let ins = sessionStorage.getItem('item')
+
+      $('.navbar-menu').eq(ins).addClass('sssss')
+
+      $('.navbar-menu').click(function () {
+        var index = $(this).index();
+        sessionStorage.setItem('item', index + '')
+
+      });
+    }, 700)
+  })
+</script>
+
+<style>
+  .main-sidebar iframe{
+    background: transparent !important;position: absolute;z-index: 1000;bottom: 0;
+  }
+  .clstrm_outer{
+    background: transparent !important;position: absolute;z-index: 1000;bottom: 0;
+  }
+</style>

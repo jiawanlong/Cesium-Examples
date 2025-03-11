@@ -1,0 +1,110 @@
+<!--********************************************************************
+* by 优雅永不过时 https://github.com/z2586300277
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/",
+                "three/example/": "./../../three/examples/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        import { EffectComposer } from 'three/example/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/example/jsm/postprocessing/RenderPass.js';
+        import { OutlinePass } from 'three/example/jsm/postprocessing/OutlinePass.js'
+        import { OutputPass } from 'three/example/jsm/postprocessing/OutputPass.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+        const camera = new THREE.PerspectiveCamera(75, box.clientWidth / box.clientHeight, 0.1, 1000)
+        camera.position.set(20, 20, 20)
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true })
+        scene.add(new THREE.AxesHelper(500), new THREE.GridHelper(100, 20))
+
+        // 物体
+        for (let i = 0; i < 10; i++) {
+            const geometry = new THREE.BoxGeometry()
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 * Math.random() })
+            const cube = new THREE.Mesh(geometry, material)
+            cube.position.x = Math.random() * 10
+            cube.position.y = Math.random() * 10
+            cube.position.z = Math.random() * 10
+            scene.add(cube)
+        }
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+        new OrbitControls(camera, renderer.domElement)
+
+
+        // 后期处理
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        // 轮廓
+        const outlinePass = new OutlinePass(new THREE.Vector2(box.clientWidth, box.clientHeight), scene, camera);
+        composer.addPass(outlinePass);
+
+        // 色彩校正
+        const outputPass = new OutputPass();
+        composer.addPass(outputPass);
+
+        // 点击事件
+        const raycaster = new THREE.Raycaster()
+        box.addEventListener('click', (event) => {
+            const mouse = new THREE.Vector2(
+                (event.offsetX / event.target.clientWidth) * 2 - 1,
+                -(event.offsetY / event.target.clientHeight) * 2 + 1
+            )
+            raycaster.setFromCamera(mouse, camera)
+            const intersects = raycaster.intersectObjects(scene.children)
+            if (intersects.length > 0) {
+                outlinePass.selectedObjects = [intersects[0].object]
+            } else {
+                outlinePass.selectedObjects = []
+            }
+        })
+
+
+        animate()
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+            composer.render()
+        }
+    </script>
+
+</body>
+
+</html>

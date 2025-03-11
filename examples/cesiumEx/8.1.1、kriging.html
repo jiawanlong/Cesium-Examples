@@ -1,0 +1,79 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+    <script src="./kriging.js"></script>
+    <script src="./rainbowvis.js"></script>
+    <script src="./drawKriging.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        axios.get('https://geo.datav.aliyun.com/areas_v3/bound/100000.json')
+            .then((response) => {
+                var polygons = response.data;
+                var points = turf.randomPoint(100, { bbox: [100, 20, 130, 40] })
+                points.features.forEach(element => {
+                    element.properties.temperature = parseInt(Math.random() * 300)
+                });
+                console.log(points)
+                console.log(polygons.features[0].geometry.coordinates[0])
+                let krigingMap = drawKriging(points, polygons.features[0].geometry.coordinates[0], {
+                    "propname": 'temperature',
+                    width: 0.1,
+                    alpha: 0.5
+                });
+            })
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(100, 30, 4025692.0)
+        });
+
+        // axios.get('./windpoint1.json')
+        // .then((response) => {
+        //     show(response.data.data)
+        // })
+
+        // let obj = {
+        //     type: "FeatureCollection",
+        //     features: []
+        // }
+
+        // function show(arr) {
+        //     arr.forEach(element => {
+        //         let a = {
+        //             "type": "Feature",
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [element.x, element.y]
+        //             },
+        //             "properties": {
+        //                 "dir": element.dir
+        //             }
+        //         }
+        //         obj.features.push(a)
+        //     });
+        //     console.log(obj)
+        //     let krigingMap = drawKriging(obj, [[[112, 27], [120, 27], [120, 34], [112, 34], [112, 27]]], {
+        //         "propname": 'dir',
+        //         width: 0.1,
+        //         alpha: 0.5
+        //     });
+        // }
+    </script>
+</body>
+
+</html>

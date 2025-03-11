@@ -1,0 +1,76 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+  <div style="position: absolute; left: 20px; top: 20px; z-index: 1000">
+    <button style="padding: 5px 10px;" onclick="to2()">2维</button>
+    <button  style="padding: 5px 10px;" onclick="to3()">3维</button>
+  </div>
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {});
+    viewer.scene.debugShowFramesPerSecond = true;
+
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(-95, 40, 2000000),
+    });
+
+    function to2() {
+      viewer.scene.mode = 2
+    }
+    function to3() {
+      viewer.scene.mode = 3
+    }
+
+    // 有事！！！
+    var billboard = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(-100, 40),
+      billboard: {
+        image: './icon.png',
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, // 贴附地面
+        scale: 1,
+        show: true,
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+        width: 32,
+        height: 32,
+      }
+    });
+
+    // 没事！！！
+    const billboardCollection = viewer.scene.primitives.add(
+      new Cesium.BillboardCollection()
+    );
+    billboardCollection.add({
+      position: Cesium.Cartesian3.fromDegrees(-90, 40),
+      image: './icon.png',
+      width: 32,
+      height: 32,
+    });
+  </script>
+</body>
+
+</html>

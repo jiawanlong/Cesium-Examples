@@ -1,0 +1,84 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="./../../cesium/Cesium1.98/Widgets/widgets.css"
+    />
+    <script
+      type="text/javascript"
+      src="./../../cesium/Cesium1.98/Cesium.js"
+    ></script>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    "
+  >
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+      Cesium.Ion.defaultAccessToken =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+      const viewer = new Cesium.Viewer("map", {});
+      // 开启帧率
+      viewer.scene.debugShowFramesPerSecond = true;
+      // 深度监测
+      viewer.scene.globe.depthTestAgainstTerrain = true;
+
+      viewer.scene.globe.depthTestAgainstTerrain = false;
+      var waterFace = [
+        90.0, 30.0, 0, 91.0, 30.0, 0, 91.0, 29.0, 0, 90.0, 29.0, 0,
+      ];
+
+      var waterPrimitive = new Cesium.Primitive({
+        show: true, // 默认隐藏
+        allowPicking: false,
+        geometryInstances: new Cesium.GeometryInstance({
+          geometry: new Cesium.PolygonGeometry({
+            polygonHierarchy: new Cesium.PolygonHierarchy(
+              Cesium.Cartesian3.fromDegreesArrayHeights(waterFace)
+            ),
+          }),
+        }),
+        // 可以设置内置的水面shader
+        appearance: new Cesium.EllipsoidSurfaceAppearance({
+          material: new Cesium.Material({
+            fabric: {
+              type: "Water",
+              uniforms: {
+                normalMap: Cesium.buildModuleUrl(
+                  "Assets/Textures/waterNormals.jpg"
+                ),
+                frequency: 1000.0,
+                animationSpeed: 0.01,
+                amplitude: 10.0,
+              },
+            },
+          }),
+        }),
+      });
+      viewer.scene.primitives.add(waterPrimitive);
+
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(90.5, 29.5, 60000.0),
+        orientation: {
+          heading: Cesium.Math.toRadians(0.0), //默认朝北0度，顺时针方向，东是90度
+          pitch: Cesium.Math.toRadians(-90), //默认朝下看-90,0为水平看，
+          roll: Cesium.Math.toRadians(0), //默认0
+        },
+      });
+    </script>
+  </body>
+</html>

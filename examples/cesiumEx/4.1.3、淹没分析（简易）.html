@@ -1,0 +1,117 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+        });
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        // 加载默认地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水掩膜以实现水体效果
+            requestVertexNormals: true // 请求法线以实现光照效果
+        });
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(98.71707797694049, 27.677299704639537, 50000.0)
+        });
+
+        start();
+
+        function start() {
+            viewer.entities.removeAll();   //删除所有
+
+            let waterHeight = 1000
+            let targertWaterHeight = 3600
+            let speed;
+            let times;
+            var startTime = Cesium.JulianDate.now();
+
+            const redPolygon = viewer.entities.add({
+                name: "最简单的贴地面",
+                polygon: {
+                    extrudedHeight: new Cesium.CallbackProperty(function () {
+                        console.log(startTime)
+                        console.log(Cesium.JulianDate.now())
+                        // 要按流速速度的话，加时间判断即可
+                        waterHeight += 2;
+                        if (waterHeight > targertWaterHeight) {
+                            waterHeight = targertWaterHeight;
+                        }
+                        return waterHeight;
+                    }, false),
+                    hierarchy: Cesium.Cartesian3.fromDegreesArray([
+                        98.676842346815, 27.571578111198868,
+                        98.86252156624968, 27.77444519911974,
+                        98.76756234288729, 27.800244194152533,
+                        98.57088699052892, 27.72492584876768,
+                        98.676842346815, 27.571578111198868,
+                    ]),
+                    material: new Cesium.Color.fromBytes(64, 157, 253, 150),
+                    perPositionHeight: true,
+                },
+            });
+        }
+
+
+        //创建polygon外接矩形，并生成点格网，返回所有格网点坐标
+        // function buildPolygonGrid(positions) {
+        //     const tempPoints = []
+        //     for (let i = 0; i < positions.length; i++) {
+        //         cid;
+        //         var cartographic = ellipsoid.cartesianToCartographic(positions[i]);
+        //         var lat = Cesium.Math.toDegrees(cartographic.latitude);
+        //         var lng = Cesium.Math.toDegrees(cartographic.longitude);
+        //         tempPoints.push([lng, lat]);
+        //     }
+        //     //生成外接矩形
+        //     var line = turf.lineString(tempPoints);
+        //     var bbox = turf.bbox(line);
+        //     var bboxPolygon = turf.bboxPolygon(bbox);
+        //     var area = turf.area(bboxPolygon);
+        //     //生成格网
+        //     //计算网格点之间的距离，尽量保证范围内有1万个左右格网点。
+        //     var cellSide = Math.sqrt(area / 1000000) / 100;
+        //     var options = { units: 'kilometers' };
+        //     var grid = turf.pointGrid(bbox, cellSide, options);
+        //     const gridPositions = [];
+        //     grid.features.forEach(f => {
+        //         gridPositions.push(Cesium.Cartographic.fromDegrees(f.geometry.coordinates[0], f.geometry.coordinates[1]));
+        //     })
+        //     const promise = Cesium.sampleTerrainMostDetailed(terrain, gridPositions);
+        //     let maxHeight = 0;
+        //     let minHeight = 10000.0;
+        //     Promise.resolve(promise).then(function (updatedPositions) {
+        //         for (let i = 0; i < updatedPositions.length; i++) {
+        //             let height = updatedPositions[i].height;
+        //             //获取格网点处地形高度
+        //             minHeight = height < minHeight ? height : minHeight;
+        //             maxHeight = height > maxHeight ? height : maxHeight;
+        //         }
+        //         document.getElementById("maxHeight").value = maxHeight;
+        //         document.getElementById("minHeight").value = minHeight;
+        //     });
+        // }
+
+    </script>
+</body>
+
+</html>

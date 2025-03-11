@@ -1,0 +1,11 @@
+Model Information:
+* title:	Fighter Jet
+* source:	https://sketchfab.com/3d-models/fighter-jet-17798af8932a4a46820ce46f2ccd4010
+* author:	Ervinas (https://sketchfab.com/paulauskaservinas2018)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Fighter Jet" (https://sketchfab.com/3d-models/fighter-jet-17798af8932a4a46820ce46f2ccd4010) by Ervinas (https://sketchfab.com/paulauskaservinas2018) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

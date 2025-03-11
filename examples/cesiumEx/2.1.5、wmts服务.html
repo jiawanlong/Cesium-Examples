@@ -1,0 +1,68 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 加载天地图wmts
+        var _layer = 'vec';
+        var token = 'bcc62222fc634ec736589c483de933e6';
+        var maxLevel = 18;
+        var matrixIds = new Array(maxLevel);
+        for (var z = 0; z <= maxLevel; z++) {
+            matrixIds[z] = (z + 1).toString();
+        }
+        var _url = 'http://t{s}.tianditu.gov.cn/' + _layer + '_c/wmts?service=WMTS&version=1.0.0&request=GetTile&tilematrix={TileMatrix}&layer=' + _layer + '&style={style}&tilerow={TileRow}&tilecol={TileCol}&tilematrixset={TileMatrixSet}&format=tiles&tk=' + token;
+        var wmts = new Cesium.WebMapTileServiceImageryProvider({
+            url: _url,
+            layer: _layer,
+            credit: 'opts.credit',
+            style: 'default',
+            format: 'tiles',
+            tileMatrixSetID: 'c',
+            subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+            tileMatrixLabels: matrixIds,
+            tilingScheme: new Cesium.GeographicTilingScheme(), //WebMercatorTilingScheme、GeographicTilingScheme
+            maximumLevel: maxLevel
+        });
+        viewer.imageryLayers.addImageryProvider(wmts)
+
+
+        // server服务
+        // var _url = 'http://58.218.244.204:30080/v1/rest/services/tile/mtVVauqB2stXsnryVk6ve/ows_065d842f508e1001/wmts?SERVICE=WMTS&REQUEST=GetTile&LAYER=l065d842f51ce1000&VERSION=1.0.0&TILEMATRIX={TileMatrix}&TILECOL={TileCol}&TILEROW={TileRow}'
+        // var wmts = new Cesium.WebMapTileServiceImageryProvider({
+        //     url: _url,
+        //     layer: 'l065d842f51ce1000',
+        //     style: 'default',
+        //     format: 'tiles',
+        //     maximumLevel: 18
+        // });
+        // viewer.imageryLayers.addImageryProvider(wmts)
+
+        
+        // imageServer服务
+        // var imageServerwmts = new Cesium.WebMapTileServiceImageryProvider({
+        //     url: `http://52.83.252.76:8086/v2/?request=GetTile&TILECOL={TileCol}&TILEROW={TileRow}&TILEMATRIX={TileMatrix}&info={"info":[{"path":"/imageserver/image/globe_dem_1k.tif"}]}`,
+        //     maximumLevel: 18
+        // });
+        // viewer.imageryLayers.addImageryProvider(imageServerwmts)
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {
+            geocoder: false,
+            homeButton: false,
+            sceneModePicker: false,
+            baseLayerPicker: false,
+            navigationHelpButton: false,
+            animation: false,
+            timeline: false,
+            fullscreenButton: false,
+            creditContainer: document.createElement("div")
+        });
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // new Cesium.Color(0.165, 0.165, 0.165, 0.8)
+        // Cesium.Color.WHITE
+        // Cesium.Color.RED.withAlpha(0.5)
+        // Cesium.Color.fromCssColorString("#001aff")
+        // Cesium.Color.fromCssColorString("rgba(254, 129, 6, 0.75)")
+        // Cesium.Color.fromRandom({
+        //     alpha: 0.5
+        // });
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-75.166493, 39.9060534),
+            point: {
+                pixelSize: 50,
+                color: Cesium.Color.RED,
+                outlineColor: new Cesium.Color(0.165, 1, 0.165, 0.8),
+                outlineWidth: 20
+            }
+        });
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-75.176493, 39.9060534),
+            point: {
+                pixelSize: 50,
+                color: Cesium.Color.BLUE.withAlpha(0.5),
+                outlineColor: Cesium.Color.fromCssColorString("#001aff"),
+                outlineWidth: 20
+            }
+        });
+
+        viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(-75.186493, 39.9060534),
+            point: {
+                pixelSize: 50,
+                color: Cesium.Color.fromCssColorString("rgba(254, 129, 6, 0.75)"),
+                outlineColor: Cesium.Color.fromRandom({
+                    alpha: 0.5
+                }),
+                outlineWidth: 20
+            }
+        });
+
+        viewer.zoomTo(viewer.entities);
+
+
+    </script>
+</body>
+
+</html>

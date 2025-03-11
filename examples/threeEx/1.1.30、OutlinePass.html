@@ -1,0 +1,126 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body,
+        #box {
+            width: 100%;
+            background-color: #1f1f1f;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box"></div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./../../three/build/three.module.js",
+                "three/addons/": "./../../three/examples/jsm/",
+                "three/example/": "./../../three/examples/"
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import * as THREE from 'three'
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        import { EffectComposer } from 'three/example/jsm/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/example/jsm/postprocessing/RenderPass.js';
+        import { OutlinePass } from 'three/example/jsm/postprocessing/OutlinePass.js'
+        import { OutputPass } from 'three/example/jsm/postprocessing/OutputPass.js'
+
+        const box = document.getElementById('box')
+        const scene = new THREE.Scene()
+        const renderer = new THREE.WebGLRenderer()
+
+        // 相机
+        const camera = new THREE.PerspectiveCamera();
+        camera.position.set(200, 200, 200);
+        camera.lookAt(0, 50, 40);
+
+        scene.add(new THREE.AxesHelper(500))
+
+        // 添加模型
+        const geometry1 = new THREE.BoxGeometry(10, 10, 10);
+        const geometry2 = new THREE.SphereGeometry(10);
+        const geometry3 = new THREE.CylinderGeometry(10, 10, 100);
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const mesh1 = new THREE.Mesh(geometry1, material);
+        mesh1.position.set(0, 0, 0);
+        const mesh2 = new THREE.Mesh(geometry2, material);
+        mesh2.position.set(0, 0, 30);
+        const mesh3 = new THREE.Mesh(geometry3, material);
+        mesh3.position.set(0, 0, 60);
+        scene.add(mesh1);
+        scene.add(mesh2);
+        scene.add(mesh3);
+
+        renderer.setSize(box.clientWidth, box.clientHeight)
+        box.appendChild(renderer.domElement)
+
+        // 后期处理
+        const composer = new EffectComposer(renderer);
+        const renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        // 轮廓
+        const outlinePass = new OutlinePass(new THREE.Vector2(box.clientWidth, box.clientHeight), scene, camera);
+        composer.addPass(outlinePass);
+
+        //模型描边颜色，默认白色         
+        outlinePass.visibleEdgeColor.set(0xffff00);
+        //高亮发光描边厚度
+        outlinePass.edgeThickness = 4;
+        //高亮描边发光强度
+        outlinePass.edgeStrength = 6;             
+        //模型闪烁频率控制，默认0不闪烁
+        outlinePass.pulsePeriod = 20;
+
+        // 色彩校正
+        const outputPass = new OutputPass();
+        composer.addPass(outputPass);
+
+        // 点击事件
+        const raycaster = new THREE.Raycaster()
+        box.addEventListener('click', (event) => {
+            const mouse = new THREE.Vector2(
+                (event.offsetX / event.target.clientWidth) * 2 - 1,
+                -(event.offsetY / event.target.clientHeight) * 2 + 1
+            )
+            raycaster.setFromCamera(mouse, camera)
+            const intersects = raycaster.intersectObjects(scene.children)
+            if (intersects.length > 0) {
+                outlinePass.selectedObjects = [intersects[0].object]
+            } else {
+                outlinePass.selectedObjects = []
+            }
+        })
+
+
+        new OrbitControls(camera, renderer.domElement)
+        animate()
+        function animate() {
+            requestAnimationFrame(animate)
+            renderer.render(scene, camera)
+            composer.render()
+        }
+    </script>
+
+</body>
+
+</html>

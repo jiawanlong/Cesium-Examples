@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>离线缓存与 APP 专题</title>
+    <link href='./css/bootstrap.min.css' rel='stylesheet'/>
+    <link href='./css/bootstrap-responsive.min.css' rel='stylesheet'/>
+    <link href='./css/sm-extend.css' rel='stylesheet'/>
+    <link href='./css/sm-doc.css' rel='stylesheet'/>
+</head>
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+<!--导航条-->
+<div class="navbar navbar-fixed-top" id="navbar">
+
+</div>
+<div id='container' class='container'>
+<div class='page-header'>
+<h1>离线缓存与APP专题</h1>
+<hr/>
+<h2>一、SuperMap iClient for JavaScript 移动应用简介</h2>
+
+<div class="pageImage"><img src="./images/android.PNG"/></div>
+<p>
+    SuperMap iClient 8C(2017) for JavaScript 是一款在服务式 GIS 架构体系中，面向 HTML5 的应用开发，支持多终端，跨浏览器的客户端开发平台。
+    通过 SuperMap iClient 8C(2017) for JavaScript，无需任何插件，便可以在浏览器上实现美观的地图展现，内容丰富的地图应用。
+</p>
+
+<p>
+    近些年来随着智能终端的迅速发展，LBS 应用的大众化普及，手机地图已经在日常生活中扮演着不可或缺的作用。
+    相比传统的 PC 端地图应用，手机地图的应用具有便于携带、
+    便于操作、不受空间约束等优势，移动终端这些全新的用户体验是也是传统 PC 所无法媲美。正是在这种背景下，
+    SuperMap iClient 8C(2017) for JavaScript 提供了对手机平台的扩展支持。
+</p>
+
+<p>
+    SuperMap iClient 8C(2017) for JavaScript 提供的 APP 应用插件，
+    在技术上采用 PhoneGap 开源开发框架，针对 PhoneGap 进行了代码兼容和优化，
+    并实现了地图离线缓存的插件化支持。通过 SuperMap iClient 8C(2017) for JavaScript 开发平台，
+    你可以通过 HTML，CSS 和 JavaScript 技术构建出基于浏览器的地图应用；通过 PhoneGap 开发框架，你可以将已有的地图应用直接打包生成支持 Android 的应用程序，
+    并且可以调用系统级别的功能来丰富应用；通过 SuperMap iClient 8C(2017) for JavaScript 提供的 APP 应用插件，地图应用具备离线缓存的功能，满足用户在离线状态下的地图应用。 这样，
+    Web 开发人员利用已有的技术储备，不需要太多的额外学习成本就可以快速的开发出自己的地图 APP 应用。
+    该开发模式具有如下一些特点：
+</p>
+
+<p>
+<ul style="list-style-type:disc;">
+    <li>APP应用摆脱浏览器的束缚，提供定制化的地图应用，具有较好的用户体验</li>
+    <li>利用已有的Web技术，不需要考虑繁杂的底层技术</li>
+    <li>支持多种手机平台</li>
+    <li>支持通过 js 调用系统级接口，比如摄像头，GPS 等</li>
+    <li>支持地图离线缓存</li>
+</ul>
+</p>
+<h2>二、SuperMap JavaScript for Android APP 入门简介</h2>
+
+<p>
+    该文档介绍了基于SuperMap iClient 8C(2017) for JavaScript 开发平台生成的的地图应用，如何生成 Android 的应用程序的完整教程，
+    该地图应用具备地图浏览，缩放，离线缓存等基本功能，用户可以在此基础上增加自己的业务需求，
+    丰富地图应用。该示例在开发包范例中可以获取。
+</p>
+<ol>
+<li>安装 SDK，安装开发环境
+    <ul style="list-style-type:disc;">
+        <li>下载并解压 <a target="new" href="http://www.supermap.com.cn/sup/download_view.asp?id=578&bid=1">SuperMap
+            iClient 8C(2017) for JavaScript</a></li>
+        <li>下载并安装 <a target="new" href="http://www.eclipse.org/downloads/">Eclipse Classic</a></li>
+        <li>下载并安装 <a target="new" href="http://developer.android.com/sdk/index.html">Android SDK</a></li>
+        <li>下载并安装 <a target="new" href="http://developer.android.com/sdk/eclipse-adt.html#installing">ADT Plugin</a>
+        </li>
+    </ul>
+</li>
+
+<li>Android工程创建
+    <ul style="list-style-type:disc;">
+        <li>打开Eclipse，新建Android工程，如下图（Application Name: SuperPhone、Package Name: com.supermap.javascript、Create
+            Activity: SuperPhoneActivity），点击Finish完成（备注：因为Eclipse版本不同，新建工程的布局可能会略有不同）<br/>
+
+            <div class="pageImage"><img src="./images/new project.png"/></div>
+        </li>
+        <li>Android 工程下新建文件夹: /assets/www 及 /libs</li>
+        <li>将 SuperMap iClient 8C(2017) for JavaScript 开发包中的 resource/PhoneGap/clouddemo文件夹中的内容拷贝至 Android 工程下的
+            /assets/www 位置
+        </li>
+        <li>将 SuperMap iClient 8C(2017) for JavaScript 开发包中 resource/PhoneGap/libs 文件夹中的armeabi文件夹以及
+            cordova-2.5.0.jar、locSDK_3.1.jar、SMCore.jar 和 SMPlugins.jar 拷贝至 Android 工程下的 /libs 位置
+        </li>
+        <li>添加 jar 包（cordova-2.5.0.jar、locSDK_3.1.jar、SMCore 和 SMPlugins）到 Android 工程中<br/>
+
+            <div class="pageImage"><img src="./images/buildPath.png"/></div>
+        </li>
+        <li>将 SuperMap iClient 8C(2017) for JavaScript 开发包中 resource/PhoneGap/res 文件夹中的 xml 文件夹拷贝至 Android 工程下的 /res 位置
+        </li>
+        <li>将 SuperMap iClient 8C(2017) for JavaScript 开发包中的 resource/PhoneGap/res 文件夹中的 splash.png 拷贝至 Android 工程下的
+            /res/drawable-hdpi 位置
+        </li>
+        <li>修改 AndroidManifest.xml在Activity中加入<strong> android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|keyboardHidden"</strong>属性
+        </li>
+        <li>修改 AndroidManifest.xml在application中加入<strong> android:name="com.supermap.plugins.Location"</strong></li>
+        <li>在application节点下增加代码
+            <div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; max-height: 400px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px">
+                <div style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px">
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060">   </span>&lt;service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote" &gt;</pre>
+                       <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                               style="color: #606060">   </span>&lt;/service&gt;</pre>
+                </div>
+            </div>
+        </li>
+        <li>修改 AndroidManifest.xml 权限，添加如下内容，修改代码访问权限
+            <br/>
+
+            <div style="border-bottom: silver 1px solid; text-align: left; border-left: silver 1px solid; padding-bottom: 4px; line-height: 12pt; background-color: #f4f4f4; margin: 20px 0px 10px; padding-left: 4px; width: 97.5%; padding-right: 4px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; max-height: 400px; font-size: 8pt; overflow: auto; border-top: silver 1px solid; cursor: text; border-right: silver 1px solid; padding-top: 4px"
+                 id="codeSnippetWrapper">
+                <div style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"
+                     id="codeSnippet">
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum1">   </span> &lt;supports-screens</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum2">   </span> android:largeScreens=<span
+                                style="color: #006080">&quot;true&quot;</span></pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum3">   </span> android:normalScreens=<span
+                                style="color: #006080">&quot;true&quot;</span></pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum4">   </span> android:smallScreens=<span
+                                style="color: #006080">&quot;true&quot;</span></pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum5">   </span> android:resizeable=<span
+                                style="color: #006080">&quot;true&quot;</span></pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum6">   </span> android:anyDensity=<span
+                                style="color: #006080">&quot;true&quot;</span></pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum7">   </span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum8">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.CAMERA&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum9">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.VIBRATE&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum10">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.ACCESS_COARSE_LOCATION&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum11">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.ACCESS_FINE_LOCATION&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum12">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.ACCESS_LOCATION_EXTRA_COMMANDS&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum13">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.READ_PHONE_STATE&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum14">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.INTERNET&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum15">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.RECEIVE_SMS&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum16">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.RECORD_AUDIO&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum17">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.MODIFY_AUDIO_SETTINGS&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum18">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.READ_CONTACTS&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum19">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.WRITE_CONTACTS&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum20">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum21">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> /&gt;</pre>
+                    <!--CRLF-->
+
+                        <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: #f4f4f4; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                                style="color: #606060" id="lnum22">   </span> &lt;uses-permission android:name=<span
+                                style="color: #006080">&quot;android.permission.KILL_BACKGROUND_PROCESSES&quot;</span>/&gt;</pre>
+                    <!--CRLF--></div>
+
+                    <pre style="border-bottom-style: none; text-align: left; padding-bottom: 0px; line-height: 12pt; border-right-style: none; background-color: white; margin: 0em; padding-left: 0px; width: 100%; padding-right: 0px; font-family: &#39;Courier New&#39;, courier, monospace; direction: ltr; border-top-style: none; color: black; font-size: 8pt; border-left-style: none; overflow: visible; padding-top: 0px"><span
+                            style="color: #606060" id="lnum23">   </span> &lt;uses-permission android:name=<span
+                            style="color: #006080">&quot;android.permission.ACCESS_WIFI_STATE&quot;</span> /&gt;</pre>
+                <!--CRLF-->
+
+            </div>
+            <p>AndroidManifest.xml 文件内容最后效果如下图，注意红色框选区域的内容为我们所添加</p>
+
+            <div class="pageImage"><img src="./images/androidmanifest.png"/></div>
+        </li>
+    </ul>
+</li>
+<li>代码说明
+    <ul style="list-style-type:disc;">
+        <li>拷贝如下代码替换 SuperPhoneActivity.java 代码，可参考代码注释
+<pre>
+package com.supermap.javascript;
+
+import org.apache.cordova.DroidGap;
+import org.json.JSONException;
+
+import android.app.ActivityManager;
+import android.os.Bundle;
+
+import com.supermap.RequestControl;
+
+// 继承自PhoneGap的DroidGap类，实现WebView和WebKit的相互通信
+public class SuperPhoneActivity extends DroidGap {
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		super.setIntegerProperty("splashscreen", R.drawable.splash);
+
+		// 加载clouddemo文件夹下的index页面
+		super.loadUrl("file:///android_asset/www/index.html", 5000);
+		try {
+			RequestControl.init(this);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// PhoneGap缺陷，需要再次强制退出，释放内存
+	public void onDestroy() {
+		finish();
+		super.onDestroy();
+
+		ActivityManager activityManger = (ActivityManager) this
+				.getSystemService(ACTIVITY_SERVICE);
+		try {
+			activityManger.restartPackage("com.supermap.javascript");
+			activityManger.restartPackage("com.supermap");
+			activityManger.restartPackage("com.supermap.plugins");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		System.exit(0);
+	}
+}
+</pre>
+        </li>
+        <li>index.html 代码说明，可参考代码注释
+                            <pre>
+// 等待加载PhoneGap，增加监听事件onDeviceReady
+document.addEventListener("deviceready", onDeviceReady, false);
+
+// PhoneGap加载完毕后会调用此事件，用户在此进行初始化设置
+function onDeviceReady() {    
+    init();
+}
+
+function init() {
+    SuperMap.Util.setApp(true);
+    map = new SuperMap.Map("map", { controls: [
+            new SuperMap.Control.ScaleLine(),
+            new SuperMap.Control.PanZoomBar(),
+            new SuperMap.Control.Navigation({
+                dragPanOptions: {
+                    enableKinetic: true
+                }
+            })], units: "m"
+    });
+    layer = new SuperMap.Layer.CloudLayer();
+    markerLayer = new SuperMap.Layer.Markers("Markers");
+    map.addLayers([layer,markerLayer]);
+    map.setCenter(new SuperMap.LonLat(12957031.21685,4861858.2410885), 10);  
+}
+                            </pre>
+        </li>
+    </ul>
+</li>
+<li>右键单击项目节点选择 Run As，然后点击 Android Application，bin 目录下生成 APK 文件并在指定模拟器上运行</li>
+</ol>
+<h2>三、离线缓存简介</h2>
+
+<p>
+    SuperMap iClient 8C(2017) for JavaScript 支持 APP 应用离线缓存功能，提供离线图片缓存和离线MBTile缓存两种方式，默认状态下为离线图片缓存方式。
+</p>
+
+<p>
+    离线图片缓存主要由两部分组成，config 文件用来记录地图服务的配置属性，缓存数据则保存在移动设备中SDCard\SuperMap下以地图名命名的文件夹中。
+</p>
+
+<div class="pageImage"><img src="./images/localstorage.PNG"/></div>
+<p>
+    如上图，逻辑部分仍然由 JavaScript 层面处理，Java 层面只负责下载图片的功能部分。当需要创建新的瓦块图片时，JS 已异步的方式向 Java 通信，
+    Java 将网络 Url 的图片以多线程的方式保存到本地，然后再以异步方式返回本地的 Image 路径，然后如下的逻辑不变，仍然由 JavaScript 来实现。
+    整个离线缓存采用边浏览边下载的策略，通过异步的方式在Java层下载缓存数据，不会影响用户体验。
+</p>
+
+<p>
+    离线MBTile缓存也由两部分组成，index文件用来记录地图服务的配置属性，MBTile缓存数据则直接放在移动设备中SDCard\SuperMap下即可。其中MBTile文件可通过iserver的预缓存功能获取，index文件下的服务配置如下图所示：
+</p>
+				<pre>
+/*
+ * 服务的名称"world"必须和MBTile文件的名称相同;
+ * 实例化服务的时候必须增加"storageType"属性，并将该属性的值设为"db"（若将该值设为"File"则表示使用离线图片缓存方式）。
+ */
+layer = new SuperMap.Layer.TiledDynamicRESTLayer(<span style="color:red">"world"</span>,
+                                                 url,	
+						 {transparent:true,cacheEnabled:true},	
+						 {maxResolution:"auto",<span style="color:red">"storageType":"db"</span>});	
+				</pre>
+<h2>四、示例效果图的展示</h2>
+
+<p>
+    通过上面的示例，我们就可以快捷的基于已有的 Web 技术，快速生成带有离线缓存功能的地图应用，
+    在这基础上，你可以通过 SuperMap iClient 8C(2017) for JavaScript 提供的脚本，实现查询，绘制等地图展现，
+    通过 SuperMap iServer 的 REST 服务进行地图网络分析，叠加分析等地图分析，也可以通过调用系统接口来实现 GPS 定位，天气查询等地图服务，
+    这样，你就可以定制化的实现你期望的丰富的移动地图应用。
+
+<div class="pageImage"><img src="./images/demo.png"/></div>
+</p>
+</div>
+<div class='footer'>
+    <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+</div>
+</div>
+<script src='./js/jquery.js'></script>
+<script src='./js/bootstrap.js'></script>
+<script src="./js/navbar.js"></script>
+<script src="./js/GoTop.js" id="js_gotop"></script>
+</body>
+</html>

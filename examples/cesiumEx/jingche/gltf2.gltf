@@ -1,0 +1,379 @@
+{
+  "materials": [
+    {
+      "name": "haiguanjiancha1",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "metallicFactor": 0.104264431,
+        "roughnessFactor": 1
+      },
+      "alphaMode": "OPAQUE"
+    }
+  ],
+  "images": [
+    {
+      "uri": "7C687668C8945CDD73C0C6D3BD7F36D5.jpg"
+    }
+  ],
+  "textures": [
+    {
+      "name": "haiguanjianchache_f_png.jpg",
+      "sampler": 0,
+      "source": 0
+    }
+  ],
+  "meshes": [
+    {
+      "name": "boli",
+      "primitives": [
+        {
+          "material": 0,
+          "mode": 4,
+          "indices": 0,
+          "attributes": {
+            "NORMAL": 2,
+            "POSITION": 1,
+            "TEXCOORD_0": 3
+          }
+        }
+      ]
+    },
+    {
+      "name": "haiguanjianchaxunluoche",
+      "primitives": [
+        {
+          "material": 0,
+          "mode": 4,
+          "indices": 4,
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TEXCOORD_0": 7
+          }
+        }
+      ]
+    },
+    {
+      "name": "toutie2",
+      "primitives": [
+        {
+          "material": 0,
+          "mode": 4,
+          "indices": 8,
+          "attributes": {
+            "NORMAL": 10,
+            "POSITION": 9,
+            "TEXCOORD_0": 11
+          }
+        }
+      ]
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 377640,
+      "uri": "12BA1B76BD1C9F6DE0164BE3FDE83321.bin"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "target": 34963,
+      "byteLength": 1224,
+      "byteOffset": 0
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 2040,
+      "byteOffset": 1224
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 2040,
+      "byteOffset": 3264
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 1360,
+      "byteOffset": 5304
+    },
+    {
+      "buffer": 0,
+      "target": 34963,
+      "byteLength": 75864,
+      "byteOffset": 6664
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 95100,
+      "byteOffset": 82528
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 95100,
+      "byteOffset": 177628
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 63400,
+      "byteOffset": 272728
+    },
+    {
+      "buffer": 0,
+      "target": 34963,
+      "byteLength": 8520,
+      "byteOffset": 336128
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 12372,
+      "byteOffset": 344648
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 12372,
+      "byteOffset": 357020
+    },
+    {
+      "buffer": 0,
+      "target": 34962,
+      "byteLength": 8248,
+      "byteOffset": 369392
+    }
+  ],
+  "accessors": [
+    {
+      "componentType": 5123,
+      "type": "SCALAR",
+      "bufferView": 0,
+      "byteOffset": 0,
+      "count": 612
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0,
+      "count": 170,
+      "min": [
+        -19.8230419158936,
+        -10.6349601745605,
+        10.5572481155396
+      ],
+      "max": [
+        15.8167018890381,
+        10.6099605560303,
+        16.658224105835
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 2,
+      "byteOffset": 0,
+      "count": 170
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC2",
+      "bufferView": 3,
+      "byteOffset": 0,
+      "count": 170
+    },
+    {
+      "componentType": 5123,
+      "type": "SCALAR",
+      "bufferView": 4,
+      "byteOffset": 0,
+      "count": 37932
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 5,
+      "byteOffset": 0,
+      "count": 7925,
+      "min": [
+        -106.71875,
+        1.30380952358246,
+        -217.26953125
+      ],
+      "max": [
+        106.71875,
+        222.703353881836,
+        236.291015625
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 6,
+      "byteOffset": 0,
+      "count": 7925
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC2",
+      "bufferView": 7,
+      "byteOffset": 0,
+      "count": 7925
+    },
+    {
+      "componentType": 5123,
+      "type": "SCALAR",
+      "bufferView": 8,
+      "byteOffset": 0,
+      "count": 4260
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 9,
+      "byteOffset": 0,
+      "count": 1031,
+      "min": [
+        20.6751956939697,
+        -6.55063009262085,
+        2.31129622459412
+      ],
+      "max": [
+        23.9144554138184,
+        6.48027753829956,
+        9.09532928466797
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "bufferView": 10,
+      "byteOffset": 0,
+      "count": 1031
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC2",
+      "bufferView": 11,
+      "byteOffset": 0,
+      "count": 1031
+    }
+  ],
+  "nodes": [
+    {
+      "name": "RootNode",
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "children": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "boli",
+      "translation": [
+        0.00320921838283539,
+        -0.0019054114818573,
+        -0.0498168468475342
+      ],
+      "rotation": [
+        -0.70710676908493,
+        0.0,
+        0.0,
+        0.70710676908493
+      ],
+      "scale": [
+        0.0999999940395355,
+        0.0999999940395355,
+        0.0999999940395355
+      ],
+      "mesh": 0
+    },
+    {
+      "name": "haiguanjianchaxunluoche",
+      "translation": [
+        0.00320969521999359,
+        -0.0019054114818573,
+        -0.0498168468475342
+      ],
+      "rotation": [
+        9.97480142927998E-08,
+        0.707106709480286,
+        -9.97480000819451E-08,
+        0.707106828689575
+      ],
+      "scale": [
+        0.00999999884516001,
+        0.00999999884516001,
+        0.00999999884516001
+      ],
+      "mesh": 1
+    },
+    {
+      "name": "toutie2",
+      "translation": [
+        0.00320921838283539,
+        -0.0019054114818573,
+        -0.0498168468475342
+      ],
+      "rotation": [
+        -0.70710676908493,
+        0.0,
+        0.0,
+        0.70710676908493
+      ],
+      "scale": [
+        0.0999999940395355,
+        0.0999999940395355,
+        0.0999999940395355
+      ],
+      "mesh": 2
+    }
+  ],
+  "asset": {
+    "generator": "FBX2glTF",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Root Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "samplers": [
+    {}
+  ]
+}

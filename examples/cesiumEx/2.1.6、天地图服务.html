@@ -1,0 +1,150 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        // 清除默认底图
+        viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+
+        // 清除默认地形
+        viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+
+        // var tiandituMapStyle = {
+        //     "vec_c": { "name": "矢量底图", "value": "vec_c", "src": "经纬度投影" },
+        //     "vec_w": { "name": "矢量底图", "value": "vec_w", "src": "球面墨卡托投影" },
+        //     "cva_c": { "name": "矢量注记", "value": "cva_c", "src": "经纬度投影" },
+        //     "cva_w": { "name": "矢量注记", "value": "cva_w", "src": "球面墨卡托投影" },
+        //     "img_c": { "name": "影像底图", "value": "img_c", "src": "经纬度投影" },
+        //     "img_w": { "name": "影像底图", "value": "img_w", "src": "球面墨卡托投影" },
+        //     "cia_c": { "name": "影像注记", "value": "cia_c", "src": "经纬度投影" },
+        //     "cia_w": { "name": "影像注记", "value": "cia_w", "src": "球面墨卡托投影" },
+        //     "ter_c": { "name": "地形晕渲", "value": "ter_c", "src": "经纬度投影" },
+        //     "ter_w": { "name": "地形晕渲", "value": "ter_w", "src": "球面墨卡托投影" },
+        //     "cta_c": { "name": "地形注记", "value": "cta_c", "src": "经纬度投影" },
+        //     "cta_w": { "name": "地形注记", "value": "cta_w", "src": "球面墨卡托投影" },
+        //     "ibo_c": { "name": "全球境界", "value": "ibo_c", "src": "经纬度投影" },
+        //     "ibo_w": { "name": "全球境界", "value": "ibo_w", "src": "球面墨卡托投影" },
+        //     "eva_c": { "name": "矢量英文注记", "value": "eva_c", "src": "经纬度投影" },
+        //     "eva_w": { "name": "矢量英文注记", "value": "eva_w", "src": "球面墨卡托投影" },
+        //     "eia_c": { "name": "影像英文注记", "value": "eia_c", "src": "经纬度投影" },
+        //     "eia_w": { "name": "影像英文注记", "value": "eia_w", "src": "球面墨卡托投影" },
+        // };
+
+        // const apiList = [
+        //     "063111d797f8ecb86057cc24eb7adece",
+        //     "460868332a21df2ab4b23837cf21a4d3",
+        //     "a5c2f9116f9a6ea67b9451688ab4c684",
+        //     "59bb81fc93a631c1b0ff76fa0a890d0e",
+        //     "3c15fa38b35941655479dd7ebef54249",
+        //     "6af0d1fad7c905bc075a95c134574b0a",
+        //     "8209981ecfdeb58c92ea53bf28270710",
+        //     "cd3ddc577e533a44fef6e4c777a7fc1c",
+        //     "9d4788e2a8d899ae3b51c15a5c78313c",
+        //     "c3374886fb2fdaa26b2fa90a8b71f213",
+        //     "7ecb45d5aef7a7aba4630b1bbdb05c04",
+        //     "91b0de7f1b43f13b80757ecf2034571d",
+        //     "2b549f8a90167f1288915337d9006a33",
+        //     "ac1a705aac2454706bf1210e01f526fb",
+        //     "f23e960273e690092ff44557f7a2caba",
+        //     "025f0a19d7cc5792595546e2ef96458e",
+        //     "d1b859ea6240027e759b1302d08ea9b2",
+        //     "3e63502d19525d4d02d0df69ea944e6c",
+        //     "126c5c491a565b494402f9472357489f",
+        //     "97eed3e13bab6875013f6f84f93a7c98",
+        //     "c1e7bf15c41cc47dc8889ebe2399ced4",
+        //     "0720b29fb8b21b7a3d7398a666ca9544",
+        //     "3210472dffc769d8d7b0cb16021b613a",
+        //     "6e926d184ce6fbb3374bd69fbba8b587",
+        //     "0c4f098f5fa4e730317c7629fc48901e",
+        //     "74a3104caec24999d1954d0d531c0e80",
+        //     "98a17c708ec8e78cdbb620864486c410",
+        //     "948a54324b87f379959965593282d0c3"
+        // ]
+        // let apiKey = apiList[Math.floor(Math.random() * apiList.length)];
+        let ramdon = parseInt(Math.random() * (3 - 0 + 1) + 0, 10);
+
+        var token = 'bcc62222fc634ec736589c483de933e6';
+        var maxLevel = 18;
+
+        // ------------------------ wmts方式加载4326经纬度------------------------------------------
+        var _layer = 'vec';
+        var matrixIds = new Array(maxLevel);
+        for (var z = 0; z <= maxLevel; z++) {
+            matrixIds[z] = (z + 1).toString();
+        }
+        var _url = 'http://t{s}.tianditu.gov.cn/' + _layer + '_c/wmts?service=WMTS&version=1.0.0&request=GetTile&tilematrix={TileMatrix}&layer=' + _layer + '&style={style}&tilerow={TileRow}&tilecol={TileCol}&tilematrixset={TileMatrixSet}&format=tiles&tk=' + token;
+        var wmts = new Cesium.WebMapTileServiceImageryProvider({
+            url: _url,
+            layer: _layer,
+            credit: 'opts.credit',
+            style: 'default',
+            format: 'tiles',
+            tileMatrixSetID: 'c',
+            subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+            tileMatrixLabels: matrixIds,
+            tilingScheme: new Cesium.GeographicTilingScheme(), //WebMercatorTilingScheme、GeographicTilingScheme
+            maximumLevel: maxLevel
+        });
+        viewer.imageryLayers.addImageryProvider(wmts)
+
+
+        // ------------------------ wmts方式加载带投影的------------------------------------------
+        // var _layer = 'img';
+        // var _url = 'http://t{s}.tianditu.gov.cn/' + _layer + '_w/wmts?service=WMTS&version=1.0.0&request=GetTile&tilematrix={TileMatrix}&layer=' + _layer + '&style={style}&tilerow={TileRow}&tilecol={TileCol}&tilematrixset={TileMatrixSet}&format=tiles&tk=' + token;
+        // var matrixIds = new Array(maxLevel);
+        // for (var z = 0; z <= maxLevel; z++) {
+        //     matrixIds[z] = (z).toString();
+        // }
+        // var wmts = new Cesium.WebMapTileServiceImageryProvider({
+        //     url: _url,
+        //     layer: _layer,
+        //     style: 'default',
+        //     credit: 'opts.credit',
+        //     format: 'tiles',
+        //     tileMatrixSetID: 'w',
+        //     subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+        //     tileMatrixLabels: matrixIds,
+        //     tilingScheme: new Cesium.WebMercatorTilingScheme(),
+        //     maximumLevel: maxLevel
+        // });
+        // viewer.imageryLayers.addImageryProvider(wmts)
+
+        // ------------------------ xyz方式加载带投影的------------------------------------------
+        // var _layer = 'ter';
+        // var _url = 'http://t{s}.tianditu.gov.cn/DataServer?T=' + _layer + '_w&x={x}&y={y}&l={z}&tk=' + token;
+        // var xyz = new Cesium.UrlTemplateImageryProvider({
+        //     url:  _url,
+        //     credit: 'opts.credit',
+        //     subdomains: ['0', '1', '2', '3', '4', '5', '6', '7'],
+        //     tilingScheme: new Cesium.WebMercatorTilingScheme(),
+        //     maximumLevel: maxLevel
+        // });
+        // viewer.imageryLayers.addImageryProvider(xyz)
+
+        // ------------------------ xyz方式wmts地址------------------------------------------
+        // var xyz = new Cesium.UrlTemplateImageryProvider({
+        //     url: "https://t" + ramdon + ".tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=" + token,
+        // })
+        // viewer.imageryLayers.addImageryProvider(xyz)
+
+
+
+    </script>
+</body>
+
+</html>

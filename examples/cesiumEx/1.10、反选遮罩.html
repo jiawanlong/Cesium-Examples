@@ -1,0 +1,152 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./turf.min.js"></script>
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+        const maskpointArray = []
+        axios.get('./anzhouBorder.json')//读取区域json
+            .then((response) => {
+
+                for (let i = 0; i < response.data.features[0].geometry.coordinates[0].length; i++) {
+                    maskpointArray.push(response.data.features[0].geometry.coordinates[0][i][0])
+                    maskpointArray.push(response.data.features[0].geometry.coordinates[0][i][1])
+                }
+                var maskspoint = Cesium.Cartesian3.fromDegreesArray(maskpointArray)
+                const area = new Cesium.Entity({
+                    id: 1,
+                    polygon: {
+                        hierarchy: {
+                            positions: Cesium.Cartesian3.fromDegreesArray([100, 0, 100, 89, 150, 89, 150, 0,]),//外部区域
+                            holes: [{
+                                positions: maskspoint//挖空区域
+                            }]
+                        },
+                        material: Cesium.Color.BLUE.withAlpha(0.6)//外部颜色
+                    }
+                })
+                const line = new Cesium.Entity({
+                    id: 2,
+                    polyline: {
+                        positions: maskspoint,
+                        width: 2,//边界线宽
+                        material: Cesium.Color.fromCssColorString('#6dcdeb')//边界线颜色
+                    }
+                })
+                viewer.entities.add(area)
+                viewer.entities.add(line)
+                viewer.flyTo(line, { duration: 3 })
+            }).catch((response) => {
+                console.log(response)
+            })
+
+        // -------------------------方法2----------------------
+        // axios.get('./anzhouBorder.json')//读取区域json
+        //     .then((response1) => {
+        //        let  response = response1.data;
+        //         //设置地表透明
+        //         let globe = viewer.scene.globe;
+        //         let scene = viewer.scene;
+        //         globe.depthTestAgainstTerrain = false;
+        //         viewer.scene.skyAtmosphere.show = false; //关闭大气层阴影
+        //         // screenSpaceCameraController获取用于摄像机输入处理的控制器;
+        //         // enableCollisionDetectio启用或禁用摄影机与地形的碰撞检测,
+        //         //   为true不会进入地下;
+        //         // scene.screenSpaceCameraController.enableCollisionDetection = false;
+        //         globe.translucency.frontFaceAlphaByDistance = new Cesium.NearFarScalar(
+        //             400.0,
+        //             0.0,
+        //             800.0,
+        //             1.0
+        //         );
+        //         globe.translucency.enabled = true;
+        //         globe.translucency.frontFaceAlphaByDistance.nearValue = Cesium.Math.clamp(
+        //             0.3,
+        //             0.0,
+        //             0.1
+        //         );
+        //         globe.translucency.frontFaceAlphaByDistance.farValue = 1.0;
+        //         viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10000;
+        //         viewer.scene.screenSpaceCameraController.maximumZoomDistance = 50000;
+        //         let bounds = [];
+        //         // viewer.scene.globe.depthTestAgainstTerrain = true;
+        //         // let response = pinggubianjieJson;
+        //         const maskpointArray = [];
+        //         for (
+        //             let i = 0;
+        //             i < response.features[0].geometry.coordinates[0].length;
+        //             i++
+        //         ) {
+        //             bounds.push([
+        //                 response.features[0].geometry.coordinates[0][i][0],
+        //                 response.features[0].geometry.coordinates[0][i][1],
+        //             ]);
+        //             maskpointArray.push(response.features[0].geometry.coordinates[0][i][0]);
+        //             maskpointArray.push(response.features[0].geometry.coordinates[0][i][1]);
+        //         }
+        //         boundspolygon = turf.polygon([bounds]);
+        //         var maskspoint = Cesium.Cartesian3.fromDegreesArray(maskpointArray);
+        //         const entity1 = new Cesium.Entity({
+        //             id: 1,
+        //             polygon: {
+        //                 hierarchy: {
+        //                     // 绘制的区域太大容易卡顿
+        //                     positions: Cesium.Cartesian3.fromDegreesArray([
+        //                         100, 0, 100, 89, 150, 89, 150, 0,
+        //                         // 113.37890625, 37.50972584293751, 121.28906250000001,
+        //                         // 37.50972584293751, 121.28906250000001, 42.35854391749705,
+        //                         // 113.37890625, 42.35854391749705, 113.37890625, 37.50972584293751,
+        //                     ]),
+        //                     // holes是图形内需要挖空的区域
+        //                     holes: [
+        //                         {
+        //                             positions: maskspoint,
+        //                         },
+        //                     ],
+        //                 },
+        //                 material: Cesium.Color.WHITE.withAlpha(0.5),
+        //                 // material: Cesium.Color.WHITE.withAlpha(1),
+        //             },
+        //         });
+
+        //         const entity3 = new Cesium.Entity({
+        //             name: "动态立体墙",
+        //             wall: {
+        //                 positions: maskspoint,
+        //                 maximumHeights: maskspoint.map((res) => {
+        //                     return 600;
+        //                 }),
+        //                 minimumHeights: maskspoint.map((res) => {
+        //                     return -600;
+        //                 }),
+        //                 material: Cesium.Color.fromCssColorString("#6dcdeb"),
+        //             },
+        //         });
+        //         viewer.entities.add(entity1);
+        //         viewer.entities.add(entity3);
+        //         viewer.flyTo(entity3, {
+        //             duration: 3,
+        //         });
+        //     })
+    </script>
+</body>
+
+</html>

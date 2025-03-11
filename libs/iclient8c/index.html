@@ -1,0 +1,884 @@
+﻿<!DOCTYPE html>
+<html>
+     <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>首页</title>
+        <link href='./examples/css/bootstrap.min.css' rel='stylesheet' />
+        <link href='./examples/css/bootstrap-responsive.min.css' rel='stylesheet' />
+         <link href='./examples/css/sm-extend.css' rel='stylesheet' />
+        <link href='./examples/css/sm-doc.css' rel='stylesheet' />
+        <!--[if lte IE 8]>
+        <style>
+        .container .hero-unit{
+                padding: 60px 400px 60px 60px;
+                background-image:url(./examples/images/home_banner2.png);
+                background-repeat:no-repeat;
+                background-position-x:right;
+                background-position-y:bottom;
+            }
+        </style>
+        <![endif]-->
+		<!-- <style>
+			.back2top-icon-real{
+				background:transparent url(a.png) no-repeat fixed bottom right;
+				width:57px;
+				height:57px;
+			}
+		</style> -->
+
+    </head>
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+        <!--导航条-->
+        <div class="navbar navbar-fixed-top" id="navbar">
+
+        </div>
+        <br>
+        <div class="container ">
+            <div class="topBanner">
+            <div class="hero-unit ">
+                <h2><font color="#0000FF">SuperMap iClient 8C(2017) for JavaScript</font></h2>
+                <br>
+                <p>SuperMap iClient 8C(2017) for JavaScript 是一套由 JavaScript 语言编写的 GIS 客户端应用开发包， 支持多源数据地图，支持多终端，跨浏览器，
+                 通过本产品可快速实现浏览器上美观、流畅的地图呈现。</p>
+                <br>
+                <br>
+                <a class="btn btn-success" href="./examples/intro.html">更多详情请访问 >></a>        
+            </div>
+            </div>
+                <div class="row-fluid">
+                   
+                    <div>
+                        <h2 class="title" id="details01">产品兼容性</h2>
+                        <ul>
+                            <li > <strong> (1)支持的服务列表： </strong> </li>
+                            <ul  class="circle">
+                                <li>SuperMap iServer 服务
+                                <ul  class="disc">
+                                    <li>地图服务 </li>
+                                    <li>数据服务 </li>
+                                    <li>量算服务</li>
+                                    <li>查询服务</li>
+                                    <li>UGC 图层服务(UGC 栅格图层、UGC 影像图层、UGC 专题图图层、UGC 矢量图层)</li>
+                                    <li>空间关系服务</li>
+                                    <li>专题图服务</li>
+                                    <li>交通换乘服务</li>
+                                    <li>空间分析服务类</li>
+                                    <li>网络分析服务类</li>
+                                    <li>动态标绘服务类</li>
+                                  </ul>
+                              </li>
+                                  <li>SuperMap 云服务</li>
+                                  <li>OGC 标准的服务 (WMS、WFS、WMTS、KML)</li>
+                                  <li>其他第三方服务，如天地图等</li>
+                              
+                            </ul>
+                        </ul>
+                        <ul>
+                            <li > <strong> (2)与其他框架的兼容性 </strong> </li>
+                            <ul  class="circle">
+                                <li>jQuery 1.6 +</li>
+                                <li>ExtJS 2.0 +</li>
+                                <li>PhoneGap 1.7.0 +</li>
+                                <li>OpenLayers 2.11，
+                                其中 Geometry 类的子类、继承 Strategy 类的 Paging 类、Filter 类不兼容</li>
+								<li>proj4js.js</li>
+                            </ul>   
+                        </ul>
+                        <ul>
+                            <li > <strong> (3)终端设备与浏览器兼容性 </strong> </li>
+                            <div>
+                            <table width="80%" height="490" class="table table-bordered">
+                                <tr>
+                                    <th width="11%" rowspan="2" style="text-align:center; vertical-align:middle">
+                                        设备类型
+                                    </th>
+                                    <th colspan="6" style="text-align:center; vertical-align:middle">浏览器兼容性
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td width="12%" > IE</td>
+                                    <td width="14%" style="text-align:center; vertical-align:middle">Chrome</td>
+                                    <td width="14%" style="text-align:center; vertical-align:middle">Firefox</td>
+                                    <td width="14%" style="text-align:center; vertical-align:middle">Opera</td>
+                                    <td width="13%" style="text-align:center; vertical-align:middle">Safari</td>
+                                    <td width="22%" colspan="3">移动端 webkit 内核浏览器</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; vertical-align:middle"> PC 机终端</td>
+                                    <td style="text-align:center; vertical-align:middle">
+                                    6.0 及以上系列<br>
+                                    <font color="#FF0000">（推荐 9.0 及其以上版本）</font></td>
+                                    <td>
+                                        1.0 及以上系列<br>
+                                        <font color="#FF0000">（推荐 1.0 及其以上版本）</font></td>
+                                    <td>
+                                  2.0 及其以上系列<br>
+                                  <font color="#FF0000">（推荐 5.0 及其以上版本）</font></td>
+                                    <td>
+                                    9.5 及以上系列<br>
+                                    <font color="#FF0000">（推荐 10.0 及其以上版本）</font></td>
+                                    <td>
+                                  3.0 及其以上系列<br>
+                                  <font color="#FF0000">（推荐 4.0 及其以上版本</font></td>
+                                    <td colspan="3">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td height="58" style="text-align:center; vertical-align:middle">Android  2.1+ 移动终端</td>
+                                <td>&nbsp;</td>
+                                  <td>Chrome Lite</td>
+                                    <td>Firefox for Mobile </td>
+                                    <td>Opera Mobile </td>
+                                    <td>&nbsp;</td>
+                                    <td colspan="3" >UC U3 内核浏览器<br>
+                                      QQ 浏览器 2.0 及其以上版本 <br>
+                                      海豚浏览器 4.0 及其以上版本 <br>
+                                      360 浏览器 2.0 及其以上版本<br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="48">iOS  4.0+ 移动终端</td>
+                                <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td >Safari for iOS</td>
+                                    <td colspan="3">UC U3 内核浏览器<br>
+                                      QQ 浏览器 2.0 及其以上版本<br>
+                                      海豚浏览器 4.0 及其以上版本<br>
+                                      360 浏览器 2.0 及其以上版本<br>
+                                    </p></td>
+                                  </tr>
+                                   <tr>
+                                    <td height="78">WP 7.5 移动终端</td>
+                                <td>Internet Explorer Mobile<br>
+                                  （以及基于IE内核的QQ浏览器和UC浏览器）</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td >&nbsp;</td>
+                                    <td colspan="3">&nbsp;</td>
+                                  </tr>
+                            </table>
+                        </div>  
+                        </ul>
+                        <ul>
+                            <li > <strong> (4)其他兼容性 </strong> </li>
+                            <ul  class="circle">
+                                <li>支持Windows8应用商店</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details12">产品变更信息</h2>
+                        当前版本：8.1 SP1<br/>
+                        上次版本：8.1<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增栅格查询功能</li>
+                                <li>(2) 新增高效热点图</li>
+                            </ul>
+                            <li><strong>2. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复叠加WMTS图层后，移动地图后，卷帘失效的问题</li>
+                                <li>(2) 修复客户端标签专题图显示大小字母时，背景框大小不正确的问题</li>
+                                <li>(3) 修复矢量图层设置lable为unicode时，在IE下无法显示的问题</li>
+                                <li>(4) 修复范例中polymap不出图的问题</li>
+                                <li>(5) 修复动态瓦片图层设置singleTile为true时，不出图的问题</li>
+                                <li>(6) 修复缓冲区查询时，岛洞显示不正确的问题</li>
+                                <li>(7) 修复时空数据图层，地图缩放后，要素消失的问题</li>
+                                <li>(8) 修复多边形裁剪算法不准确的问题</li>
+                                <li>(9) 修复要素图层使用Canvas2渲染的时候，快速缩放，要素消失的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details12">产品变更信息</h2>
+                        当前版本：8.1<br/>
+                        上次版本：8.1 Beta<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增高性能要素图层GraphicsLayer</li>
+                                <li>(2) 新增REST服务轮询功能</li>
+                                <li>(3) 新增Bing图层</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 增加标签专题图单值子项接口</li>
+                                <li>(2) 增加获取代理列表接口</li>
+                                <li>(3) map上新增minZoom 和 maxZoom 接口</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 完善矢量分块的文本渲染</li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增服务轮询范例</li>
+                                <li>(2) 新增获取代理列表范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复矢量分块高亮不起作用的问题</li>
+                                <li>(2) 修复UTFGrid图层请求过慢导致出图也会变慢</li>
+                                <li>(3) 修复设置矢量图层透明度不生效的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details12">产品变更信息</h2>
+                        当前版本：8.1 Beta<br/>
+                        上次版本：8.0 SP2<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增临时图层中的子图层编辑功能</li>
+                                <li>(2) 新增online的逆地理编码的服务对接</li>
+                                <li>(3) 新增服务端的矢量风格的对接</li>
+                                <li>(4) 新增OSM及Google图层</li>
+                                <li>(5) 动态标绘相关功能</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 路径导航服务返回结果新增pathTime参数</li>
+                                <li>(2) online的基础服务增加to参数，代表将坐标转化到什么坐标系上</li>
+                                <li>(3) 增加标绘图层及其可编辑、可锁定和创建标号接口</li>
+                                <li>(4) 增加动态标绘标号绘制与编辑接口</li>
+                                <li>(5) 增加动态标绘标号修改相关属性接口</li>
+                                <li>(6) 增加动态标绘标号库管理及查询标号接口</li>
+                                <li>(7) 增加动态标绘缺省属性及自定义属性接口</li>
+                                <li>(8) 增加保存和加载态势图接口</li>
+                                <li>(9) 增加叠加态势图接口</li>
+                                <li>(10) 增加上传和下载态势图文件接口</li>
+                                <li>(11) 增加标号对象复制、剪切、粘贴及复位接口</li>
+                                <li>(12) 增加多边形、矩形及圆形范围查询标号接口</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 修复了部分文档问题</li>
+                                <li>(2) 完善动态标绘相关接口说明，增加动态标绘相关接口示例 </li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增第三方地图的OSM地图范例</li>
+                                <li>(2) 新增第三方地图的Google地图范例</li>
+                                <li>(3) 新增图层操作范例</li>
+                                <li>(4) 新增图层编辑范例</li>
+                                <li>(5) 新增鼠标标绘范例</li>
+                                <li>(6) 新增编程标绘范例</li>
+                                <li>(7) 新增属性修改范例</li>
+                                <li>(8) 新增鼠标编辑范例</li>
+                                <li>(9) 新增缺省属性范例</li>
+                                <li>(10) 新增自定义属性范例</li>
+                                <li>(11) 新增查询标号范例</li>
+                                <li>(12) 新增编辑器范例</li>
+                                <li>(13) 新增标号库加载范例</li>
+                                <li>(14) 新增保存和加载态势图范例</li>
+                                <li>(15) 新增叠加态势图范例</li>
+                                <li>(16) 新增上传和下载态势图文件范例</li>
+                                <li>(17) 新增几何查询标号范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复canvas2图层重绘时，把要素的清除扩展了两像素的问题</li>
+                                <li>(2) 修复在地图显示范围以为弹出的弹窗的样式问题</li>
+                                <li>(3) 修复设置矢量图层透明度不生效的问题</li>
+                                <li>(4) 修复截图时，客户端标签图层截不下来的问题</li>
+                                <li>(5) 修复在Edge浏览器下鼠标样式不正常的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details11">产品变更信息</h2>
+                        当前版本：8.0 SP2<br/>
+                        上次版本：8.0<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) iConnector bing地图的支持</li>
+                                <li>(2) 客户端专题图中增加等级符号专题图</li>
+                                <li>(3) 新增对GeoJSON数据格式的支持</li>
+                                <li>(4) 网络分析中新增二维爆管分析服务</li>
+                                <li>(5) 新增版本切换的控件</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) SuperMap.REST.ThemeParameters.fieldValueDisplayFilter.filedName属性更改为fieldName</li>
+                                <li>(2) Geometry中的Rectangle类新增Move接口</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 客户端专题图坐标轴优化已及柱状图填充支持渐变色</li>
+                                <li>(2) 完善接口说明，增加接口示例 </li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增iConnector bing地图范例</li>
+                                <li>(2) 新增等级符号专题图范例</li>
+                                <li>(3) 新增对GeoJSON格式数据支持的范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复比例尺不一样时，切换地图出现错误</li>
+                                <li>(2) 修复热点图只有一个点时根据默认属性不能进行渲染</li>
+                                <li>(3) 修复客户端专题图中之饼图只有一个数据来填充图形，饼图的mouseover事件失效</li>
+                                <li>(4) 修复图层中添加wrapDateLine属性为true时，缩放动画不正确</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details10">产品变更信息</h2>
+                        当前版本：8.0<br/>
+                        上次版本：7.2 Beta<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) OSMBuilding与产品结合</li>
+                                <li>(2) 矢量要素图层样式增加线性渐变和放射渐变功能</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 增加公交换乘避让站点和避让线路接口</li>
+                                <li>(2) 数据集查询新增动态投影参数</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 范例增加锚点功能 </li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增百度地图范例</li>
+                                <li>(2) 新增天地图范例</li>
+                                <li>(3) 新增四维图景地图范例</li>
+                                <li>(4) 新增标签矢量图层范例</li>
+                                <li>(5) 新增渐变样式矢量图形范例</li>
+                                <li>(6) 新增OSMBuilding绘制范例</li>
+                                <li>(7) 新增OSMBuildingGeoJSON数据范例</li>
+                                <li>(8) 新增OSMBuilding数据集查询范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修改范例MapBOX地图不出图的问题</li>
+                                <li>(2) 修改矢量要素图层的文档描述问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                    <div>
+                        <h2 class="title" id="details9">产品变更信息</h2>
+                        当前版本：7.2 Beta<br/>
+                        上次版本：7.1 SP2<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端统计专题图之三维柱状专题图</li>
+                                <li>(2) 新增客户端统计专题图之点状专题图</li>
+                                <li>(3) 新增客户端统计专题图之环状专题图</li>
+                                <li>(4) 新增矢量地图编辑器控件</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 路由对象支持tojson方法</li>
+                                <li>(2) marker点击事件支持移动端的touchstart</li>
+                                <li>(3) 矢量地图和时空数据支持虚线</li>
+                                <li>(4) 统计专题图支持压盖判断的权重</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 完善接口说明，增加接口示例 </li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端统计专题图之三维柱状专题图范例</li>
+                                <li>(2) 新增客户端统计专题图之点状专题图范例</li>
+                                <li>(3) 新增客户端统计专题图之环状专题图范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 解决麻点图作为叠加图层并且和底图比例次不一致时出图错乱的缺陷</li>
+                                <li>(2) 修改选址分析范例说明</li>
+                                <li>(3) 解决时空数据图层移除数据后没清空的缺陷</li>
+                                <li>(4) 修改专题图排序字段displayOrderBy的无法识别的缺陷</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details8">产品变更信息</h2>
+                        当前版本：7.1 SP2<br/>
+                        上次版本：7.1 SP1<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端统计专题图之饼状专题图</li>
+                                <li>(2) 新增客户端统计专题图之柱状专题图</li>
+                                <li>(3) 新增客户端统计专题图之折线专题图</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) Elements 图层新增固定图层属性isFixed</li>
+                                <li>(2) DrawFeature 控件增加属性style ，以支持所绘制feature的样式</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端统计专题图相关类参考</li>
+                                <li>(2) 完善接口说明，增加接口示例 </li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增标签专题图范例--全国空气质量指数专题图 </li>
+                                <li>(2) 新增客户端统计专题图之饼状专题图范例</li>
+                                <li>(3) 新增客户端统计专题图之柱状专题图范例</li>
+                                <li>(4) 新增客户端统计专题图之折线专题图范例</li>
+                                <li>(5) 新增地图的右键菜单范例</li>
+                                <li>(6) 新增feature的右键菜单范例</li>
+                                <li>(7) 新增marker的右键菜单范例</li>
+                                <li>(8) 新增iConnector对OpenLayers3的支持及其范例</li>
+                                <li>(9) 新增在地图中使用百度 EChart 图表的范例 </li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 解决麻点图设置过滤条件后报错的问题</li>
+                                <li>(2) 解决专题图中 addfeatures 时，map Bounds 与 feature Bounds 判断失败的问题</li>
+                                <li>(3) 解决查询路由数据集而绘制结果错误的问题</li>
+                                <li>(4) 修改地图和feature在快速拖动时不能重叠的缺陷</li>
+                                <li>(5) 修改时空数据feature add之后的排序缺陷</li>
+                            </ul>
+                        </ul>
+                    </div>
+					<div>
+                        <h2 class="title" id="details7">产品变更信息</h2>
+                        当前版本：7.1 SP1<br/>
+                        上次版本：7.1<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端单值专题图</li>
+                                <li>(2) 新增客户端分段专题图</li>
+                                <li>(3) 新增热点图颜色分段配置的功能</li>
+                                <li>(4) 新增数据集查询的bounds查询服务功能</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>无 </li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 库文件增加拆分后的基础库、iServer服务库、可视化库和OGC库</li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增客户端单值专题图范例</li>
+                                <li>(2) 新增客户端分段专题图范例</li>
+                                <li>(3) 新增泰森多边形范例</li>
+                                <li>(4) 新增MapBox范例</li>
+                                <li>(5) 新增CartoDB范例</li>
+                                <li>(6) 新增Polymaps范例</li>
+                                <li>(7) 新增wms范例</li>
+                                <li>(8) 新增热点图颜色手动配置范例</li>
+
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 解决矢量分块在设置要素的偏移效果时产生的裂缝问题</li>
+                                <li>(2) 修改矢量分块的面填充颜色与外围边界颜色的透明度，使其能被分别设置</li>
+                                <li>(3) 解决vector在设置style.backgroundGraphic后无法随地图缩放的问题</li>
+                                <li>(4) 解决TiledDynamicRESTLayer图层设置部分参数后地图在chrome和opera浏览器中的显隐问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="title" id="details6">产品变更信息</h2>
+                        当前版本：7.1<br/>
+                        上次版本：7.1Beta<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增矢量地图符号系统</li>
+                                <li>(2) 新增时空数据线面渲染</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) Layer.TiledVectorLayer新增useLocalStorage属性</li>
+                                <li>(2) Layer.TiledVectorLayer新增setCatoCSS，getCatoCSS方法</li>
+                            </ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 范例目录结构调整</li>
+                                <li>(2) 增加时空数据线面渲染相关类参考</li>
+                                <li>(3) 增加矢量地图符号系统相关类参考</li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增地铁修建范例</li>
+                                <li>(2) 新增春运模拟范例</li>
+                                <li>(3) 新增符号系统高亮显示范例</li>
+                                <li>(4) 新增CatoCSS编辑范例</li>
+                                <li>(5) 新增D3拾取器范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复鹰眼在ie8下进行3857地图切换为4326地图不显示的缺陷</li>
+                                <li>(2) 修复TiledDynamicRESTLayer和TiledVectorLayer叠加后出现页面报错的缺陷</li>
+                                <li>(3) 修复矢量分块点数据集无法显示的缺陷</li>
+                                <li>(4) 修复wms服务在ie浏览器请求地图有中文的图层名参数中的中文会出现乱码的缺陷</li>
+                                <li>(5) 修复使用selectFeature传入多图层在chrome和Firefox上出现问题的缺陷</li>
+                                <li>(6) 修复Layer.Elements在map中的图层显示顺序有问题的缺陷</li>
+                                <li>(7) 修复kml地图无法显示的缺陷</li>
+                                <li>(8) 修复WMTS图层、iServer地图服务叠加后，地图上添加UTFGrid图层，JSON中不包含属性数据的缺陷</li>
+                            </ul>
+                        </ul>
+                    </div>
+					<div>
+                        <h2 class="title" id="details5">产品变更信息</h2>
+                        当前版本：7.1 Beta<br/>
+                        上次版本：7.0 SP2<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增时空数据可视化</li>
+                                <li>(2) 增加绘制、编辑要素时节点捕捉功能</li>
+                                <li>(3) 支持A0和A1纸张的大幅地图打印</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+							<ul>
+								<li>(1) Layer.ClusterLayer增加聚散完成事件，并返回聚散点集合</li>
+								<li>(2) Layer.Vector新增客户端标签专题图策略（Strategy.GeoText），新增Geometry.GeoText对象</li>
+							</ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 范例目录结构调整</li>
+                                <li>(2) 增加时空数据可视化相关类参考</li>                    
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增基于Canvas的截取地图并保存为图片的范例</li>
+                                <li>(2) 新增A0和A1纸张大幅地图打印的范例</li>
+                                <li>(3) 新增基于时空数据可视化实现的火车监控模拟范例</li>
+                                <li>(4) 新增基于时空数据可视化实现的汽车监控模拟范例</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复Layer.Image当useCanvas:true时图片偏移的缺陷</li>
+                                <li>(2) 修复Layer.Vector添加复杂面时出现错误线条的缺陷</li>
+                                <li>(3) 修复地图在触屏ie11上无法缩放的缺陷</li>
+                                <li>(4) 修复feature旋转时label也跟着旋转的缺陷</li>
+                                <li>(5) 修复在Feature选中状态时平移地图，Feature的风格变回非选中状态的问题</li>
+                                <li>(6) 修复使用控件 LayerSwitcher 切换地图时报错的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+				    <div>
+						<h2 class="title" id="details4">产品变更信息</h2>
+                        当前版本：7.0 SP2<br/>
+                        上次版本：7.0 SP1<br/>
+                        <br/>
+						<ul>
+						    <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增对接MapABC的示例代码</li>
+                            </ul>
+							<li><strong>2. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复SuperMap.Layer.Vector,在Canvas和Canvas2下无法绘制矩形对象的错误</li>
+								<li>(2) 修复SuperMap.Layer.Image当useCanvas:true时地图偏移的错误</li>
+								<li>(3) 修复ie8下无法打印vml元素的错误</li>
+                            </ul>
+						</ul>
+					</div>
+                    <div>
+                        <h2 class="title" id="details3">产品变更信息</h2>
+                        当前版本：7.0 SP1<br/>
+                        上次版本：7.0<br/>
+                        <br/>
+                        <ul>
+                            <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增EdgeWeight和TurnNodeWeight服务</li>
+                                <li>(2) 新增kml服务</li>
+                                <li>(3) 新增客户端标签专题图</li>
+                                <li>(4) 支持wfs1.1.0</li>
+                                <li>(5) 增加webgl渲染地图的方式以及范例</li>
+								<li>(6) UTFGridLayer增加Token管理</li>
+								<li>(7) 热点图支持颜色线性渐变设置，增加colors属性</li>
+                            </ul>
+                            <li><strong>2. 接口变更： </strong></li>
+							<ul>
+								<li>(1) 移除EdgeWeightNames和TurnNodeWeightNames服务</li>
+								<li>(2) 移除选址分区分析参数类（SuperMap.REST.FindLocationParameters）的属性"结点需求量字段（nodeDemandField）"</li>
+								<li>(3) 热点图增加自定义颜色接口</li>
+								<li>(4) 新增SuperMap.Geometry.GeoText类</li>
+								<li>(5) SuperMap.REST.GenerateSpatialDataParameters增加retainedFields属性</li>
+							</ul>
+                            <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 增加属性图（utfgird）专题文档</li>
+                                <li>(2) 增加扩展图（Elements Layer）专题文档</li>
+                                <li>(3) 增加热点图专题文档</li>
+                                <li>(4) 增加热点格网图专题文档</li>
+                                <li>(6) 增加聚散图专题文档</li>
+                                <li>(7) 专题文档结构调整</li>
+                                <li>(8) 第三方地图服务范例修改为采用iConnector实现</li>
+                                <li>(9) 鼠标增加小手样式</li>
+								<li>(10) 增加麻点图专题文档</li>
+								<li>(11) 帮助文档属性方法支持按字母排序</li>
+								<li>(12) 增加UML类结构图</li>
+                            </ul>
+                            <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 新增KML范例。</li>
+                                <li>(2) 新增客户端标签专题图范例。</li>
+                                <li>(3) 新增地图渲染范例。</li>
+                                <li>(4) 新增轮询范例。</li>
+                                <li>(5) 新增卷帘范例。</li>
+                                <li>(6) 新增Elements Layer扩展范例。</li>
+								<li>(7) 增加四种地图渲染方式比较的范例。</li>
+								<li>(8) 增加插值分析范例。</li>
+                            </ul>
+                            <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复chrome下点击“查看源码”，浏览器崩溃的问题以及源代码窗口无滚动条的问题。</li>
+                                <li>(2) 控件样式美化</li>
+                                <li>(3) SuperMap.Control.SelectFeature支持鼠标右键事件</li>
+                                <li>(4) SuperMap.Control.Measure的measurepartial事件区分点击和平移</li>
+                                <li>(5) 对非法闭合feature采用过滤处理</li>
+                                <li>(6) 修改在Canvas渲染下，设置SelectFeature控件的selectStyle属性，样式变化错误的缺陷</li>
+                                <li>(7) 修改设置Credential的name属性无效问题</li>
+                                <li>(8) 修改wms图层先缩放再resize，地图白图的问题</li>
+								<li>(9) 修改初始化鹰眼设置为最小后在点击打开不出图的问题</li>
+								<li>(10) 修改麻点图不支持自定义坐标和自定义范围的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+					<div>                        
+                        <h2 class="title" id="details2">产品变更信息</h2>
+                        当前版本：7.0<br/>
+                        上次版本：6.1 SP3<br/>
+                         <br/>
+                        <p>本版本在地图可视化上做了很大的改进，不仅提供了大数据量渲染的解决方案，而且新增了格网图、D3等渲染方式。另外在移动端和REST服务上持续更新。同时提供了和第三方地图之间的开源连接器iConnector。具体变更如下：</p> 
+                        <ul>
+                        <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增UTFGrid图层</li>
+                                <li>(2) 新增iConnector，支持在第三方地图（包括百度地图、天地图、Leaflet、Google地图、ArcGIS）API的基础上无缝引入iServer的地图服务</li>
+                                <li>(3) 新增热点格网图特色图层</li>
+                                <li>(4) 新增移动端产品对iServer生成的MBTiles离线缓存的支持</li>
+                                <li>(5) 新增HTML5 Android工程，降低了JavaScript产品安卓开发的门槛，提高了易用性</li>
+                                <li>(6) 新增麻点图，支持大数据量poi的展现 </li>
+                                <li>(7) 新增路由对象定位对路由对象参数Dataset设置方式的支持</li>
+                                <li>(8) 新增缓冲区分析对几何对象的投影参数的支持</li>
+                            </ul>
+                    <!-- li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 新增HeatGridLayer类</li>
+                                <li>(2) 新增UTFGrid类</li>
+								<li>(3) 新增SelectGrid类</li>
+								<li>(4) 新增UTFGrid类</li>
+                                <li>(5) 新增JSON类</li>
+                            </ul-->
+              <!--li><strong>3. 性能优化： </strong></li -->
+                        <li><strong>2. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 范例调整，可直接拷贝重用</li>
+                                <li>(2) Feature对象绘制方式优化</li>
+								<li>(3) 删除SuperMap.REST.SpatialAnalyst 命名空间的SpatialAnalystEventArgs类</li>
+                            </ul>
+                        <li><strong>3. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 热点格网图范例</li>
+                                <li>(2) UTFGrid范例</li>
+								<li>(3) 麻点图范例</li>
+                            </ul>
+                        <li><strong>4. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复SQL属性查询只返回属性信息时报错的问题</li>
+                                <li>(2) 修复histest查询接口范例的问题</li>
+								<li>(3) 修复map的属性restrictedExtent失效的问题</li>
+								<li>(4) 修复不使用缓存、出图方式选择gif格式时地图浏览有黑块的问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+					<div>                        
+                        <h2 class="title" id="details1">产品变更信息</h2>
+                        当前版本：6.1 SP3<br/>
+                        上次版本：6.1 SP2<br/>
+                         <br/>
+                        <p>产品提供了地图图层、地图控件、专题图、查询、量算、空间分析、网络分析、数据集查询、交通换乘、UGC图层服务等功能，
+                        较之前版本本次改版的产品功能更加丰富、性能
+                        更加优越、扩展性更强、
+                        兼容效果更好，本次版本主要做了以下改进和优化：</p> 
+                        <ul>
+                        <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增并发访问功能，支持 TileDynamicLayer、WMS/WMTS 多 URLS 并发访问</li>
+                                <li>(2) 新增第三方地图服务API，包括 Google、ArcGis、OpenStreetMap、Bing、Baidu 地图支持</li>
+                                <li>(3) 新增聚散图层，热点图特色图层</li>
+                                <li>(4) 新增栅格单值专题图，栅格范围分段专题图，丰富专题图效果</li>
+                                <li>(5) 新增插值分析服务，支持 IDW/RBF/Density/Kriging</li>
+                                <li>(6) 新增贝塞尔曲线，B样条曲线，丰富Geometry类型 </li>
+                                <li>(7) 新增 WCS、WFS 协议支持</li>
+                                <li>(8) 新增海图查询和符号库的支持</li>
+                                <li>(9) 新增 2G/3G/4G 符号的几何对象支持</li>
+                                <li>(10) 新增 Android 移动端 MBTile 离线数据的支持，IE10、WinRT 支持</li>
+                                <li>(11) 新增 Permalink 控件，用于分享视图</li>
+                                <li>(12) 增加 zoom 控件</li>
+                                <li>(13) 增加地图缩放到任意比例尺</li>
+                                <li>(14) 增加瓦片渐出显示效果</li>
+								<li>(15) 增加Credential认证功能</li>
+                            </ul>
+                    <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) 投影支持EPSG:900913,EPSG:3857，EPSG:4326  对于这三种投影，只需要设置projection:"EPSG:***",
+                                    而不需要设置maxExtent,units等其他相关信息即可</li>
+                                <li>(2) 部分方法加入参数判断，当参数不合法时会抛出TypeError异常到控制台</li>
+								<li>(3) 天地图接口升级</li>
+                                <li>(4) 地图查询返回的feature的style，7C变为null</li>
+                            </ul>
+              <!--li><strong>3. 性能优化： </strong></li-->
+                        <li><strong>3. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) Proj4as 库集成到产品包</li>
+                                <li>(2) 删除 Rico 文件夹下所有文件</li>
+                            </ul>
+                        <li><strong>4. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 热点图范例</li>
+                                <li>(2) 地图投影转换范例</li>
+                                <li>(3) WCS 图层范例</li>
+                                <li>(4) Google 图层范例</li>
+                                <li>(5) Bing 图层范例</li>
+                                <li>(6) ArcGIS 图层范例</li>
+                                <li>(7) OpenStreetMap 图层范例</li>
+                                <li>(8) 百度图层范例</li>
+                                <li>(9) 栅格分段专题图范例</li>
+                                <li>(10) 栅格单值专题图范例</li>
+                                <li>(11) WFS 查询范例</li>
+                                <li>(12) 字段查询统计范例</li>
+                                <li>(13) 聚散点图层范例</li>
+                                <li>(14) 地图打印范例</li>
+								<li>(15) 子图层控制范例</li>
+								<li>(16) Token认证范例</li>
+                            </ul>
+                        <li><strong>5. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复岛洞多边形显示问题</li>
+                                <li>(2) 修复 Popup.FramedCloud 引角处不可点击图层的问题</li>
+								<li>(3) 修复 天地图鹰眼问题问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+					<div>
+                        <h2 class="title" id="details0">产品变更信息</h2>
+                        当前版本：6.1 SP1<br/>
+                        上次版本：6.1.0 <br>
+                         <br>
+                        <p>产品提供了地图图层、地图控件、专题图、查询、量算、空间分析、网络分析、数据集查询、交通换乘、UGC图层服务等功能，
+                        较之前版本本次改版的产品功能更加丰富、性能
+                        更加优越、扩展性更强、
+                        兼容效果更好，本次版本主要做了以下改进和优化：</p> 
+                        <ul>
+                        <li > <strong>1. 新增功能： </strong></li>
+                            <ul>
+                                <li>(1) 新增动态分段服务，仅支持 SuperMap iServer 6.1.2 及其以上版本的动态分段服务</li>
+                                <li>(2) 新增数据服务，提供 ID 查询、几何查询、缓冲区查询、SQL 查询、地物编辑等功能</li>
+                                <li>(3) 新增 Canvas2 渲染方式，适用于制作矢量数据的动画渲染</li>
+                                <li>(4) 新增离线存储和访问功能，支持基于 PhoneGap 开发的移动 Web 应用，
+                                实现离线状态下的地图存储与访问</li>
+                                <li>(5) 新增交通换乘服务，仅支持 SuperMap iServer 6.1.2 及其以上版本的交通换乘服务</li>
+                                <li>(6) 新增 UGC 图层服务，包括 UGC 栅格图层，UGC 矢量图层，UGC 影像图层，UGC 专题图图层 </li>
+                                <li>(7) 新增空间关系分析服务，仅支持 SuperMap iServer 6.1.2 及其以上版本的空间关系服务</li>
+                            </ul>
+                    <li><strong>2. 接口变更： </strong></li>
+                            <ul>
+                                <li>(1) CanvasLayer 类新增 dpi 属性</li>
+                                <li>(2) SampleCacheLayer 类删除了viewBounds、viewer、format三个属性</li>
+                                <li>(3) CloudLayer 类新增 url 属性</li>
+                                <li>(4) PathGuideItem 类新增 geometry 和 description 属性</li>
+                                <li>(5) SuperMap.Feature.Vector 中 attributes 属性修改为键值对形式</li>
+                                <li>(6) SuperMap.Control.PanZoomBar  中新增 showSlider 属性</li>
+                                <li>(7) SuperMap.Control.PanZoomBar  新增 levelsDesc 属性</li>
+                                <li>(8) SuperMap.Layer.TiledDynamicRESTLayer 新增 dpi 和 projection 属性，同时关闭 viewBounds 、viewer、scale 三个属性，
+                                删除设置在 url上的 maxVisibleVertex 参数</li>
+                                <li>(9) 删除 Ajax 类</li>
+                                <li>(10) SuperMap.REST.ThemeParameters 新增 displayFilter 和 displayOrderBy 属性</li>
+                                <li>(11) SuperMap.REST.TransportationAnalystParameter 新增 barrierPoints 属性</li>
+                            </ul>
+              <li><strong>3. 性能优化： </strong></li>
+                            <ul>
+                                <li>(1) 缩放动画与平移交互操作优化</li>
+                                <li>(2) 瓦片渐进效果优化</li>
+                                <li>(3) 多图层叠加性能优化</li>
+                                <li>(4) 动画重构与插件化</li>
+                            </ul>
+                        <li><strong>4. 产品包以及产品化工作的完善： </strong></li>
+                            <ul>
+                                <li>(1) 统一命名空间为 SuperMap</li>
+                                <li>(2) 精简库文件，压缩核心库</li>
+                                <li>(3) 全新的产品页面样式，对产品页面整体的内容结构、页面布局做了重大调整</li>
+                                <li>(4) 帮助文档本地化</li>
+                                <li>(5) 控件及其样式的调整，部分控件进行了功能完善和改进，删除了 Pan， PanPanel， ZoomIn， 
+                                ZoomOut， ZoomPanel， ZoomToMavExtent 等控件， 将 PanZoom 合并到 PanZoomBar，并且优化了 PanZoomBar</li>
+                            </ul>
+                        <li><strong>5. 新增范例： </strong></li>
+                            <ul>
+                                <li>(1) 动态分段专题范例</li>
+                                <li>(2) 数据集缓冲区查询范例</li>
+                                <li>(3) 数据集 SQL 查询范例</li>
+                                <li>(4) 数据集几何查询范例</li>
+                                <li>(5) 数据集 ID 查询范例</li>
+                                <li>(6) 高性能矢量图层渲染---车辆监控系统范例，须在支持 HTML5 Canvas 的浏览器下运行</li>
+                                <li>(7) 高性能矢量图层渲染---大数据矢量地物查询与交互范例，须在支持 HTML5 Canvas 的浏览器下运行</li>
+                                <li>(8) 高性能矢量图层渲染---气象监测范例，须在支持 HTML5 Canvas 的浏览器下运行</li>
+                                <li>(9) WMTS 图层使用范例</li>
+                                <li>(10) 新增交通换乘范例</li>
+                            </ul>
+                        <li><strong>6. 修复的问题： </strong></li>
+                            <ul>
+                                <li>(1) 修复地图控件设置固定比例尺后，PanZoomBar 控件显示异常问题</li>
+                                <li>(2) 修复 WMTS 图层出图问题</li>
+                                <li>(3) 更新天地图图片地址</li>
+                                <li>(4) 修复使用 map 获取比例尺出错问题 </li>
+                                <li>(5) 解决多点量算、跨域量算问题 </li>
+                                <li>(6) 修复加载 4.0 + 缓存的出图错误问题</li>
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+               
+            
+            <hr>
+            <div>
+                <p>本文档完成日期为2016年12月21日，如果此前的任何文档(包括电子文档和印刷文档)中的某些内容与本文档不相符合，请以本文档为准。若本文档更新，则以更新后的文档为准。</p>
+            </div>
+            <div class='footer'>
+            <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+        </div>
+		
+		<!-- <div style="bottom: 1%; margin-right:0; width: 57px; height: 57px; overflow: hidden; cursor: pointer; left: 50%; -webkit-transition: opacity; position: fixed; opacity: 0.6; display: block; " id="qBack2topBtn">
+			<div class="back2top-icon-real"></div> 
+		</div> -->
+        </div>
+        
+        <script src='./examples/js/jquery.js'></script>
+        <script src='./examples/js/bootstrap.js'></script>
+        <script>
+			window.onstop = function(){
+				alert(1);
+			}
+		</script>
+        <script src="examples/js/navbar.js"></script>
+        <script src="examples/js/GoTop.js" id="js_gotop"></script>
+    </body>
+</html>

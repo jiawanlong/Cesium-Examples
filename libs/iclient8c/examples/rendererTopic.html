@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>动画渲染专题</title>
+        <link href='./css/bootstrap.min.css' rel='stylesheet' />
+        <link href='./css/bootstrap-responsive.min.css' rel='stylesheet' />
+        <link href='./css/sm-extend.css' rel='stylesheet' />
+        <link href='./css/sm-doc.css' rel='stylesheet' />
+    </head>
+    <body data-spy="scroll" data-target=".subnav" data-offset="50">
+        <!--导航条-->
+        <div class="navbar navbar-fixed-top" id="navbar">
+
+        </div>
+        <div id='container' class='container'>
+            <div class='page-header'>
+                <h1 style="margin-top: 2%">客户端高性能矢量渲染专题</h1>
+                <hr />
+                <h2>一、高性能矢量渲染图层Vector类简介</h2>
+                <p>
+                &nbsp;SuperMap iClient for JavaScript 提供的 Vector 类支持采用 HTML5 的 Canvas
+                元素渲染矢量数据，并且提供了对渲染要素的添加、删除和选择操作，
+                从而为大数据量的矢量数据在无插件的 HTML 文档中，平滑、流畅的呈现，提供了新的解决方案。
+                </p>
+                <h2>二、高性能矢量渲染图层 Vector 类的使用说明</h2>
+                <p>&nbsp;Vector 类用 addFeatures、removeFeatures、removeAllFeatures、
+                redraw、getFeatureBy、 getFeatureById、getFeatureByFid、 getFeaturesByAttribute
+                等方法实现对要素的添加、删除、获取，方法的具体介绍和详细的使用说明请参见《API文档》，
+                下面以具体实例---<strong>车辆监控系统</strong>说明 Vector 的使用方法：
+                </p>
+                <p>&nbsp;长春市某公交公司现有797辆车在28条公交   
+                线路上正常运作运送乘客，为了满足车辆安防和调度的需要， 现对797辆车进行实时监控，
+                进而达到降低运营成本、提高服务水平、提高企业 收益的目的。此实例通过使用 Vector 类的接口实现了
+                对大量车辆的实时在线查询和更新功能。
+                </p>          
+                <h3>2.1、查询功能</h3>
+                <p>
+                电子地图上实时显示797辆车，公交公司管理部门可以远程监控所有车辆，具体实现方法如下：
+                </p>
+                <p>
+                (1).初始化两个图层 vectorLayer、vectorLayerCars，一个作为公交车路线图层，一个作为公交车图层。
+                </p>
+<pre>
+//初始化公交车路线图层
+vectorLayer = new SuperMap.Layer.Vector("Vector Layer", {
+    renderers: ["Canvas"],
+    styleMap: new SuperMap.StyleMap({"default": styleLine})
+});
+//初始化公交车图层
+vectorLayerCars = new SuperMap.Layer.Vector("Vector Layer Cars", {
+    renderers: ["Canvas2"],
+    styleMap: new SuperMap.StyleMap({"default": stylePoint})
+});
+//为 vectorLayerCars 添加一个选择控件。
+select = new SuperMap.Control.SelectFeature(vectorLayerCars, {
+    onSelect: onFeatureSelect, 
+    onUnselect: onFeatureUnselect
+    }
+);
+map.addControl(select);
+//要素被选中时调用此函数
+function onFeatureSelect(feature) {
+    selecedtBus = feature;
+    popup = new SuperMap.Popup("chicken",
+        selecedtBus.geometry.getBounds().getCenterLonLat(),
+        new SuperMap.Size(300,42),
+        "&lt;div style='font-size:.8em; opacity: 0.8'&gt;&lt;p&gt;公交线路：" + selecedtBus.line.num + "路" + 
+        "&lt;/p&gt;&lt;p&gt;当前位置：" + selecedtBus.geometry.x + "，" + selecedtBus.geometry.y + "&lt;/p&gt;&lt;/div&gt;", null, true);
+    selecedtBus.popup = popup;
+    map.addPopup(popup);
+}
+//清除要素时调用此函数
+function onFeatureUnselect(feature) {
+    map.removePopup(feature.popup);
+    feature.popup.destroy();
+    feature.popup = null;
+    selecedtBus = null;
+}
+</pre>
+                <p>
+                (2).定义查询的公交车路线，通过 SQL 查询方法查询公交路线,通过监听对 QueryBySQLService 支持的
+                两个从服务端返回结果事件 processCompleted 、processFailed，获取查询公交路线结果。
+                </p>
+<pre>
+//定义查询公交线路
+function queryBySQL() {
+//清除当前图层所有feature要素
+vectorLayer.removeAllFeatures();
+var queryParam, queryBySQLParams, queryBySQLService;
+//声明查询参数
+queryParam = new SuperMap.REST.FilterParameter({
+    name: "BusLine@Changchun#1",
+    attributeFilter: "SmID > 0"}
+),
+//声明 SQL 查询参数，将 queryParam 赋给 queryBySQLParams
+queryBySQLParams = new SuperMap.REST.QueryBySQLParameters({
+    queryParams: [queryParam]
+}),
+//声明 SQL 服务对象
+queryBySQLService = new SuperMap.REST.QueryBySQLService(url, {
+    eventListeners: {
+        "processCompleted": processCompleted, 
+        "processFailed": processFailed
+    }
+});
+//向服务端发送请求执行查询
+queryBySQLService.processAsync(queryBySQLParams);
+}            
+</pre>
+                <p>
+                (3). 定义 QueryBySQLService 的监听对象，用于显示公交路线图层和公家车图层，实现过程中
+                需要先分别定义一个公交路线的数组和公交车的数组，然后通过公交路线节点模拟公交车，
+                实例化公交车的运行方向和位置，最后添加公交车路线图层和公交车图层。
+                </p>
+<pre>
+function processCompleted(queryEventArgs) {
+    var i, j, feature,
+    result = queryEventArgs.result;
+    features = [];
+    cars = [];
+    orientation = 1;
+    if (result && result.recordsets) {
+        for (i=0; i&lt;result.recordsets.length; i++) {
+            if (result.recordsets[i].features) {
+                for (j=0; j&lt;result.recordsets[i].features.length; j++) {
+                    feature = result.recordsets[i].features[j];
+                    feature.style = null;
+                    feature.num = j;
+                    features.push(feature);
+                    for(var k = 0, len = feature.geometry.components.length; k &lt; len; k++) {
+                        //创建公交车对象
+                        var car = new SuperMap.Feature.Vector(feature.geometry.components[k].clone());
+                        //定义公交车的 style
+                        car.style = {pointRadius: 10, stroke: false};
+                        var cargeometry = car.geometry;
+                        //定义公交车基本信息,包括公交车的路线、速度和速度向量、当前节
+                        //点位置和下一结点位置、通过速度向量计算的旋转角度、移动步数
+                        car.line = feature;
+                        car.orientation = orientation; 
+                        car.currentIndex = k;
+                        if(feature.geometry.components[car.currentIndex + car.orientation]) {
+                            car.nextPoint = feature.geometry.components[k + car.orientation];                                
+                            var dx = car.nextPoint.x - cargeometry.x;
+                            var dy = car.nextPoint.y - cargeometry.y;
+                            var distance = Math.sqrt(dx * dx + dy * dy);
+                            car.speed = parseInt(Math.random() * 5 + 2) * car.orientation;
+                            if(car.speed == 0) {car.speed == 10};
+                            car.moves = distance / car.speed;
+                            car.vx = dx / car.moves;
+                            car.vy = dy / car.moves;
+                            var angle = Math.atan2(dx, dy);
+                            car.style.rotate = angle;
+                            //分配不同的公交车图片
+                            if (Math.abs(car.speed &lt; 4)){
+                                car.style.externalGraphicSource = car1;
+                            }
+                            if (Math.abs(car.speed) &gt;= 4 && Math.abs(car.speed &lt;  5)){
+                                car.style.externalGraphicSource = car2;
+                            }
+                            if (Math.abs(car.speed &gt;= 5)){
+                                car.style.externalGraphicSource = car3;
+                            }
+                            car.stop = false;
+                        }else{
+                            car.stop = true;
+                            car.style.externalGraphicSource = car3;
+                        }
+                        orientation *= -1;
+                        cars.push(car);
+                    }
+                }
+            }
+        }
+    }
+//将公交路线绘制到公交路线图层上
+vectorLayer.addFeatures(features);
+//将公交车绘制公交车图层上
+vectorLayerCars.addFeatures(cars);
+}
+</pre>
+                <p>显示效果图如下所示：</P> 
+                <div class="pageImage"><img src="./images/bus.png" /></div>            
+                <h3>2.2大量车辆实时在线更新功能 </h3>
+                <p>
+                公交公司管理部门监控某一时间段内797辆车的运行状态 , 电子地图上显示每辆车每30秒的位置变化情况，实现代码如下：
+                </p>
+                <p>
+                （1）开始实施监控，通过公交车的基本信息（如速度，定位信息）改变其位置，实施方法为先全部
+                清除(removeAllFeatures)显示公交车的图层，再定义公交车的属性信息(方向、速度等)，
+                最后将改变后的公交车数组通过 addFeatures 方法加入至公交车图层。
+                </p>
+<pre>
+//开始监控
+function monitor() {
+    document.getElementById("monitor").onclick = "";
+    if(selecedtBus) {
+        map.removePopup(selecedtBus.popup);
+    }
+    vectorLayerCars.removeAllFeatures();
+    redraw = false;
+    for(var i =0, len = cars.length; i &lt len; i++) {
+        var car = cars[i];
+        var cargeometry = car.geometry;
+        if(!car.stop) {
+            if(car.moves &lt 1) {
+            cargeometry.x = car.nextPoint.x;
+            cargeometry.y = car.nextPoint.y;
+            //更新公交车的信息
+            var feature = car.line;                            
+            car.currentIndex += car.orientation;
+            if(feature.geometry.components[car.currentIndex + car.orientation]) {
+                car.nextPoint = feature.geometry.components[car.currentIndex + car.orientation];                                
+                var dx = car.nextPoint.x - cargeometry.x;
+                var dy = car.nextPoint.y - cargeometry.y;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+                car.moves = Math.abs(distance / car.speed);
+                car.vx = dx / car.moves;
+                car.vy = dy / car.moves;
+                var angle = Math.atan2(dx, dy);
+                car.style.rotate = angle;
+            }else{
+                car.stop = true;
+                car.style.fillColor = "rgb(150,150,150)";
+            }
+            }else{
+                cargeometry.x += car.vx;
+                cargeometry.y += car.vy;
+                car.moves--;
+            }
+        }
+        //只要有车移动就需要重绘。
+        if(!car.stop) {
+            redraw = true;
+        }
+    }
+    //将公交车绘制到公交车图层上
+    vectorLayerCars.addFeatures(cars);
+    if(selecedtBus) {
+        //将选中的公交车的信息添加到地图上
+        vectorLayerCars.selectedFeatures.push(selecedtBus);
+        popup = new SuperMap.Popup("chicken",
+            selecedtBus.geometry.getBounds().getCenterLonLat(),
+            new SuperMap.Size(300,42), "&lt;div style='font-size:.8em; opacity: 0.8'&gt;&lt;p&gt;公交线路：" +
+            selecedtBus.line.num + "路" +
+            "&lt;/p&gt;&lt;p&gt;当前位置：" + selecedtBus.geometry.x + "，" + selecedtBus.geometry.y + "&lt;/p&gt;&lt;/div&gt;",
+            null, true);
+        selecedtBus.popup = popup;
+        map.addPopup(popup);
+    }
+}
+</pre>
+                <p>（2）通过监听公交车图层的 feature 添加完成事件(addFeaturesCompelte)，
+                以实时调用 clearFeatures 方法实现公交车的动态监控。 
+                </p>
+<pre>
+function addFeaturesCompelte(args) {
+    if(redraw) {
+        timerid = setTimeout(monitor, 50);
+    }
+}
+</pre>
+                <p>（3） 通过 onclick 事件停止监控。 
+                </p>
+<pre>
+//停止监控
+function stopMonitor() {
+    window.clearTimeout(timerid);
+    document.getElementById("monitor").onclick = monitor;
+    redraw = false;
+}
+</pre>
+                <h2>三、专题小结</h2>
+                <p>以上车辆监控实例通过高性能矢量渲染 Vector 类实现了对大量车辆的在线查询和
+                实时更新功能，满足了用户需求的同时，也带给用户平滑、流畅的视觉效果。
+                </p>
+                <p>通过实例也验证了高性能矢量绘制图层 Vector 类在大量数据显示、
+                实时更新等功能上的优异性能和流畅稳定的呈现，
+                为用户提供了客户端大量动态数据展示的解决方案。
+                </p>
+            </div>
+            <div class='footer'>
+                <p>版权所有&nbsp;&copy; 2000-2016 &nbsp;JWL</p>
+            </div>
+        </div>
+        <script src='./js/jquery.js'></script>
+        <script src='./js/bootstrap.js'></script>
+        <script src="./js/navbar.js"></script>
+        <script src="./js/GoTop.js" id="js_gotop"></script>
+    </body>
+</html>
