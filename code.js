@@ -40,7 +40,12 @@ const authorizeCode = [
         'endTime': '2025-03-04 24:00:00',
         'name': 'wx-wh-bre',
     }
-    
+    ,
+    {
+        'id': '18325ac13785896b54f2fa5443b929ca',
+        'endTime': '2025-03-12 24:00:00',
+        'name': 'wx',
+    }
 ]
 
 
