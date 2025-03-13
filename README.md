@@ -43,6 +43,13 @@
 <img src="https://jiawanlong.github.io/demo.jpg">
 <img src="https://jiawanlong.github.io/demo1.jpg">
 
+
+## 联系我:
+
+### 微 信：trampjwl
+
+### qq群：585667336
+
 ## 打赏
 <img src="https://jiawanlong.github.io/ds.jpg">
 
