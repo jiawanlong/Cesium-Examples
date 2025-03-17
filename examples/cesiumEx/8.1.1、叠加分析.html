@@ -1,0 +1,94 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // Cesium地形
+        viewer.terrainProvider = Cesium.createWorldTerrain({
+            requestWaterMask: true, // 请求水体效果所需要的海岸线数据
+            requestVertexNormals: true// 请求地形照明数据
+        });
+        // 深度监测
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        let arr1 = [
+            [117.182288, 31.854164],
+            [117.210254, 31.878324],
+            [117.238229, 31.855796],
+            [117.242307, 31.826109],
+            [117.177277, 31.821475],
+            [117.182288, 31.854164]
+        ]
+
+        let arr2 = [
+            [117.267046, 31.842971],
+            [117.20963, 31.840323],
+            [117.230646, 31.787122],
+            [117.28833, 31.799624],
+            [117.267046, 31.842971]
+        ]
+
+        let redPolygon = viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray(arr1.flat()),
+                material: Cesium.Color.RED.withAlpha(0.5),
+            }
+        });
+
+        let redPolygon2 = viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray(arr2.flat()),
+                material: Cesium.Color.GREEN.withAlpha(0.5),
+            }
+        });
+
+        var poly1 = turf.polygon([arr1]);
+        var poly2 = turf.polygon([arr2]);
+
+        var intersection = turf.intersect(poly1, poly2);
+
+        var promise = Cesium.GeoJsonDataSource.load(intersection, {
+            clampToGround: true,
+            fill: Cesium.Color.BLUE
+        });
+        promise.then(function (dataSource) {
+            viewer.dataSources.add(dataSource);
+        });
+
+        var area = turf.area(intersection);
+
+
+        var hello = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(117.225959, 31.835235),
+            label: {
+                color: Cesium.Color.WHITE,
+                font: '18px',
+                outlineColor: Cesium.Color.WHITE,
+                text: '相交部分\n'+area+'M²',
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
+                outlineWidth: 2,
+            }
+        });
+
+        viewer.flyTo(promise);
+    </script>
+</body>
+
+</html>

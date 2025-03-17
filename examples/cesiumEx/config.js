@@ -1033,37 +1033,49 @@ var exampleConfig = {
         name: "8、可视化",
         name_en: "8、可视化",
         content: {
-            "map11cddd3233231": {
-                name: "8.1、可视化1",
-                name_en: "8.1、可视化1",
+            "map11cddd3111233231": {
+                name: "8.1、GIS客户端",
+                name_en: "8.1、GIS客户端",
                 content: [
                     {
-                        name: "8.1.1、kriging",
-                        name_en: "8.1.1、kriging",
+                        name: "8.1.1、叠加分析",
+                        name_en: "8.1.1、叠加分析",
+                        thumbnail: "8.1.1、叠加分析.jpg",
+                        fileName: "8.1.1、叠加分析"
+                    },
+                ]
+            },
+            "map11cddd3233231": {
+                name: "8.2、可视化1",
+                name_en: "8.2、可视化1",
+                content: [
+                    {
+                        name: "8.2.1、kriging",
+                        name_en: "8.2.1、kriging",
                         thumbnail: "8.1.1、kriging.jpg",
                         fileName: "8.1.1、kriging"
                     },
                     {
-                        name: "8.1.2、海流",
-                        name_en: "8.1.2、海流",
+                        name: "8.2.2、海流",
+                        name_en: "8.2.2、海流",
                         thumbnail: "8.1.2、海流.jpg",
                         fileName: "8.1.2、海流"
                     },
                     {
-                        name: "8.1.3、3d热力图",
-                        name_en: "8.1.3、3d热力图",
+                        name: "8.2.3、3d热力图",
+                        name_en: "8.2.3、3d热力图",
                         thumbnail: "8.1.3、3d热力图.jpg",
                         fileName: "8.1.3、3d热力图"
                     },
                     {
-                        name: "8.1.4、风场",
-                        name_en: "8.1.4、风场",
+                        name: "8.2.4、风场",
+                        name_en: "8.2.4、风场",
                         thumbnail: "8.1.4、风场.jpg",
                         fileName: "8.1.4、风场"
                     },
                     {
-                        name: "8.1.5、等值面",
-                        name_en: "8.1.5、等值面",
+                        name: "8.2.5、等值面",
+                        name_en: "8.2.5、等值面",
                         thumbnail: "8.1.5、等值面.jpg",
                         fileName: "8.1.5、等值面"
                     },
