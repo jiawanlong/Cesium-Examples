@@ -1,4 +1,4 @@
-
+// 授权用户（不弹窗）
 const authorizeCode = [
     {
         'id': '1fec3a280e9dcede32dec235bf29945e',
