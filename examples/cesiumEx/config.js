@@ -1043,11 +1043,23 @@ var exampleConfig = {
                         thumbnail: "8.1.1、叠加分析.jpg",
                         fileName: "8.1.1、叠加分析"
                     },
+                    {
+                        name: "8.1.2、泰森多边形",
+                        name_en: "8.1.2、泰森多边形",
+                        thumbnail: "8.1.2、泰森多边形.jpg",
+                        fileName: "8.1.2、泰森多边形"
+                    },
+                    {
+                        name: "8.1.3、等值面",
+                        name_en: "8.1.3、等值面",
+                        thumbnail: "8.1.5、等值面.jpg",
+                        fileName: "8.1.5、等值面"
+                    },
                 ]
             },
             "map11cddd3233231": {
-                name: "8.2、可视化1",
-                name_en: "8.2、可视化1",
+                name: "8.2、可视化",
+                name_en: "8.2、可视化",
                 content: [
                     {
                         name: "8.2.1、kriging",
