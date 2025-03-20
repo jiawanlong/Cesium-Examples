@@ -89,12 +89,18 @@ function loadExampleHtml() {
     if (!locationParam) {
         return;
     }
-    var href = window.location.toString();
-    var mapUrl = href.substr(0, href.lastIndexOf('/') + 1);
-    mapUrl = mapUrl + locationParam + ".html";
-    if (!mapUrl) {
-        return;
+    var mapUrl;
+    if (locationParam.indexOf('http') > -1) {
+        mapUrl = locationParam
+    }else{
+        var href = window.location.toString();
+         mapUrl = href.substr(0, href.lastIndexOf('/') + 1);
+        mapUrl = mapUrl + locationParam + ".html";
+        if (!mapUrl) {
+            return;
+        }
     }
+    // console.log(mapUrl);
     var isError = false;
     var response = $.ajax({
         url: mapUrl,
