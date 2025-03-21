@@ -548,6 +548,7 @@ var exampleConfig = {
                         thumbnail: "2.4.6、点击获取子节点.jpg",
                         fileName: "2.4.6、点击获取子节点"
                     },
+            
                 ]
             },
         }
@@ -595,6 +596,12 @@ var exampleConfig = {
                         name_en: "3.1.6、点击获取属性",
                         thumbnail: "3.1.6、点击获取属性.jpg",
                         fileName: "3.1.6、点击获取属性"
+                    },
+                    {
+                        name: "3.1.7、模型压平",
+                        name_en: "3.1.7、模型压平",
+                        thumbnail: "3.1.7、模型压平.jpg",
+                        fileName: "3.1.7、模型压平"
                     },
                 ]
             },

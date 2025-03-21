@@ -1,0 +1,71 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./flat.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "http://mapgl.com/data/model/qx-simiao/tileset.json",
+            maximumScreenSpaceError: 1,
+        });
+
+        viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: 'http://data.mars3d.cn/terrain'
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+
+                var cartographic = Cesium.Cartographic.fromCartesian(tileset.boundingSphere.center);
+                var surface = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+                var offset = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 80);
+                var translation = Cesium.Cartesian3.subtract(offset, surface, new Cesium.Cartesian3());
+                tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation.clone());
+
+                let arr = [
+                    new Cesium.Cartesian3( -2580727.5168023095,  4650258.972413558, 3508953.4819122115 ),
+                    new Cesium.Cartesian3( -2581252.4920162656,  4650087.404390791, 3508794.900735431 ),
+                    new Cesium.Cartesian3( -2581254.813624642,  4649950.479168881, 3508978.370871617 ),
+                    new Cesium.Cartesian3( -2580723.027766725,  4650025.757869746, 3509279.009217198 ),
+                ]
+
+                let flatTool = new Flat(tileset, {
+                    flatHeight: -30
+                })
+                flatTool.addRegion({
+                    positions: arr,
+                    id: new Date().getTime()
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+
+            });
+
+
+
+
+    </script>
+</body>
+
+</html>
