@@ -1,0 +1,11 @@
+Model Information:
+* title:	Building - octagonal - shiny
+* source:	https://sketchfab.com/3d-models/building-octagonal-shiny-85dab84154c24e569e62a8dabfd4c8cb
+* author:	MozillaHubs (https://sketchfab.com/mozillareality)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Building - octagonal - shiny" (https://sketchfab.com/3d-models/building-octagonal-shiny-85dab84154c24e569e62a8dabfd4c8cb) by MozillaHubs (https://sketchfab.com/mozillareality) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
