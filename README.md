@@ -54,7 +54,7 @@
 <img src="https://jiawanlong.github.io/ds.jpg">
 
 
-## 捐赠列表:
+## 打赏列表:
 
 | 捐赠人     | 额度    | 时间       | 
 | ---------- | ------- | -----------| 
@@ -64,3 +64,15 @@
 | 阿强同学   | 5       | 2025.03.22 | 
 | 🎾 🎾 🎾  | 20      | 2025.03.24 | 
 | 雫咲poi    | 20      | 2025.03.24 | 
+
+### 关于打赏
+您的每一笔打赏，我都会原封不动以**您的名义**捐赠到腾讯公益，如果您有更好的渠道，请一定微信联系我。这个世界并不完美，但仍然值得我们去爱。
+
+<img src="donate/list1.jpg">
+
+<img src="donate/159816452120250325AOKK8YV49S.jpg">
+<img src="donate/159816452120250325ANKLN5J0IF.jpg">
+<img src="donate/159297686120250325AEKLZ5D1LP.jpg">
+<img src="donate/159297686120250325AQDLIP4XH7.jpg">
+<img src="donate/159309998120250325AKKL3EZ43J.jpg">
+<img src="donate/160009256720250325AJDLM27Q9B.jpg">
