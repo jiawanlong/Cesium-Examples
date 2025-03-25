@@ -69,4 +69,4 @@
 ### 关于打赏
 您的每一笔打赏，我都会原封不动以**您的名义**捐赠到腾讯公益，如果您有更好的渠道，请一定微信联系我。这个世界并不完美，但仍然值得我们去爱。
 
-<h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/index.html/">捐赠证书详情</a> </h3>
+<h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/index.html">捐赠证书详情</a> </h3>
