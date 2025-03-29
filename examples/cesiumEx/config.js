@@ -86,6 +86,12 @@ var exampleConfig = {
                         thumbnail: "楼栋分层.jpg",
                         fileName: "楼栋分层"
                     },
+                    {
+                        name: "实时在线云图",
+                        name_en: "实时在线云图",
+                        thumbnail: "实时在线云图.jpg",
+                        fileName: "实时在线云图"
+                    },
                     // {
                     //     name: "韩国空难",
                     //     name_en: "韩国空难",
@@ -247,6 +253,13 @@ var exampleConfig = {
                     thumbnail: "1.20、echarts配置.jpg",
                     fileName: "1.20、echarts配置"
                 },
+                {
+                    name: "1.22、根据点获取高度",
+                    name_en: "1.22、根据点获取高度",
+                    thumbnail: "1.22、根据点获取高度.jpg",
+                    fileName: "1.22、根据点获取高度"
+                },
+                
                     // {
                     //     name: "相机",
                     //     name_en: "相机",
@@ -720,6 +733,18 @@ var exampleConfig = {
                         name_en: "4.1.11、单体化",
                         thumbnail: "4.1.11、单体化.jpg",
                         fileName: "4.1.11、单体化"
+                    },
+                    {
+                        name: "4.1.12、坡度分析",
+                        name_en: "4.1.12、坡度分析",
+                        thumbnail: "4.1.12、坡度分析.jpg",
+                        fileName: "4.1.12、坡度分析"
+                    },
+                    {
+                        name: "4.1.13、坡向分析",
+                        name_en: "4.1.13、坡向分析",
+                        thumbnail: "4.1.13、坡向分析.jpg",
+                        fileName: "4.1.13、坡向分析"
                     },
                 ]
             },
