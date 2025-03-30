@@ -60,8 +60,9 @@ window.themeConfig = [
     "iconColor": "var(--alpha100)",
     "activeColor": "rgba(224,76,64,1)",
     "backgroundColor": "#1F1F1F",
-    "headerBackgroundColor": "#333333",
-    "sidebarBackgroundColor": "#333333",
+    // #333333
+    "headerBackgroundColor": "#17283e",
+    "sidebarBackgroundColor": "#17283e",
     "wrapperBackgroundColor": "#F5F6F6",
     "shadowColor": "rgba(0, 0, 0, 0.04)",
     "borderColor": "var(--alpha08)",

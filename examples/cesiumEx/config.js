@@ -9,9 +9,9 @@ var exampleConfig = {
         name: "0、综合应用",
         name_en: "0、综合应用",
         content: {
-            "maxssp": {
+            "max2ssp": {
                 name: "综合应用",
-                name_en: "ba22222se",
+                name_en: "ba222212se",
                 content: [
                     {
                         name: "",
@@ -124,9 +124,9 @@ var exampleConfig = {
         name: "1、基础",
         name_en: "base",
         content: {
-            "maxssp": {
+            "ma54xssp": {
                 name: "1.1、基础",
-                name_en: "base",
+                name_en: "ba66se",
                 content: [{
                     name: "1.1、默认设置",
                     name_en: "1.1、默认设置",
@@ -266,9 +266,9 @@ var exampleConfig = {
     },
     "iPortal": {
         name: "2、图层",
-        name_en: "layer",
+        name_en: "la32yer",
         content: {
-            "maxaxsap1": {
+            "maxa2122xsap1": {
                 name: "2.1、影像",
                 name_en: "2.1、影像",
                 content: [
@@ -375,7 +375,7 @@ var exampleConfig = {
                     },
                 ]
             },
-            "masassp2": {
+            "masas56sp2": {
                 name: "2.2、地形",
                 name_en: "2.2、地形",
                 content: [
@@ -399,7 +399,7 @@ var exampleConfig = {
                     },
                 ]
             },
-            "mapfdfsa3": {
+            "mapfdf999sa3": {
                 name: "2.3、矢量",
                 name_en: "2.3、矢量",
                 content: [
@@ -537,7 +537,7 @@ var exampleConfig = {
                     },
                 ]
             },
-            "mapfdff4": {
+            "mapfd004ff4": {
                 name: "2.4、模型",
                 name_en: "2.4、模型",
                 content: [
@@ -597,7 +597,7 @@ var exampleConfig = {
         name: "3、3Dtiles",
         name_en: "3、3Dtiles",
         content: {
-            "mavfdp5": {
+            "mavf48dp5": {
                 name: "3.1、3Dtiles",
                 name_en: "3.1、3Dtiles",
                 content: [
@@ -651,7 +651,7 @@ var exampleConfig = {
         name: "4、空间分析",
         name_en: "4、空间分析",
         content: {
-            "map8787775": {
+            "ma7899p8787775": {
                 name: "4.1、空间分析",
                 name_en: "4.1、空间分析",
                 content: [
@@ -723,7 +723,7 @@ var exampleConfig = {
                     },
                 ]
             },
-            "ma878p6": {
+            "ma870o98p6": {
                 name: "4.2、量算",
                 name_en: "4.2、量算",
                 content: [
@@ -736,7 +736,7 @@ var exampleConfig = {
 
                 ]
             },
-            "map77899": {
+            "map7447899": {
                 name: "4.3、视频融合",
                 name_en: "4.3、视频融合",
                 content: [
