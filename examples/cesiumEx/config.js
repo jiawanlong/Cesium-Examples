@@ -1025,6 +1025,12 @@ var exampleConfig = {
                         thumbnail: "7.1.5、流动线.jpg",
                         fileName: "7.1.5、流动线"
                     },
+                    {
+                        name: "7.1.7、点光源",
+                        name_en: "7.1.7、点光源",
+                        thumbnail: "7.1.7、点光源.jpg",
+                        fileName: "7.1.7、点光源"
+                    },
                 ]
             },
             "map1322345514333231": {
@@ -1069,7 +1075,12 @@ var exampleConfig = {
                         thumbnail: "8.1.5、等值面.jpg",
                         fileName: "8.1.5、等值面"
                     },
-
+                    {
+                        name: "8.1.6、六边形网格",
+                        name_en: "8.1.6、六边形网格",
+                        thumbnail: "8.1.6、六边形网格.jpg",
+                        fileName: "8.1.6、六边形网格"
+                    },
                 ]
             },
             "map11cddd3233231": {

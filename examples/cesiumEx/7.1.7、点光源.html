@@ -1,0 +1,266 @@
+<!--********************************************************************
+* by dagedezhiyin
+https://blog.csdn.net/dagedezhiyin/article/details/146601505
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css"
+        rel="stylesheet" />
+    <script src="./cesium.map.min.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+
+        function init() { }
+
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+
+        let viewer = new Cesium.Viewer("map", {});
+        viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+
+        // // 添加底图
+        // var options = {
+        //     style: "elec",
+        //     crs: "WGS84",
+        // };
+        // viewer.imageryLayers.add(
+        //     new Cesium.ImageryLayer(new Cesium.AMapImageryProvider(options))
+        // );
+        // setViewerTheme(viewer);
+
+        var options = {
+            crs: "WGS84", // 使用84坐标系，默认为：GCJ02
+            style: 4,
+        };
+        viewer.imageryLayers.add(
+            new Cesium.ImageryLayer(new Cesium.TencentImageryProvider(options))
+        );
+
+        // 添加白膜
+        initTiles();
+
+        async function initTiles() {
+            // 加载 3D Tiles
+            const palaceTileset = await Cesium.Cesium3DTileset.fromUrl(
+                "http://localhost:81/hefei/tileset.json"
+            );
+
+            // 添加到场景
+            viewer.scene.primitives.add(palaceTileset);
+
+            const lightPositionRed = Cesium.Cartesian3.fromDegrees(
+                117.23585,
+                31.83864,
+                100
+            );
+
+            const lightPositionGreen = Cesium.Cartesian3.fromDegrees(
+                117.21589,
+                31.840009,
+                100
+            );
+
+            const lightPositionBlue = Cesium.Cartesian3.fromDegrees(
+                117.213929,
+                31.8500233,
+                100
+            );
+
+            const lightColorRed = new Cesium.Cartesian3(3.0, 0.0, 0.0);
+            const lightColorGreen = new Cesium.Cartesian3(0.0, 3.0, 0.0);
+            const lightColorBlue = new Cesium.Cartesian3(1.0, 3.0, 3.0);
+
+            const lightRadius = 700.0;
+
+            palaceTileset.customShader = new Cesium.CustomShader({
+                mode: Cesium.CustomShaderMode.REPLACE_MATERIAL,
+                lightingModel: Cesium.LightingModel.UNLIT,
+                uniforms: {
+                    u_lightPositionRed: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightPositionRed,
+                    },
+                    u_lightPositionGreen: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightPositionGreen,
+                    },
+                    u_lightPositionBlue: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightPositionBlue,
+                    },
+
+                    u_lightColorRed: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightColorRed,
+                    },
+                    u_lightColorGreen: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightColorGreen,
+                    },
+                    u_lightColorBlue: {
+                        type: Cesium.UniformType.VEC3,
+                        value: lightColorBlue,
+                    },
+
+                    u_lightRadius: {
+                        type: Cesium.UniformType.FLOAT,
+                        value: lightRadius,
+                    },
+                },
+                fragmentShaderText: `
+                    void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {                 
+                        vec3 positionWC = (czm_model * vec4(fsInput.attributes.positionMC, 1.0)).xyz;
+                        vec3 normalEC = normalize(fsInput.attributes.normalEC);
+                        vec3 totalLight = vec3(0.0);
+                        // 计算红色光源
+                        vec3 lightDirRed = u_lightPositionRed - positionWC;
+                        float distanceRed = length(lightDirRed);
+                        vec3 lightDirectionRed = normalize(lightDirRed);
+                        float diffuseFactorRed = max(dot(normalEC, lightDirectionRed), 0.9);
+                        vec3 diffuseRed = diffuseFactorRed * u_lightColorRed;
+                        float distanceFactorRed = clamp(distanceRed / u_lightRadius, 0.2, 1.0);
+                        // 修改为你提供的颜色
+                        vec3 customRedColor = vec3(0.0, 0.1, 0.3); // 自定义颜色：#3C96FA (RGB)
+                        // 如果在光源范围外，设置渐变颜色
+                        vec3 mixedColorRed = mix(customRedColor, diffuseRed, 1.0 - distanceFactorRed); // 从蓝色到红色的渐变
+                        totalLight += mixedColorRed;
+                        // 计算绿色光源
+                        vec3 lightDirGreen = u_lightPositionGreen - positionWC;
+                        float distanceGreen = length(lightDirGreen);
+                        vec3 lightDirectionGreen = normalize(lightDirGreen);
+                        float diffuseFactorGreen = max(dot(normalEC, lightDirectionGreen), 0.9);
+                        vec3 diffuseGreen = diffuseFactorGreen * u_lightColorGreen;
+                        float distanceFactorGreen = clamp(distanceGreen / u_lightRadius, 0.2, 1.0);
+                        // 修改为你提供的颜色
+                        vec3 customGreenColor = vec3(0,0.1,0.3); // 自定义颜色：#3C96FA (RGB)
+                        // 如果在光源范围外，设置渐变颜色
+                        vec3 mixedColorGreen = mix(customGreenColor, diffuseGreen, 1.0 - distanceFactorGreen); // 从蓝色到红色的渐变
+                        totalLight += mixedColorGreen;
+                        // 计算蓝色光源
+                        vec3 lightDirBlue = u_lightPositionBlue - positionWC;
+                        float distanceBlue = length(lightDirBlue);
+                        vec3 lightDirectionBlue = normalize(lightDirBlue);
+                        float diffuseFactorBlue = max(dot(normalEC, lightDirectionBlue), 0.9);
+                        vec3 diffuseBlue = diffuseFactorBlue * u_lightColorBlue;
+                        float distanceFactorBlue = clamp(distanceBlue / u_lightRadius, 0.2, 1.0);
+                        // 修改为你提供的颜色
+                        vec3 customBlueColor = vec3(0,0.1,0.3); // 自定义颜色：#3C96FA (RGB)
+                        // 如果在光源范围外，设置渐变颜色
+                        vec3 mixedColorBlue = mix(customBlueColor, diffuseBlue, 1.0 - distanceFactorBlue); // 从蓝色到红色的渐变
+                        totalLight += mixedColorBlue;
+                        material.diffuse = totalLight;
+                        // 计算光环效果（保持原样）
+                        float _baseHeight = -10.0;
+                        float _heightRange = 100.0;
+                        float _glowRange = 300.0;
+                        float vtxf_height = fsInput.attributes.positionMC.z - _baseHeight;
+                        float vtxf_a11 = fract(czm_frameNumber / 100.0) * 3.14159265 * 2.0;
+                        float vtxf_a12 = vtxf_height / _heightRange + sin(vtxf_a11) * 0.1;
+                        material.diffuse *= vec3(vtxf_a12, vtxf_a12, vtxf_a12);
+                        
+                        float vtxf_a13 = fract(czm_frameNumber / 360.0);
+                        float vtxf_h = clamp(vtxf_height / _glowRange, 0.0, 1.0);
+                        vtxf_a13 = abs(vtxf_a13 - 0.5) * 2.0;
+                        float vtxf_diff = step(0.005, abs(vtxf_h - vtxf_a13));
+                        material.diffuse += material.diffuse * (1.0 - vtxf_diff);
+                    }
+                `,
+            });
+
+            viewer.zoomTo(palaceTileset);
+
+
+            // setTimeout(() => {
+            //     updateLightPosition(palaceTileset, 121.25, 31.4, "red");
+            // }, 5000);
+
+
+
+        }
+
+        // 动态更新光源位置
+        function updateLightPosition(tileset, newLongitude, newLatitude, lightIndex) {
+            const newLightPosition = Cesium.Cartesian3.fromDegrees(
+                newLongitude,
+                newLatitude,
+                100
+            );
+
+            // 根据 lightIndex 更新不同的光源位置
+            if (lightIndex === "red") {
+                tileset.customShader.uniforms.u_lightPositionRed.value =
+                    newLightPosition;
+            } else if (lightIndex === "green") {
+                tileset.customShader.uniforms.u_lightPositionGreen.value =
+                    newLightPosition;
+            } else if (lightIndex === "blue") {
+                tileset.customShader.uniforms.u_lightPositionBlue.value =
+                    newLightPosition;
+            }
+        }
+
+        function setViewerTheme(viewer, options = {}) {
+            const baseLayer = viewer.imageryLayers.get(0);
+            if (!baseLayer) return;
+
+            baseLayer.brightness = options.brightness ?? 0.6;
+
+            baseLayer.contrast = options.contrast ?? 1.8;
+
+            baseLayer.gamma = options.gamma ?? 0.3;
+
+            baseLayer.hue = options.hue ?? 1;
+
+            baseLayer.saturation = options.saturation || 0;
+
+            const baseFragShader =
+                viewer.scene.globe._surfaceShaderSet.baseFragmentShaderSource
+                    .sources;
+
+            for (let i = 0; i < baseFragShader.length; i++) {
+                const strS =
+                    "color = czm_saturation(color, textureSaturation);\n#endif\n";
+
+                let strT =
+                    "color = czm_saturation(color, textureSaturation);\n#endif\n";
+
+                if (!options.invertColor) {
+                    strT += `
+                    color.r = 1.0 - color.r;
+                    color.g = 1.0 - color.g;
+                    color.b = 1.0 - color.b;
+                `;
+                }
+
+                strT += `
+                color.r = color.r * ${options.filterRGB_R ?? 100}.0/255.0;
+                color.g = color.g * ${options.filterRGB_G ?? 138}.0/255.0;
+                color.b = color.b * ${options.filterRGB_B ?? 230}.0/255.0;
+            `;
+
+                baseFragShader[i] = baseFragShader[i].replace(strS, strT);
+            }
+            viewer.scene.requestRender();
+        }
+
+
+    </script>
+</body>
+
+</html>
