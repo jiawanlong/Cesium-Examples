@@ -1,0 +1,121 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+    <!-- <script src="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css"  rel="stylesheet" /> -->
+    <script src="./turf.min.js"></script>
+
+    <!-- 收费站、道路、高架桥、河流、隧道、车辆、高铁、飞机、高压线 -->
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="cesiumContainer" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        // const viewer = new Cesium.Viewer('cesiumContainer', {});
+        // viewer.scene.debugShowFramesPerSecond = true;
+        // // 清除默认地形
+        // viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+
+        // // 加载火星地形
+        // viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+        //     url: 'http://data.mars3d.cn/terrain'
+        // });
+        // // 深度监测
+        // viewer.scene.globe.depthTestAgainstTerrain = true;
+
+        // 经度:109.965183, 纬度:31.154943, 高程:446.5, 横坐标:37401328.2, 纵坐标:3448614.0 (CGCS2000)
+        // 经度:109.567922, 纬度:31.235356, 高程:182.9, 横坐标:37398678.4, 纵坐标:3457556.3 (CGCS2000)
+
+      
+        // let start = [109.965183, 31.154943, 400];
+        // let end = [109.567922, 31.235356, 400];
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+            terrainProvider: Cesium.createWorldTerrain(),
+        });
+
+        let obj = {"lat":31.152283,"lng":109.966151,"alt":763.3,"heading":341.3,"pitch":-45.2}
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(obj.lng, obj.lat, obj.alt),
+            orientation: {
+                heading: Cesium.Math.toRadians(obj.heading),
+                pitch: Cesium.Math.toRadians(obj.pitch),
+                roll: 0.0
+            }
+        });
+        viewer.scene.globe.depthTestAgainstTerrain = true;
+
+
+        // 定义隧道参数
+        const startPoint = Cesium.Cartesian3.fromDegrees(109.965183, 31.154943); // 起点
+        const endPoint = Cesium.Cartesian3.fromDegrees(109.567922, 31.235356);  // 终点
+        const tunnelWidth = 20.0;  // 隧道宽度（米）
+        const tunnelHeight =446.0; // 隧道高度（米）
+
+        //-----------------------------------------------------------
+        // **关键修正 1：计算隧道路径方向向量**
+        //-----------------------------------------------------------
+        const direction = Cesium.Cartesian3.subtract(endPoint, startPoint, new Cesium.Cartesian3());
+        Cesium.Cartesian3.normalize(direction, direction);
+
+        // 计算垂直于路径的水平方向（左右方向）
+        const rightDirection = Cesium.Cartesian3.cross(
+            direction,
+            Cesium.Cartesian3.UNIT_Z,
+            new Cesium.Cartesian3()
+        );
+        Cesium.Cartesian3.normalize(rightDirection, rightDirection);
+
+        //-----------------------------------------------------------
+        // **关键修正 2：正确设置裁剪平面参数**
+        //-----------------------------------------------------------
+        const clippingPlanes = new Cesium.ClippingPlaneCollection({
+            planes: [
+                // 左侧面（法线向右，偏移量为负宽度/2）
+                new Cesium.ClippingPlane(
+                    rightDirection,
+                    -tunnelWidth / 2 // 平面向右移动宽度的一半
+                ),
+                // 右侧面（法线向左，偏移量为负宽度/2）
+                new Cesium.ClippingPlane(
+                    Cesium.Cartesian3.negate(rightDirection, new Cesium.Cartesian3()),
+                    -tunnelWidth / 2
+                ),
+                // 顶部（法线向下，偏移量为负高度/2）
+                new Cesium.ClippingPlane(
+                    Cesium.Cartesian3.UNIT_Z,
+                    -tunnelHeight / 2
+                ),
+                // 底部（法线向上，偏移量为负高度/2）
+                new Cesium.ClippingPlane(
+                    Cesium.Cartesian3.negate(Cesium.Cartesian3.UNIT_Z, new Cesium.Cartesian3()),
+                    -tunnelHeight / 2
+                )
+            ],
+            // edgeWidth: 1.0,
+            // edgeColor: Cesium.Color.RED
+        });
+
+        //-----------------------------------------------------------
+        // **关键修正 3：确保裁剪平面位置正确**
+        //-----------------------------------------------------------
+        // 将裁剪平面集合平移到隧道路径中心
+        const center = Cesium.Cartesian3.lerp(startPoint, endPoint, 0.5, new Cesium.Cartesian3());
+        clippingPlanes.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+        // 应用裁剪到地形
+        viewer.scene.globe.clippingPlanes = clippingPlanes;
+
+
+    </script>
+</body>
+
+</html>

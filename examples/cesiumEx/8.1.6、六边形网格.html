@@ -1,0 +1,130 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map3" style="margin: 0 auto; width: 100%; height: 100%;float: left;"></div>
+
+    <script type="text/javascript">
+        // 三维
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map3', {});
+
+        // 全局事件监听
+        var handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
+
+        // 移入三维
+        handler.setInputAction(function (event) {
+            open3d()
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+        // 关闭之前所有事件
+        function closeO() {
+            try {
+                handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP)
+                handler.removeInputAction(Cesium.ScreenSpaceEventType.WHEEL)
+            } catch (error) { }
+        }
+
+        // 进入3d，监听3d事件
+        function open3d() {
+            closeO()
+            handler.setInputAction(function (event) {
+                liandong3D2D()
+            }, Cesium.ScreenSpaceEventType.WHEEL)
+            handler.setInputAction(function (event) {
+                liandong3D2D()
+            }, Cesium.ScreenSpaceEventType.LEFT_UP)
+        }
+        // 3d联动2d
+        function liandong3D2D() {
+            var rectangle = viewer.camera.computeViewRectangle()
+            var west = (rectangle.west / Math.PI) * 180
+            var north = (rectangle.north / Math.PI) * 180
+            var east = (rectangle.east / Math.PI) * 180
+            var south = (rectangle.south / Math.PI) * 180
+
+
+            function calculateCellSide(bbox, N, units = 'kilometers') {
+                const bboxPolygon = turf.bboxPolygon(bbox);
+                const areaMeters = turf.area(bboxPolygon);
+
+                let area;
+                switch (units) {
+                    case 'kilometers': area = areaMeters / 1e6; break;
+                    case 'miles': area = areaMeters / 2589988.1103; break;
+                    default: area = areaMeters;
+                }
+
+                const hexArea = area / N;
+                return Math.sqrt((2 * hexArea) / (3 * Math.sqrt(3)));
+            }
+
+            var bbox = [west , north , east , south ];
+
+            const desiredCount = 100; // 目标生成100个六边形
+            const units = 'kilometers';
+
+            const cellSide = calculateCellSide(bbox, desiredCount, units);
+
+            const hexGrid = turf.hexGrid(bbox, cellSide, { units });
+
+            viewer.scene.primitives.removeAll();
+            const geometryInstances = [];
+
+            hexGrid.features.forEach((hex) => {
+                let boundary = hex.geometry.coordinates
+                const positions = boundary.map(([lat, lon]) =>
+                    Cesium.Cartesian3.fromDegrees(lon, lat)
+                );
+                const height = 1;
+                const polygon = new Cesium.PolygonOutlineGeometry({
+                    polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(boundary.flat().flat())),
+                    extrudedHeight: height,
+                    height: 0,
+                });
+
+                const instance = new Cesium.GeometryInstance({
+                    geometry: polygon,
+                    attributes: {
+                        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+                            Cesium.Color.fromBytes(220, 20, 60, 200)
+                        ),
+                    },
+                });
+                geometryInstances.push(instance);
+            });
+
+            const primitive = new Cesium.Primitive({
+                geometryInstances: geometryInstances,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat: true,
+                    translucent: true,
+                    renderState: {
+                        // 禁用抗锯齿
+                        lineSmooth: false,
+                        // 直接设置线条宽度
+                        lineWidth: 10,
+                    },
+                }),
+            });
+
+            viewer.scene.primitives.add(primitive);
+
+
+
+        }
+
+    </script>
+</body>
+
+</html>

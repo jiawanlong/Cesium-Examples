@@ -1,0 +1,95 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M'
+        const viewer = new Cesium.Viewer('map', {});
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: 'http://data.mars3d.cn/terrain'
+        });
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(112.245269, 39.066518, 2913),
+            orientation: {
+                heading: Cesium.Math.toRadians(226),
+                pitch: Cesium.Math.toRadians(-21),
+                roll: 0.0
+            }
+        });
+
+        const positions = [
+            { lng: 112.227630577, lat: 39.0613382363999, alt: 1815 },
+            { lng: 112.229302206, lat: 39.0579481036999, alt: 1827 },
+            { lng: 112.226596341, lat: 39.0584773033999, alt: 1849 },
+            { lng: 112.22511174, lat: 39.0574840383999, alt: 1866 },
+            { lng: 112.225476722, lat: 39.0550566812, alt: 1866 },
+            { lng: 112.225643865, lat: 39.0532631538, alt: 1899 },
+            { lng: 112.229228645, lat: 39.0525930380999, alt: 1880 },
+            { lng: 112.224976033, lat: 39.0502488098, alt: 1926 },
+            { lng: 112.225661372999, lat: 39.0484097539999, alt: 1948 },
+            { lng: 112.229409737, lat: 39.0474211486, alt: 1910 },
+            { lng: 112.224894212, lat: 39.0464248147999, alt: 1983 },
+            { lng: 112.224022809, lat: 39.0436919592999, alt: 2036 },
+            { lng: 112.224492463, lat: 39.0413040158, alt: 2036 },
+            { lng: 112.223470676999, lat: 39.0381470684, alt: 2038 },
+            { lng: 112.220336836, lat: 39.039450506, alt: 2071 },
+            { lng: 112.221019662, lat: 39.0367113260999, alt: 2063 },
+            { lng: 112.221282611, lat: 39.045567662, alt: 2026 },
+            { lng: 112.221147308, lat: 39.0439265946, alt: 2048 },
+            { lng: 112.2216533, lat: 39.041840792, alt: 2056 },
+            { lng: 112.222813848, lat: 39.0343489941, alt: 2075 },
+            { lng: 112.225573092, lat: 39.0307660108, alt: 2015 },
+            { lng: 112.220069655, lat: 39.0323883292, alt: 2022 },
+            { lng: 112.217448043999, lat: 39.0310627231, alt: 2021 },
+            { lng: 112.230322327, lat: 39.0281575923999, alt: 1965 }
+        ]
+
+        positions.forEach(function (item, index) {
+            var position = Cesium.Cartesian3.fromDegrees(item.lng, item.lat, item.alt);
+            var heading = Cesium.Math.toRadians(135);
+            var pitch = Cesium.Math.toRadians(0);
+            var roll = Cesium.Math.toRadians(0);
+
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                position,
+                hpr
+            );
+
+            var entity = viewer.entities.add({
+                position: position,
+                orientation: orientation,
+                model: {
+                    uri: 'https://data.mars3d.cn/gltf/mars/fengche.gltf',
+                    scale: 40,
+                }
+            });
+
+            entity.model.runAnimations = 1
+        })
+
+        viewer.clock.shouldAnimate = true;
+
+        viewer.flyTo(entity)
+
+    </script>
+</body>
+
+</html>

@@ -16,7 +16,7 @@ var exampleConfig = {
                         name: "优雅永不过时",
                         name_en: "优雅永不过时",
                         thumbnail: "1、优雅永不过时.jpg",
-                        fileName: "1、优雅永不过时"
+                        fileName: "https://z2586300277.github.io/three-cesium-examples/"
                     },
                     {
                         name: "0、360",

@@ -11,7 +11,7 @@ var exampleConfig = {
         content: {
             "maxssp": {
                 name: "综合应用",
-                name_en: "base",
+                name_en: "ba22222se",
                 content: [
                     {
                         name: "",
@@ -92,6 +92,30 @@ var exampleConfig = {
                     //     thumbnail: "韩国空难.jpg",
                     //     fileName: "韩国空难"
                     // },
+                ]
+            },
+            "maxs111sp": {
+                name: "常用工具",
+                name_en: "常用工具",
+                content: [
+                    {
+                        name: "Goejson",
+                        name_en: "Goejson",
+                        thumbnail: "Goejson.jpg",
+                        fileName: "https://geojson.io/"
+                    },
+                    {
+                        name: "mapshaper",
+                        name_en: "mapshaper",
+                        thumbnail: "mapshaper.jpg",
+                        fileName: "https://mapshaper.org/"
+                    },
+                    {
+                        name: "sketchfab",
+                        name_en: "sketchfab",
+                        thumbnail: "sketchfab.jpg",
+                        fileName: " https://sketchfab.com/feed"
+                    },
                 ]
             },
         }
@@ -553,7 +577,18 @@ var exampleConfig = {
                         thumbnail: "2.4.6、点击获取子节点.jpg",
                         fileName: "2.4.6、点击获取子节点"
                     },
-            
+                    {
+                        name: "2.4.7、人工模型",
+                        name_en: "2.4.7、人工模型",
+                        thumbnail: "2.4.7、人工模型.jpg",
+                        fileName: "2.4.7、人工模型"
+                    },
+                    {
+                        name: "2.4.8、风力发电机",
+                        name_en: "2.4.8、风力发电机",
+                        thumbnail: "2.4.8、风力发电机.jpg",
+                        fileName: "2.4.8、风力发电机"
+                    },
                 ]
             },
         }
