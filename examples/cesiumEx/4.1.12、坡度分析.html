@@ -1,0 +1,217 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css" />
+  <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="./turf.min.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+    ">
+  <div id="map" style="margin: 0 auto; width: 100%; height: 100vh"></div>
+
+  <script type="text/javascript">
+    Cesium.Ion.defaultAccessToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+    const viewer = new Cesium.Viewer("map", {});
+    viewer.scene.debugShowFramesPerSecond = true;
+    viewer.scene.globe.depthTestAgainstTerrain = true;
+
+    viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+      url: 'http://data.mars3d.cn/terrain'
+    });
+
+
+    var polygonPos;
+    var slopes;
+    const delta = 0.002;
+    var width;
+    var height;
+    function addSlopeCanvas(extent) {
+      polygonPos = turf.getCoord(extent);
+      const rectangle = Cesium.Rectangle.fromDegrees(...polygonPos);
+      const positions = [];
+      width = Math.ceil((polygonPos[2] - polygonPos[0]) / delta);
+      height = Math.ceil((polygonPos[3] - polygonPos[1]) / delta);
+      radio = width / height;
+      const ddx =
+        Cesium.Cartesian3.distance(
+          Cesium.Cartesian3.fromDegrees(polygonPos[0], polygonPos[1]),
+          Cesium.Cartesian3.fromDegrees(polygonPos[2], polygonPos[1])
+        ) / width;
+      const ddy =
+        Cesium.Cartesian3.distance(
+          Cesium.Cartesian3.fromDegrees(polygonPos[0], polygonPos[1]),
+          Cesium.Cartesian3.fromDegrees(polygonPos[0], polygonPos[3])
+        ) / height;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const longitude = Cesium.Math.toDegrees(
+            Cesium.Math.lerp(rectangle.west, rectangle.east, x / (width - 1))
+          );
+          const latitude = Cesium.Math.toDegrees(
+            Cesium.Math.lerp(rectangle.north, rectangle.south, y / (height - 1))
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(longitude - delta / 2, latitude)
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(
+              longitude - delta / 2,
+              latitude - delta / 2
+            )
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(longitude, latitude + delta / 2)
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(
+              longitude - delta / 2,
+              latitude + delta / 2
+            )
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(longitude + delta / 2, latitude)
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(
+              longitude + delta / 2,
+              latitude + delta / 2
+            )
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(longitude, latitude - delta / 2)
+          );
+          positions.push(
+            Cesium.Cartographic.fromDegrees(
+              longitude + delta / 2,
+              latitude - delta / 2
+            )
+          );
+          positions.push(Cesium.Cartographic.fromDegrees(longitude, latitude)); // mid
+        }
+      }
+      slopes = [];
+      Cesium.sampleTerrainMostDetailed(viewer.terrainProvider, positions).then(
+        (updatedPositions) => {
+          for (let i = 0; i < updatedPositions.length; i += 9) {
+            let center = updatedPositions[i + 8];
+            const westHeight = updatedPositions[i + 0].height;
+            let maxHeight = westHeight;
+            let maxIndex = i + 0;
+            const westSouthHeight = updatedPositions[i + 1].height;
+            if (westSouthHeight > maxHeight) {
+              maxHeight = westSouthHeight;
+              maxIndex = i + 1;
+            }
+            const northHeight = updatedPositions[i + 2].height;
+            if (northHeight > maxHeight) {
+              maxHeight = northHeight;
+              maxIndex = i + 2;
+            }
+            const westNorthHeight = updatedPositions[i + 3].height;
+            if (westNorthHeight > maxHeight) {
+              maxHeight = northHeight;
+              maxIndex = i + 3;
+            }
+            const eastHeight = updatedPositions[i + 4].height;
+            if (eastHeight > maxHeight) {
+              maxHeight = eastHeight;
+              maxIndex = i + 4;
+            }
+            const eastNorthHeight = updatedPositions[i + 5].height;
+            if (eastNorthHeight > maxHeight) {
+              maxHeight = eastNorthHeight;
+              maxIndex = i + 5;
+            }
+            const southHeight = updatedPositions[i + 6].height;
+            if (southHeight > maxHeight) {
+              maxHeight = southHeight;
+              maxIndex = i + 6;
+            }
+            const eastSouthHeight = updatedPositions[i + 7].height;
+            if (eastSouthHeight > maxHeight) {
+              maxHeight = eastSouthHeight;
+              maxIndex = i + 7;
+            }
+            const fx =
+              (westSouthHeight +
+                2 * southHeight +
+                eastSouthHeight -
+                (westNorthHeight + 2 * northHeight + eastNorthHeight)) /
+              (8 * ddx);
+            const fy =
+              (eastNorthHeight +
+                2 * eastHeight +
+                eastSouthHeight -
+                (westNorthHeight + 2 * westHeight + westSouthHeight)) /
+              (8 * ddy);
+            const slope = Math.atan(Math.sqrt(fx ** 2 + fy ** 2));
+            slopes.push(slope);
+          }
+          createMaterial();
+        }
+      );
+    }
+    function createMaterial() {
+      const canvas = toCanvas();
+      const positions = [
+        Cesium.Cartesian3.fromDegrees(polygonPos[0], polygonPos[1]),
+        Cesium.Cartesian3.fromDegrees(polygonPos[0], polygonPos[3]),
+        Cesium.Cartesian3.fromDegrees(polygonPos[2], polygonPos[3]),
+        Cesium.Cartesian3.fromDegrees(polygonPos[2], polygonPos[1]),
+      ];
+      const polygon = viewer.entities.add({
+        polygon: {
+          hierarchy: new Cesium.PolygonHierarchy(positions),
+          material: new Cesium.ImageMaterialProperty({
+            image: canvas,
+          }),
+          classificationType: Cesium.ClassificationType.BOTH,
+        },
+      });
+    }
+    function toCanvas() {
+      const w = width;
+      const h = height;
+      const canvas = document.createElement("canvas");
+      canvas.height = h;
+      canvas.width = w;
+      const ctx = canvas.getContext("2d");
+      const bitmap = new Uint8ClampedArray(w * h * 4); // 各像素点rgba
+      console.log(slopes);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const slope = slopes[y * w + x];
+          const hue = (1 - slope / (Math.PI / 2)) / 2;
+          const color = Cesium.Color.fromHsl(hue, 1, 0.6).withAlpha(0.7);
+          const bitmapIndex = (y * w + x) * 4;
+          bitmap[bitmapIndex + 0] = color.red * 255;
+          bitmap[bitmapIndex + 1] = color.green * 255;
+          bitmap[bitmapIndex + 2] = color.blue * 255;
+          bitmap[bitmapIndex + 3] = color.alpha * 255;
+        }
+      }
+      const imageData = new ImageData(bitmap, w, h);
+      ctx.putImageData(imageData, 0, 0);
+      return canvas;
+    }
+
+    addSlopeCanvas([78.64, 33.72, 78.79, 34.02]);
+
+    viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(78.7, 33.85, 30000),
+        });
+
+  </script>
+</body>
+
+</html>
