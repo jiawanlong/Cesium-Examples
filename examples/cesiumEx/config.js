@@ -120,8 +120,20 @@ var exampleConfig = {
                         name: "sketchfab",
                         name_en: "sketchfab",
                         thumbnail: "sketchfab.jpg",
-                        fileName: " https://sketchfab.com/feed"
+                        fileName: "https://sketchfab.com/feed"
                     },
+                    // {
+                    //     name: "obj转gltf",
+                    //     name_en: "obj转gltf",
+                    //     thumbnail: "obj转gltf.jpg",
+                    //     fileName: ""
+                    // },
+                    // {
+                    //     name: "osgb转3dtiles",
+                    //     name_en: "osgb转3dtiles",
+                    //     thumbnail: "osgb转3dtiles.jpg",
+                    //     fileName: ""
+                    // },
                 ]
             },
         }
