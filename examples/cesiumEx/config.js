@@ -122,18 +122,18 @@ var exampleConfig = {
                         thumbnail: "sketchfab.jpg",
                         fileName: "https://sketchfab.com/feed"
                     },
-                    // {
-                    //     name: "obj转gltf",
-                    //     name_en: "obj转gltf",
-                    //     thumbnail: "obj转gltf.jpg",
-                    //     fileName: ""
-                    // },
-                    // {
-                    //     name: "osgb转3dtiles",
-                    //     name_en: "osgb转3dtiles",
-                    //     thumbnail: "osgb转3dtiles.jpg",
-                    //     fileName: ""
-                    // },
+                    {
+                        name: "obj转gltf",
+                        name_en: "obj转gltf",
+                        thumbnail: "obj转gltf.jpg",
+                        fileName: "https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/tools/obj2gltf.zip"
+                    },
+                    {
+                        name: "osgb转3dtiles",
+                        name_en: "osgb转3dtiles",
+                        thumbnail: "osgb转3dtiles.jpg",
+                        fileName: "https://jiawanlong.github.io/cesium-Examples/examples/cesiumEx/tools/osgb23dtiles.zip"
+                    },
                 ]
             },
         }
