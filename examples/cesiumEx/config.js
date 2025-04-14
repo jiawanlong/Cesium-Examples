@@ -132,7 +132,7 @@ var exampleConfig = {
                         name: "osgb转3dtiles",
                         name_en: "osgb转3dtiles",
                         thumbnail: "osgb转3dtiles.jpg",
-                        fileName: "https://jiawanlong.github.io/cesium-Examples/examples/cesiumEx/tools/osgb23dtiles.zip"
+                        fileName: "https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/tools/osgb23dtiles.zip"
                     },
                 ]
             },
