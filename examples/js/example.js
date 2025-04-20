@@ -123,7 +123,7 @@ function createGalleryChart(example) {
 
     var chartDiv = $("<div class='col-xlg-2 col-lg-3 col-md-4 col-sm-6 col-xs-12'></div>");
     var chart = $("<div class='chart'></div>");
-    if (href.indexOf('http') >-1 ) {
+    if (href.indexOf('http') >-1 || href.indexOf('.html') >-1) {
         var link = $("<a class='chart-link' target='_blank' href='"+href+"'></a>");
     } else {
         var link = $("<a class='chart-link' target='_blank' href='" + target + "#" + href + "'></a>");

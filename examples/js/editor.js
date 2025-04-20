@@ -90,7 +90,7 @@ function loadExampleHtml() {
         return;
     }
     var mapUrl;
-    if (locationParam.indexOf('http') > -1) {
+    if (locationParam.indexOf('http') > -1 ) {
         mapUrl = locationParam
     }else{
         var href = window.location.toString();

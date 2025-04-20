@@ -1,0 +1,11 @@
+Model Information:
+* title:	Highway
+* source:	https://sketchfab.com/3d-models/highway-3a23cea9b8f2493f9e1ae93f82881145
+* author:	Genkidonky (https://sketchfab.com/Genkidonky)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Highway" (https://sketchfab.com/3d-models/highway-3a23cea9b8f2493f9e1ae93f82881145) by Genkidonky (https://sketchfab.com/Genkidonky) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

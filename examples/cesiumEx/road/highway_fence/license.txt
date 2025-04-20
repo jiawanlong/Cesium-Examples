@@ -1,0 +1,11 @@
+Model Information:
+* title:	Highway Fence
+* source:	https://sketchfab.com/3d-models/highway-fence-e29f9a95d6024388b60c5d5f4f50cbd6
+* author:	Bryan Christian (https://sketchfab.com/bryanblast99)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Highway Fence" (https://sketchfab.com/3d-models/highway-fence-e29f9a95d6024388b60c5d5f4f50cbd6) by Bryan Christian (https://sketchfab.com/bryanblast99) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

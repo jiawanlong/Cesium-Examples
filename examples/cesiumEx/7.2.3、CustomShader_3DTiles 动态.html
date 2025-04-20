@@ -1,0 +1,82 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css" />
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      width: 100%;
+      height: 100%;
+      position: absolute; top: 0;
+    ">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken =
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3ZjQ5ZGUzNC1jNWYwLTQ1ZTMtYmNjYS05YTY4ZTVmN2I2MDkiLCJpZCI6MTE3MTM4LCJpYXQiOjE2NzY0NDUyODB9.ZaNSBIfc1sGLhQd_xqhiSsc0yr8oS0wt1hAo9gbke6M";
+        const viewer = new Cesium.Viewer("map", {});
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        /*
+            1. 顶点着色器（Vertex Shader）坐标变换、传递数据给片段着色器、动态变形
+            2. 片段着色器（Fragment Shader）计算颜色、应用光照、后处理效果
+        */
+        const customShader = new Cesium.CustomShader({
+            uniforms: {
+                u_height: {
+                    type: Cesium.UniformType.FLOAT,
+                    value: 10.0
+                },
+            },
+            fragmentShaderText: `
+
+                void fragmentMain(FragmentInput fsInput, inout czm_modelMaterial material) {
+                  float height = fsInput.attributes.positionMC.y;
+
+                  vec3 lowColor = vec3(0.0, 0.0, 1.0); // 蓝色
+                  vec3 highColor = vec3(1.0, 0.0, 0.0); // 红色
+                  if(height > u_height){
+                      material.diffuse = lowColor;
+                  }else{
+                    material.diffuse = highColor;
+                  }
+
+                }
+            `,
+        });
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./data/tileset.json",
+            customShader: customShader
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                viewer.zoomTo(tileset)
+                setInterval(() => {
+                    if (customShader.uniforms.u_height.value == 100) {
+                        customShader.uniforms.u_height.value = 10;
+                    }
+                    if (customShader.uniforms.u_height.value < 100) {
+                        customShader.uniforms.u_height.value += 3;
+                    }
+                }, 100)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    </script>
+</body>
+
+</html>

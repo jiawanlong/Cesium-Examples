@@ -13,12 +13,14 @@ var exampleConfig = {
                 name: "综合应用",
                 name_en: "ba222212se",
                 content: [
+                    
                     {
-                        name: "",
-                        name_en: "",
-                        thumbnail: "0.jpg",
-                        fileName: "00"
+                        name: "智慧交通",
+                        name_en: "智慧交通",
+                        thumbnail: "智慧交通.jpg",
+                        fileName: "./真实道路.html"
                     },
+
                     {
                         name: "智慧城市",
                         name_en: "智慧城市",
@@ -105,8 +107,8 @@ var exampleConfig = {
                 name_en: "常用工具",
                 content: [
                     {
-                        name: "Goejson",
-                        name_en: "Goejson",
+                        name: "goejson在线",
+                        name_en: "Ggoejson在线",
                         thumbnail: "Goejson.jpg",
                         fileName: "https://geojson.io/"
                     },
@@ -134,6 +136,24 @@ var exampleConfig = {
                         thumbnail: "osgb转3dtiles.jpg",
                         fileName: "https://jiawanlong.github.io/Cesium-Examples/examples/cesiumEx/tools/osgb23dtiles.zip"
                     },
+                    {
+                        name: "任意坐标系转换",
+                        name_en: "任意坐标系转换",
+                        thumbnail: "1.19、任意坐标转换.jpg",
+                        fileName: "1.19、任意坐标转换"
+                    },
+                    {
+                        name: "wkt和geojson互转",
+                        name_en: "wkt和geojson互转",
+                        thumbnail: "2.1.13、wkt.jpg",
+                        fileName: "2.1.13、wkt"
+                    },
+                    {
+                        name: "shp转geojson",
+                        name_en: "shp转geojson",
+                        thumbnail: "2.1.14、shp.jpg",
+                        fileName: "2.1.14、shp"
+                    },
                 ]
             },
         }
@@ -143,9 +163,16 @@ var exampleConfig = {
         name_en: "base",
         content: {
             "ma54xssp": {
+                
                 name: "1.1、基础",
                 name_en: "ba66se",
-                content: [{
+                content: [
+                    {
+                        name: "",
+                        name_en: "",
+                        thumbnail: "0.jpg",
+                        fileName: "00"
+                    },{
                     name: "1.1、默认设置",
                     name_en: "1.1、默认设置",
                     thumbnail: "1.1、默认设置.jpg",
@@ -271,7 +298,7 @@ var exampleConfig = {
                     thumbnail: "1.22、根据点获取高度.jpg",
                     fileName: "1.22、根据点获取高度"
                 },
-                
+
                     // {
                     //     name: "相机",
                     //     name_en: "相机",
@@ -1113,10 +1140,26 @@ var exampleConfig = {
                         name: "7.2.1、简易入门",
                         name_en: "7.2.1、简易入门",
                         thumbnail: "7.2.1、简易入门.jpg",
-
                         fileName: "7.2.1、简易入门"
                     },
-
+                    {
+                        name: "7.2.2、CustomShader_3DTiles",
+                        name_en: "7.2.2、CustomShader_3DTiles",
+                        thumbnail: "7.2.2、CustomShader_3DTiles.jpg",
+                        fileName: "7.2.2、CustomShader_3DTiles"
+                    },
+                    {
+                        name: "7.2.3、CustomShader_3DTiles 动态",
+                        name_en: "7.2.3、CustomShader_3DTiles 动态",
+                        thumbnail: "7.2.3、CustomShader_3DTiles 动态.jpg",
+                        fileName: "7.2.3、CustomShader_3DTiles 动态"
+                    },
+                    {
+                        name: "7.2.4、CustomShader_渐变",
+                        name_en: "7.2.4、CustomShader_渐变",
+                        thumbnail: "7.2.4、CustomShader_渐变.jpg",
+                        fileName: "7.2.4、CustomShader_渐变"
+                    },
                 ]
             },
         }
