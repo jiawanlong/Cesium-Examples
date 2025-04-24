@@ -1,0 +1,11 @@
+Model Information:
+* title:	Pine Tree
+* source:	https://sketchfab.com/3d-models/pine-tree-9dfbe65769c840a0ab366c67d8e6762d
+* author:	emarshall (https://sketchfab.com/emarshall)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Pine Tree" (https://sketchfab.com/3d-models/pine-tree-9dfbe65769c840a0ab366c67d8e6762d) by emarshall (https://sketchfab.com/emarshall) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

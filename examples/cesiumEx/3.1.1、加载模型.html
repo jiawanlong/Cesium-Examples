@@ -24,6 +24,8 @@
             url: "./data/tileset.json",
         });
 
+        tileset.debugShowBoundingVolume = true; // 显示包围盒
+        
         tileset.readyPromise
             .then(function (tileset) {
                 viewer.scene.primitives.add(tileset);
