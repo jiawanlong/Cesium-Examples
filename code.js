@@ -1,7 +1,7 @@
 // 授权用户（不弹窗）
 const authorizeCode = [
     {
-        'id': '1fec3a280e9dcede32dec235bf29945e',
+        'id': 'cdbf11931d4a948948c41f7aa8fbf8dc',
         'endTime': '2500-12-31 24:00:00',
         'name': 'jiawanlong',
     },
