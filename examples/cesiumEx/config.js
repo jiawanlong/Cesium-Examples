@@ -100,6 +100,12 @@ var exampleConfig = {
                         thumbnail: "实时在线云图.jpg",
                         fileName: "实时在线云图"
                     },
+                    {
+                        name: "加载超图S3M模型",
+                        name_en: "加载超图S3M模型",
+                        thumbnail: "s3m.jpg",
+                        fileName: "s3m"
+                    },
                     // {
                     //     name: "韩国空难",
                     //     name_en: "韩国空难",
@@ -303,6 +309,12 @@ var exampleConfig = {
                     name_en: "1.22、根据点获取高度",
                     thumbnail: "1.22、根据点获取高度.jpg",
                     fileName: "1.22、根据点获取高度"
+                },
+                {
+                    name: "加载超图S3M模型",
+                    name_en: "加载超图S3M模型",
+                    thumbnail: "s3m.jpg",
+                    fileName: "s3m"
                 },
 
                     // {
@@ -647,6 +659,7 @@ var exampleConfig = {
                         thumbnail: "2.4.8、风力发电机.jpg",
                         fileName: "2.4.8、风力发电机"
                     },
+
                 ]
             },
         }
@@ -700,6 +713,12 @@ var exampleConfig = {
                         name_en: "3.1.7、模型压平",
                         thumbnail: "3.1.7、模型压平.jpg",
                         fileName: "3.1.7、模型压平"
+                    },
+                    {
+                        name: "加载超图S3M模型",
+                        name_en: "加载超图S3M模型",
+                        thumbnail: "s3m.jpg",
+                        fileName: "s3m"
                     },
                 ]
             },
