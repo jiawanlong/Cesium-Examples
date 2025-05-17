@@ -15,6 +15,12 @@ var exampleConfig = {
                 content: [
                     
                     {
+                        name: "低空经济AI决策",
+                        name_en: "低空经济AI决策",
+                        thumbnail: "低空经济.jpg",
+                        fileName: "./templates/1_uav/index.html"
+                    },
+                    {
                         name: "智慧交通",
                         name_en: "智慧交通",
                         thumbnail: "智慧交通.jpg",

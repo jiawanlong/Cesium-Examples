@@ -26,115 +26,82 @@
         Cesium.Ion.defaultAccessToken =
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjM2EzNGJmNy02N2RmLTQ0MDMtYjI2MS1hZTJiMTIwZGYwMTYiLCJpZCI6MzA0MzEyLCJpYXQiOjE3NDc3MjM3MTV9.ePQNhuoVuDsi_z00lTm5W26wyW1Adcr1AWetGM6WSXI";
         const viewer = new Cesium.Viewer("map", {});
-        viewer.scene.debugShowFramesPerSecond = true;
-        viewer.scene.globe.depthTestAgainstTerrain = true;
-
-        // 地图视野定位
-        viewer.camera.setView({
-            destination: Cesium.Cartesian3.fromDegrees(120, 30, 3000),
+   // 地图视野定位
+   viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(-75.59777, 40.03883, 3000),
         });
 
-        // 视锥体位置
-        let qd = Cesium.Cartesian3.fromDegrees(120, 30, 1000);
-        let zd = Cesium.Cartesian3.fromDegrees(125, 30, 0);
+        let primitive;
 
-        const fov = 30;  //上下角度
-        const near = 10;  // 进距离
-        const far = 5000;  //远距离
-        const aspectRatio = 1.4;  //横向比例
+        let positions = {
+            x: -75.59777,
+            y: 40.03883,
+            z: 3000
+        }
+        initFrustum();
 
-        // 绘制
-        addFrustum(
-            qd,
-            _getOrientation(qd, zd),
-            fov,
-            near,
-            far,
-            aspectRatio
-        );
+        function initFrustum() {
+            // 初始参数
+            const fov = 45;
+            const aspectRatio = 1920 / 1080;
+            const near = 1.0;
+            const far = 2000.0;
 
-        // 创建视锥体及轮廓线
-        function addFrustum(position, orientation, fov, near, far, aspectRatio) {
-            let frustum = new Cesium.PerspectiveFrustum({
+            var position = Cesium.Cartesian3.fromDegrees(positions.x, positions.y, positions.z);
+            var heading = Cesium.Math.toRadians(0);
+            var pitch = Cesium.Math.toRadians(0);
+            var roll = Cesium.Math.toRadians(135);
+
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var orientation = Cesium.Transforms.headingPitchRollQuaternion(
+                position,
+                hpr
+            );
+
+            const frustum = new Cesium.PerspectiveFrustum({
                 fov: Cesium.Math.toRadians(fov),
                 aspectRatio: aspectRatio,
                 near: near,
-                far: far,
+                far: far
             });
-            let instanceGeo = new Cesium.GeometryInstance({
+
+            const instanceGeo = new Cesium.GeometryInstance({
                 geometry: new Cesium.FrustumGeometry({
                     frustum: frustum,
-                    origin: position,
+                    origin: Cesium.Cartesian3.ZERO, // 原点
+                    // orientation: Cesium.Quaternion.IDENTITY, // 初始无旋转
                     orientation: orientation,
-                    vertexFormat: Cesium.VertexFormat.POSITION_ONLY,
+                    vertexFormat: Cesium.VertexFormat.POSITION_ONLY
                 }),
                 attributes: {
                     color: Cesium.ColorGeometryInstanceAttribute.fromColor(
                         new Cesium.Color(1.0, 0.0, 0.0, 0.3)
-                    ),
-                },
-            });
-            let instanceGeoLine = new Cesium.GeometryInstance({
-                geometry: new Cesium.FrustumOutlineGeometry({
-                    frustum: frustum,
-                    origin: position,
-                    orientation: orientation,
-                }),
-                attributes: {
-                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-                        new Cesium.Color(1.0, 1.0, 1.0, 1)
-                    ),
-                },
+                    )
+                }
             });
 
-            let primitive = new Cesium.Primitive({
-                geometryInstances: [instanceGeo],
-                appearance: new Cesium.PerInstanceColorAppearance({
-                    closed: true,
-                    flat: true,
-                }),
-                asynchronous: false,
-            });
+            const initialModelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 
-            let primitive1 = new Cesium.Primitive({
-                geometryInstances: [instanceGeoLine],
+            primitive = viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: instanceGeo,
                 appearance: new Cesium.PerInstanceColorAppearance({
-                    closed: true,
-                    flat: true,
+                    translucent: true,
+                    closed: true
                 }),
-                asynchronous: false,
-            });
-            // viewer.scene.primitives.add(primitive);
-            // viewer.scene.primitives.add(primitive1);
-            return [primitive,primitive1];
+                modelMatrix: initialModelMatrix // 初始位置矩阵
+            }));
+
+            animate();
+
         }
 
-        function _getOrientation(cameraPosition, position) {
-            var e = cameraPosition,
-                t = position,
-                i = Cesium.Cartesian3.normalize(
-                    Cesium.Cartesian3.subtract(t, e, new Cesium.Cartesian3()),
-                    new Cesium.Cartesian3()
-                ),
-                a = Cesium.Cartesian3.normalize(e, new Cesium.Cartesian3()),
-                n = new Cesium.Camera(viewer.scene);
-            (n.position = e),
-                (n.direction = i),
-                (n.up = a),
-                (i = n.directionWC),
-                (a = n.upWC);
-            var r = n.rightWC,
-                o = new Cesium.Cartesian3(),
-                l = new Cesium.Matrix3(),
-                u = new Cesium.Quaternion();
-            r = Cesium.Cartesian3.negate(r, o);
-            var d = l;
-            Cesium.Matrix3.setColumn(d, 0, r, d),
-                Cesium.Matrix3.setColumn(d, 1, a, d),
-                Cesium.Matrix3.setColumn(d, 2, i, d);
-            var c = Cesium.Quaternion.fromRotationMatrix(d, u);
-            return (this.orientation = c), c;
+        function animate() {
+            positions.y += 0.0001;
+            var newPosition = Cesium.Cartesian3.fromDegrees(positions.x, positions.y, positions.z);
+            primitive.modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(newPosition);
+            requestAnimationFrame(animate);
         }
+      
     </script>
 </body>
 
