@@ -13,7 +13,12 @@ var exampleConfig = {
                 name: "综合应用",
                 name_en: "ba222212se",
                 content: [
-                    
+                    {
+                        name: "智慧园区运营中心",
+                        name_en: "智慧园区运营中心",
+                        thumbnail: "智慧园区.jpg",
+                        fileName: "./templates/2_park/index.html"
+                    },
                     {
                         name: "低空经济AI决策",
                         name_en: "低空经济AI决策",
