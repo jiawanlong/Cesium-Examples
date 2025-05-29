@@ -1,7 +1,7 @@
 // 授权用户（不弹窗）
 const authorizeCode = [
     {
-        'id': 'cdbf11931d4a948948c41f7aa8fbf8dc',
+        'id': 'cb0582962fca6f93c42dfb9f13a26ee4',
         'endTime': '2500-12-31 24:00:00',
         'name': 'jiawanlong',
     },
@@ -44,6 +44,11 @@ const authorizeCode = [
     {
         'id': '18325ac13785896b54f2fa5443b929ca',
         'endTime': '2025-03-12 24:00:00',
+        'name': 'wx',
+    },
+    {
+        'id': 'd08fc57882f4e883a0205a7bb6701d5f',
+        'endTime': '2025-05-29 24:00:00',
         'name': 'wx',
     }
 ]
