@@ -841,8 +841,8 @@ var exampleConfig = {
                         fileName: "4.3.1、视频纹理"
                     },
                     {
-                        name: "4.3.2、视频投射",
-                        name_en: "4.3.2、视频投射",
+                        name: "4.3.2、视频投射(直播流)",
+                        name_en: "4.3.2、视频投射(直播流)",
                         thumbnail: "4.3.2、视频投射.jpg",
                         fileName: "4.3.2、视频投射"
                     },
@@ -1108,6 +1108,18 @@ var exampleConfig = {
         name: "7、材质",
         name_en: "7、材质",
         content: {
+            "map12211787831": {
+                name: "7.0、必读",
+                name_en: "7.0、必读",
+                content: [
+                    {
+                        name: "7.0.0、Material和MaterialProperty",
+                        name_en: "7.0.0、Material和MaterialProperty",
+                        thumbnail: "7.0.0、Material和MaterialProperty.jpg",
+                        fileName: "7.0.0、Material和MaterialProperty",
+                    },
+                ]
+            },
             "map1322345511": {
                 name: "7.1、材质",
                 name_en: "7.1、材质",
@@ -1189,6 +1201,36 @@ var exampleConfig = {
                         name_en: "7.2.4、CustomShader_渐变",
                         thumbnail: "7.2.4、CustomShader_渐变.jpg",
                         fileName: "7.2.4、CustomShader_渐变"
+                    },
+                ]
+            },
+            "map132233232333231": {
+                name: "7.3、MaterialProperty类",
+                name_en: "7.3、MaterialProperty类",
+                content: [
+                    {
+                        name: "7.3.1、polygon",
+                        name_en: "7.3.1、polygon",
+                        thumbnail: "7.3.1、polygon.jpg",
+                        fileName: "7.3.1、polygon"
+                    },
+                    {
+                        name: "7.3.2、polyline",
+                        name_en: "7.3.、polyline",
+                        thumbnail: "7.3.2、polyline.jpg",
+                        fileName: "7.3.2、polyline"
+                    },
+                ]
+            },
+            "map132878787831": {
+                name: "7.4、Material类",
+                name_en: "7.4、Material类",
+                content: [
+                    {
+                        name: "7.4.1、polygon",
+                        name_en: "7.4.1、polygon",
+                        thumbnail: "7.4.1、polygon.jpg",
+                        fileName: "7.4.1、polygon"
                     },
                 ]
             },

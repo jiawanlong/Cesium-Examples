@@ -1,0 +1,77 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNDMxOTA2NS1lY2Q3LTQ0YmUtOTE1Mi1iNWE2OGYwZjc0MjkiLCJpZCI6MjM1NjMwLCJpYXQiOjE3MzA3MjQzMTJ9.Xhu-9FyVEyqBKWEr0V9Sybt-elTCWHt9peL9-mNh-4E'
+        const viewer = new Cesium.Viewer('map', {});
+
+
+        let entity = viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray([
+                    -115.0,
+                    37.0,
+                    -115.0,
+                    32.0,
+                    -102.0,
+                    31.0,
+                    -102.0,
+                    35.0,
+                ]),
+            }
+        });
+
+        let polygon = entity.polygon;
+
+        // 1、ColorMaterialProperty --颜色材质
+        // polygon.material = Cesium.Color.RED;
+
+        // 2、ImageMaterialProperty --图片材质
+        // polygon.material = new Cesium.ImageMaterialProperty({
+        //     image: './icon.png',
+        //     repeat: new Cesium.Cartesian2(10,5),
+        //     transparent: true
+        // });
+
+        // 3、GridMaterialProperty --网格材质
+        // polygon.material = new Cesium.GridMaterialProperty({
+        //     color: Cesium.Color.BLUE,
+        //     cellAlpha: 0.1,
+        //     lineCount: new Cesium.Cartesian2(8, 8),
+        //     lineThickness: new Cesium.Cartesian2(1.0, 1.0),
+        //     lineOffset: new Cesium.Cartesian2(0.0, 0.0),
+        // })
+
+        // 4、StripeMaterialProperty --条纹材质
+        // polygon.material = new Cesium.StripeMaterialProperty({
+        //     evenColor: Cesium.Color.WHITE,
+        //     oddColor: Cesium.Color.RED,
+        //     repeat: 32,
+        //     offset: 20,
+        //     orientation: Cesium.StripeOrientation.VERTICAL,
+        // });
+
+        // 5、CheckerboardMaterialProperty --棋盘格材质
+        // polygon.material = new Cesium.CheckerboardMaterialProperty({
+        //     evenColor: Cesium.Color.WHITE,
+        //     oddColor: Cesium.Color.BLUE,
+        //     repeat: new Cesium.Cartesian2(10, 10),
+        // });
+
+
+    </script>
+</body>
+
+</html>

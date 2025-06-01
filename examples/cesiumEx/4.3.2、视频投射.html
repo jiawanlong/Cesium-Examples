@@ -10,6 +10,7 @@
     <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
     <script src="./video.js"></script>
     <script src="./turf.min.js"></script>
+    <script src="./hls.js"></script>
     <script src="./lodash.min.js"></script>
     <style>
         #menu {
@@ -35,8 +36,6 @@
     <div id="menu">
     </div>
     <video id="video_dom" preload="auto" autoPlay loop>
-        <source src="./video.mp4" type="video/mp4" />
-        Your browser does not support the <code>video</code> element.
     </video>
     <!-- ./video.mp4 -->
     <script type="text/javascript">
@@ -50,21 +49,29 @@
         viewer.scene.debugShowFramesPerSecond = true;
         viewer.scene.globe.depthTestAgainstTerrain = true;
         viewer.camera.setView({
-            destination: Cesium.Cartesian3.fromDegrees(85.788705, 45.163394, 2000),
+            destination: Cesium.Cartesian3.fromDegrees(112.681287, 33.248737, 1300),
+            orientation: {
+                heading: Cesium.Math.toRadians(269.4), // 方向
+                pitch: Cesium.Math.toRadians(-29.0), // 俯仰角
+                roll: Cesium.Math.toRadians(0.0) // 翻滚角
+            }
 
         });
+        var videoSrc = 'https://sqhls2.ys7.com:7989/v3/openlive/FX4619647_2_1.m3u8?expire=1778830562&id=844961679353290752&t=c843557c001d3a833dfb4f5ab347d319f3847d85b63fb1642bf52e754517a28a&ev=100&u=4bcf089e4d424b9583ac48430a7ef177';
         var options = {
             horizontalViewAngle: 60,
             verticalViewAngle: 40,
             video: "video_dom",
-            viewPosition: Cesium.Cartesian3.fromDegrees(85.788705, 45.161394, 900),
-            viewPositionEnd: Cesium.Cartesian3.fromDegrees(85.788705, 45.167394, 500),
+            viewPosition: Cesium.Cartesian3.fromDegrees(112.66669, 33.248659, 515),
+            viewPositionEnd: Cesium.Cartesian3.fromDegrees(112.659078,33.249035, 270),
         };
         v = new video(viewer, options);
         v.drawVideo();
 
         // 播放
         video_dom.play();
+        switchSP();
+
         // 暂停
         // video_dom.pause();
 
@@ -86,10 +93,12 @@
 
         // 切换视频源
         function switchSP() {
-            var videoSrc = '';
             var hls = new Hls();
             hls.loadSource(videoSrc);
             hls.attachMedia(video_dom);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                video_dom.play();  // 当解析完毕后开始播放
+            });
         }
 
     </script>
