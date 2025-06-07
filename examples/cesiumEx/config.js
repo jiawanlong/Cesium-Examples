@@ -953,6 +953,18 @@ var exampleConfig = {
                         thumbnail: "5.2.1、类似回调.jpg",
                         fileName: "5.2.1、类似回调"
                     },
+                    {
+                        name: "5.2.2、入门",
+                        name_en: "5.2.2、入门",
+                        thumbnail: "5.2.2、入门.jpg",
+                        fileName: "5.2.2、入门"
+                    },
+                    {
+                        name: "5.2.3、中级",
+                        name_en: "5.2.3、中级",
+                        thumbnail: "5.2.3、中级.jpg",
+                        fileName: "5.2.3、中级"
+                    },
 
                 ]
             },
