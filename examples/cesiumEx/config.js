@@ -14,6 +14,12 @@ var exampleConfig = {
                 name_en: "ba222212se",
                 content: [
                     {
+                        name: "",
+                        name_en: "",
+                        thumbnail: "0.jpg",
+                        fileName: "00"
+                    },
+                    {
                         name: "智慧园区运营中心",
                         name_en: "智慧园区运营中心",
                         thumbnail: "智慧园区.jpg",

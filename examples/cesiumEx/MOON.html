@@ -1,0 +1,52 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNDMxOTA2NS1lY2Q3LTQ0YmUtOTE1Mi1iNWE2OGYwZjc0MjkiLCJpZCI6MjM1NjMwLCJpYXQiOjE3MzA3MjQzMTJ9.Xhu-9FyVEyqBKWEr0V9Sybt-elTCWHt9peL9-mNh-4E'
+        const viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        // 清除默认地形
+        viewer.scene.terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+        
+        let options = {
+            alpha: 1,
+            hue: 0,
+            saturation: 1,
+            gamma: 1,
+            brightness: 1
+        }
+        // 加载xyz
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "月球影像",
+            tilingScheme: new Cesium.GeographicTilingScheme(),
+            "url": 'https://moon.bao.ac.cn/gis3globleMarsMoon/tiles/getTiles/MoonTile/2000/jpg/{z}/{reverseY}/{x}'
+        })
+        var imageryLayer = new Cesium.ImageryLayer(xyz, options);
+        viewer.imageryLayers.add(imageryLayer)
+
+        // 加载火星地形
+        viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: 'https://moon.bao.ac.cn/gis3globleMarsMoon/tilesets/MoonTerrain/2000/'
+        });
+    </script>
+</body>
+
+</html>
