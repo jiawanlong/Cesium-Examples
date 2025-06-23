@@ -244,9 +244,11 @@ class viewshed extends analyser {
             size: this.size,
             softShadows: this.softShadows,
             normalOffset: false,
-            fromLightSource: false
+            fromLightSource: false,
         });
         this.viewer.scene.shadowMap = this.shadowMap;
+        // 启用地形阴影
+        this.viewer.scene.globe.shadows = Cesium.ShadowMode.ENABLED;
     }
 
     //创建PostStage
