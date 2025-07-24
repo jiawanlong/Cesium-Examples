@@ -31,8 +31,8 @@ const authorizeCode = [
         'name': 'WindWilliam',
     },
     {
-        'id': '9f989d38fe9200769b0acdec6b7fcfa7',
-        'endTime': '2025-01-03 24:00:00',
+        'id': 'e23cbd74e202e045cedb19d2005c9877',
+        'endTime': '2025-07-30 24:00:00',
         'name': 'wx-wh-lucky',
     },
     {
