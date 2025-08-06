@@ -1,0 +1,237 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+        const viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+
+        // 加载xyz
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "mapbox",
+            "url": 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.webp?sku=1016Ab1dNMw2X&access_token=pk.eyJ1IjoidHJhbXBqd2wiLCJhIjoiY2xhYXIxbHExMDN3dzN3cGliOHdrMThxMiJ9.6er2aYb1EBjSsK1-t9d2-w'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        // 开启帧率
+        viewer.scene.debugShowFramesPerSecond = true;
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "./L0/tileset.json",
+        });
+
+
+        tileset.debugShowBoundingVolume = true; // 显示包围盒
+        tileset.readyPromise
+            .then(function (tileset) {
+                let demo = viewer.scene.primitives.add(tileset);
+                var r = 255;
+                var g = 255;
+                var b = 255;
+                var a = 0.2;
+                tileset.style = new Cesium.Cesium3DTileStyle({
+                    color: "color('rgba(" + r + "," + g + "," + b + ", " + a + ")')",
+                    pointOutlineColor: 'color("blue")',
+                    pointOutlineWidth: 10,
+                })
+                viewer.zoomTo(tileset)
+                console.log(tileset)
+                tileset.enableShowOutline = true;
+
+                const FILL_COLOR = Cesium.Color.RED.withAlpha(0.5); // 填充色
+                const boxInstances = []; // 填充部分
+                const edgeInstances = []; // 边框部分
+                const EDGE_WIDTH = 1; // 边框宽度
+                const EDGE_COLOR = Cesium.Color.BLACK; // 边框色
+
+                demo.tileLoad.addEventListener(function (tile) {
+                    console.log(tile.content.featuresLength)
+
+                    for (let index = 0; index < tile.content.featuresLength; index++) {
+
+                        let minx_miny_minz = tile.content.getFeature(index).getProperty('bb.minX, bb.minY, bb.minZ')
+                        let maxx_maxy_maxz = tile.content.getFeature(index).getProperty('bb.maxX, bb.maxY, bb.maxZ')
+
+                        minx_miny_minz = parseCoordinate(minx_miny_minz)
+                        maxx_maxy_maxz = parseCoordinate(maxx_maxy_maxz)
+
+                        // var hello = viewer.entities.add({
+                        //     position: minx_miny_minz,
+                        //     point: {
+                        //         pixelSize: 5,
+                        //         color: Cesium.Color.RED,
+                        //         outlineColor: Cesium.Color.WHITE,
+                        //         outlineWidth: 2,
+
+                        //     },
+                        //     label: {
+                        //         text: '左前下',
+                        //         font: '14pt monospace',
+                        //         outlineWidth: 2,
+                        //     }
+                        // });
+                        //   var hello = viewer.entities.add({
+                        //     position: maxx_maxy_maxz,
+                        //     point: {
+                        //         pixelSize: 5,
+                        //         color: Cesium.Color.RED,
+                        //         outlineColor: Cesium.Color.WHITE,
+                        //         outlineWidth: 2,
+
+                        //     },
+                        //     label: {
+                        //         text: '右后上',
+                        //         font: '14pt monospace',
+                        //         outlineWidth: 2,
+                        //     }
+                        // });
+
+                        let x = tile.content.getFeature(index).getProperty('centerX')
+                        let y = tile.content.getFeature(index).getProperty('centerY')
+                        let z = tile.content.getFeature(index).getProperty('centerZ')
+
+                        const CUBE_SIZE = parseFloat(tile.content.getFeature(index).getProperty('zSize'))
+                        // let CUBE_SIZE = 7.663837909698486 ;
+
+
+                        const center = Cesium.Cartesian3.fromDegrees(
+                            parseFloat(x), parseFloat(y), parseFloat(z)
+                        );
+
+                        // 获取ENU转换矩阵
+                        const enuMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+                        // --- 1. 创建立方体填充 ---
+                        const halfSize = CUBE_SIZE / 2;
+                        boxInstances.push(new Cesium.GeometryInstance({
+                            geometry: new Cesium.BoxGeometry({
+                                vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+                                minimum: new Cesium.Cartesian3(-halfSize, -halfSize, -halfSize),
+                                maximum: new Cesium.Cartesian3(halfSize, halfSize, halfSize)
+                            }),
+                            modelMatrix: enuMatrix,
+                            attributes: {
+                                color: Cesium.ColorGeometryInstanceAttribute.fromColor(FILL_COLOR)
+                            }
+                        }));
+
+                        // --- 2. 创建立方体边框 ---
+                        const localVertices = [
+                            new Cesium.Cartesian3(-halfSize, -halfSize, -halfSize), // 0 左前下
+                            new Cesium.Cartesian3(halfSize, -halfSize, -halfSize),  // 1 右前下
+                            new Cesium.Cartesian3(halfSize, halfSize, -halfSize),   // 2 右后下
+                            new Cesium.Cartesian3(-halfSize, halfSize, -halfSize),  // 3 左后下
+                            new Cesium.Cartesian3(-halfSize, -halfSize, halfSize),  // 4 左前上
+                            new Cesium.Cartesian3(halfSize, -halfSize, halfSize),   // 5 右前上
+                            new Cesium.Cartesian3(halfSize, halfSize, halfSize),    // 6 右后上
+                            new Cesium.Cartesian3(-halfSize, halfSize, halfSize)   // 7 左后上
+                        ];
+                        // 转换为世界坐标
+                        const worldVertices = localVertices.map(local =>
+                            Cesium.Matrix4.multiplyByPoint(enuMatrix, local, new Cesium.Cartesian3())
+                        );
+
+                        // 定义12条边
+                        const edges = [
+                            [worldVertices[0], worldVertices[1]], [worldVertices[1], worldVertices[2]],
+                            [worldVertices[2], worldVertices[3]], [worldVertices[3], worldVertices[0]],
+                            [worldVertices[4], worldVertices[5]], [worldVertices[5], worldVertices[6]],
+                            [worldVertices[6], worldVertices[7]], [worldVertices[7], worldVertices[4]],
+                            [worldVertices[0], worldVertices[4]], [worldVertices[1], worldVertices[5]],
+                            [worldVertices[2], worldVertices[6]], [worldVertices[3], worldVertices[7]]
+                        ];
+
+                        // 添加边框实例
+                        edges.forEach(edge => {
+                            edgeInstances.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.PolylineGeometry({
+                                    positions: edge,
+                                    width: EDGE_WIDTH,
+                                    vertexFormat: Cesium.PolylineMaterialAppearance.VERTEX_FORMAT
+                                }),
+                                attributes: {
+                                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(EDGE_COLOR)
+                                }
+                            }));
+                        });
+
+                    }
+
+
+                    viewer.scene.primitives.add(new Cesium.Primitive({
+                        geometryInstances: boxInstances,
+                        appearance: new Cesium.PerInstanceColorAppearance({
+                            translucent: true,
+                            flat: true
+                        }),
+                        asynchronous: false
+                    }));
+
+                    viewer.scene.primitives.add(new Cesium.Primitive({
+                        geometryInstances: edgeInstances,
+                        appearance: new Cesium.PolylineMaterialAppearance({
+                            material: new Cesium.Material({
+                                fabric: {
+                                    type: 'Color',
+                                    uniforms: {
+                                        color: EDGE_COLOR // 直接使用定义的EDGE_COLOR
+                                    }
+                                }
+                            }),
+                            translucent: true
+                        }),
+                        asynchronous: false
+                    }));
+
+                    viewer.scene.primitives.remove(tileset)
+
+                })
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+        let handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(function (clickEvent) {
+            // 获取被点击的实体
+            var ray1 = viewer.camera.getPickRay(clickEvent.position);
+            var cartesian = viewer.scene.globe.pick(ray1, viewer.scene);
+            var pick = viewer.scene.pickPosition(clickEvent.position);
+            var pickEd = viewer.scene.pick(clickEvent.position);
+            if (pickEd && pick) {
+                console.log(pickEd)
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+
+
+
+        function parseCoordinate(str) {
+            const regex = /Point3D\{\s*x\s*=\s*(-?\d+(?:\.\d+)?)\s*,\s*y\s*=\s*(-?\d+(?:\.\d+)?)\s*,\s*z\s*=\s*(-?\d+(?:\.\d+)?)\s*\}/;
+            const match = str.match(regex);
+            if (match) {
+                const x = parseFloat(match[1]);
+                const y = parseFloat(match[2]);
+                const z = parseFloat(match[3]);
+                return new Cesium.Cartesian3(x, y, z)
+            }
+
+        }
+    </script>
+</body>
+
+</html>
