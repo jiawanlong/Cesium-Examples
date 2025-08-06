@@ -330,3 +330,102 @@ latlng.aroundPoint = {
         this.isStart = false;
     }
 };
+
+latlng.getFrustumGroundIntersectionPoints = function (viewer) {
+    const scene = viewer.scene;
+    const camera = viewer.camera;
+    const ellipsoid = scene.globe.ellipsoid;
+    const canvas = scene.canvas;
+
+    // 定义屏幕四个角的坐标
+    const corners = [
+        new Cesium.Cartesian2(0, 0),                 // 左下角
+        new Cesium.Cartesian2(canvas.width, 0),      // 右下角
+        new Cesium.Cartesian2(0, canvas.height),     // 左上角
+        new Cesium.Cartesian2(canvas.width, canvas.height) // 右上角
+    ];
+
+    const intersectionPoints = [];
+
+    // 遍历四个角点
+    for (let i = 0; i < corners.length; i++) {
+        // 获取从相机位置通过屏幕角点的射线
+        const ray = camera.getPickRay(corners[i]);
+        if (!ray) continue;
+
+        // 求射线与地球表面的交点
+        const intersection = scene.globe.pick(ray, scene);
+        if (intersection) {
+            var cartographic_s = ellipsoid.cartesianToCartographic(intersection);
+            var lat_10 = Cesium.Math.toDegrees(cartographic_s.latitude);
+            var lng_10 = Cesium.Math.toDegrees(cartographic_s.longitude);
+
+            intersectionPoints.push(
+                {
+                    x: lng_10,
+                    y: lat_10
+                }
+            );
+        } else {
+            // 如果没有直接交点（如看向天空），尝试计算与椭球体的交点
+        }
+    }
+
+    if (intersectionPoints.length >= 2) {
+
+        var position = camera.positionCartographic;
+
+        var bookmark = {};
+        bookmark.y = Number(Cesium.Math.toDegrees(position.latitude).toFixed(6));
+        bookmark.x = Number(Cesium.Math.toDegrees(position.longitude).toFixed(6));
+        bookmark.z = Number(position.height.toFixed(1));
+        bookmark.heading = Number(Cesium.Math.toDegrees(camera.heading || -90).toFixed(1));
+        bookmark.pitch = Number(Cesium.Math.toDegrees(camera.pitch || 0).toFixed(1));
+        bookmark.roll = Number(Cesium.Math.toDegrees(camera.roll || 0).toFixed(1));
+
+        // 左下
+        var lat_0 = intersectionPoints[0].y;
+        var lng_0 = intersectionPoints[0].x;
+
+        // 右下
+        var lat_1 = intersectionPoints[1].y;
+        var lng_1 = intersectionPoints[1].x;
+
+        // 发射距离
+        var from = turf.point([lng_0, lat_0]);
+        var to = turf.point([lng_1, lat_1]);
+        var options = { units: 'kilometers' };
+        var distance = turf.distance(from, to, options);
+
+        // 左上
+        var point_0 = turf.point([lng_0, lat_0]);
+        distance = distance * 3;
+        len = distance / 3 * 1000 / 10;
+        var bearing = bookmark.heading - 30;
+        var options = { units: 'kilometers' };
+
+        var destination = turf.destination(point_0, distance, bearing, options);
+        let des_0 = destination.geometry.coordinates
+
+        // 右上
+        var point_1 = turf.point([lng_1, lat_1]);
+        var bearing = bookmark.heading + 30;
+        var destination = turf.destination(point_1, distance, bearing, options);
+        let des_1 = destination.geometry.coordinates
+
+        intersectionPoints.push(
+            {
+                x: des_0[0],
+                y: des_0[1]
+            }
+        );
+
+        intersectionPoints.push(
+            {
+                x: des_1[0],
+                y: des_1[1]
+            }
+        );
+    }
+    return intersectionPoints;
+};
