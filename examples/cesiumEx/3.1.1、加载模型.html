@@ -38,6 +38,36 @@
         // viewer.scene.primitives.remove(tileset)
         // viewer.scene.primitives.removeAll()
 
+
+        const highlighted = {
+            feature: undefined,
+            originalColor: new Cesium.Color()
+        };
+
+        // 设置屏幕空间事件处理器（鼠标点击事件）
+        viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(event) {
+            // 通过鼠标点击位置获取选中的要素
+            const pickedFeature = viewer.scene.pick(event.position);
+
+            // 如果之前有高亮要素，则恢复其原始颜色
+            if (Cesium.defined(highlighted.feature)) {
+                highlighted.feature.color = highlighted.originalColor;
+                highlighted.feature = undefined;
+            }
+
+            // 如果未选中任何要素，则直接返回
+            if (!Cesium.defined(pickedFeature)) {
+                return;
+            }
+
+            // 存储当前选中要素的原始颜色，并应用新的高亮颜色
+            highlighted.feature = pickedFeature;
+            if (Cesium.defined(pickedFeature.color)) { // 确保feature有color属性
+                Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
+                pickedFeature.color = Cesium.Color.YELLOW; // 设置为高亮颜色，例如黄色
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
     </script>
 </body>
 
