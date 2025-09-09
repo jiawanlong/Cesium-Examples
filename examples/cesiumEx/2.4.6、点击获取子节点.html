@@ -41,7 +41,7 @@
             pitch: 0,
             roll: 0,
         };
-
+        let cylinderEntity;
 
         addEntity();
 
@@ -64,6 +64,9 @@
                     // uri: 'http://localhost/Cesium-Examples/examples/threeEx/zhanji.glb',、
                     uri: './zhanji.glb',
                     scale: 5,
+                    customShader: new Cesium.CustomShader({
+                        // 可以在这里定义默认的着色器逻辑
+                    })
 
                 }
             })

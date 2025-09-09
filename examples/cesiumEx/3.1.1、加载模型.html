@@ -34,6 +34,15 @@
                 console.log(error);
             });
 
+
+        tileset.tileLoad.addEventListener(function (tile) {
+            console.log(tile)
+            for (let index = 0; index < tile.content.featuresLength; index++) {
+                console.log(tile.content.getFeature(index))
+                // let prpo = tile.content.getFeature(index).getProperty('属性名')
+            }
+        })
+
         // 模型删除
         // viewer.scene.primitives.remove(tileset)
         // viewer.scene.primitives.removeAll()
