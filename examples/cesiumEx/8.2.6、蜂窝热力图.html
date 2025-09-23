@@ -1,0 +1,150 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./turf.min.js"></script>
+    <script src="./kriging.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        const polygonGeojson = turf.polygon([[[110, 30], [110.1, 30], [110.1, 30.1], [110, 30.1], [110, 30]]]);
+
+        const points = [];
+        const bbox = [110, 30, 110.1, 30.1]
+
+        turf.randomPoint(125, { bbox: bbox }).features.forEach(element => {
+            points.push({
+                lng: element.geometry.coordinates[0],
+                lat: element.geometry.coordinates[1],
+                value: getRandomNum(0, 1000)
+            });
+        });
+
+        // 2. 提取数据
+        const lons = points.map(point => point.lng);
+        const lats = points.map(point => point.lat);
+        const values = points.map(point => point.value);
+
+        // 3. 训练变异函数
+        const variogram = kriging.train(values, lons, lats, 'exponential', 0, 100);
+
+        const xMin = bbox[0], yMin = bbox[1], xMax = bbox[2], yMax = bbox[3];
+        const polygons = [[[xMin, yMin], [xMin, yMax], [xMax, yMax], [xMax, yMin]]];
+        const gridWidth = 0.002; // 调整此值！
+        const grid = kriging.grid(polygons, variogram, gridWidth);
+
+        // 5. 创建并裁剪方块单元
+        const xLim = [grid.xlim[0], grid.xlim[1]];
+        const yLim = [grid.ylim[0], grid.ylim[1]];
+        const features = [];
+        for (let i = 0; i < grid.data.length; i++) {
+            for (let j = 0; j < grid.data[i].length; j++) {
+                const value = grid.data[i][j];
+
+                const x = xLim[0] + i * gridWidth;
+                const y = yLim[0] + j * gridWidth;
+                const cellBbox = [x, y, x + gridWidth, y + gridWidth];
+                const cellPolygon = turf.bboxPolygon(cellBbox);
+
+                const clippedCell = turf.booleanContains(polygonGeojson, cellPolygon);
+                if (clippedCell) {
+                    cellPolygon.properties = { 'value': value };
+                    features.push(turf.feature(cellPolygon.geometry, cellPolygon.properties));
+                }
+            }
+        }
+        let myEntityCollection = new Cesium.CustomDataSource("clickEntityCollection");
+        viewer.dataSources.add(myEntityCollection);
+
+        features.forEach(function (feature) {
+            myEntityCollection.entities.add({
+                polygon: {
+                    extrudedHeight: Number(Number(feature.properties.value)),
+                    hierarchy: Cesium.Cartesian3.fromDegreesArray(feature.geometry.coordinates[0].flat()),
+                    material: Cesium.Color.fromCssColorString(getElevationColor(Number(feature.properties.value))),
+                    outline: false
+                }
+            });
+        });
+
+        viewer.flyTo(myEntityCollection);
+
+        // 高程颜色映射算法
+        function getElevationColor(elevation) {
+            // 确保高程值在0-10000范围内
+            const clampedElevation = Math.max(0, Math.min(10000, elevation));
+
+            // 定义10个关键高程点的颜色
+            const colorStops = [
+                { value: 0, color: [0, 100, 0] },         // 深绿色 - 海平面
+                { value: 100, color: [34, 139, 34] },    // 森林绿
+                { value: 200, color: [152, 251, 152] },  // 浅绿色
+                { value: 300, color: [240, 230, 140] },  // 卡其色
+                { value: 400, color: [255, 215, 0] },    // 金黄色
+                { value: 500, color: [255, 165, 0] },    // 橙色
+                { value: 600, color: [255, 140, 0] },    // 深橙色
+                { value: 700, color: [255, 99, 71] },    // 番茄红
+                { value: 800, color: [255, 69, 0] },     // 红橙色
+                { value: 900, color: [255, 0, 0] },      // 红色
+                { value: 1000, color: [128, 0, 0] }      // 深红色 - 最高点
+            ];
+
+            // 找到高程值所在的区间
+            for (let i = 0; i < colorStops.length - 1; i++) {
+                const currentStop = colorStops[i];
+                const nextStop = colorStops[i + 1];
+
+                if (clampedElevation >= currentStop.value && clampedElevation <= nextStop.value) {
+                    // 计算在当前区间中的比例 (0-1)
+                    const ratio = (clampedElevation - currentStop.value) /
+                        (nextStop.value - currentStop.value);
+
+                    // 对RGB三个通道分别进行插值
+                    const r = Math.round(currentStop.color[0] +
+                        ratio * (nextStop.color[0] - currentStop.color[0]));
+                    const g = Math.round(currentStop.color[1] +
+                        ratio * (nextStop.color[1] - currentStop.color[1]));
+                    const b = Math.round(currentStop.color[2] +
+                        ratio * (nextStop.color[2] - currentStop.color[2]));
+
+                    // 返回RGB颜色字符串
+                    return `rgb(${r}, ${g}, ${b},0.5)`;
+                }
+            }
+
+            // 如果高程值超出范围，返回最后一个颜色
+            const lastStop = colorStops[colorStops.length - 1];
+            return `rgb(${lastStop.color[0]}, ${lastStop.color[1]}, ${lastStop.color[2]},0.5)`;
+        }
+
+        function getRandomNum(Min, Max) {
+            const Range = Max - Min + 1;
+            const Rand = Math.random();
+            return Min + Math.floor(Rand * Range);
+        }
+
+
+    </script>
+
+</body>
+
+</html>

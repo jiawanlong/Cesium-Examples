@@ -15,9 +15,34 @@
     <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
 
     <script>
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwNDljNWFmZC03MzRlLTRiMDMtYWIwMi00Yjk4YWQ4NzQwZGEiLCJpZCI6MjU5LCJpYXQiOjE3NTEzNzkyMzR9.OTqPNs3UGNnT1LYkPTavV80wN8Es_YphpJgQcpdnqWc'
-        const viewer = new Cesium.Viewer('map', {});
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+            infoBox: false,
+            selectionIndicator: false,
+            animation: false,//是否创建动画小器件，左下角仪表  
+            baseLayerPicker: false,//是否显示图层选择器  
+            fullscreenButton: false,//是否显示全屏按钮  
+            geocoder: false,//是否显示geocoder小器件，右上角查询按钮  
+            homeButton: false,//是否显示Home按钮  
+            infoBox: false,//是否显示信息框  
+            sceneModePicker: false,//是否显示3D/2D选择器  
+            selectionIndicator: false,//是否显示选取指示器组件  
+            timeline: false,//是否显示时间轴  
+            navigationHelpButton: false,//是否显示右上角的帮助按钮  
+            scene3DOnly: true,//如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源  
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
         viewer.scene.debugShowFramesPerSecond = true;
+
+        viewer.camera.setView({
+            destination: Cesium.Rectangle.fromDegrees(100, 20, 120, 40),
+        });
 
         // ！！！！！！！！！！！！！！教程！！！！！！！！！！！！！！！！！！！！！
         /*

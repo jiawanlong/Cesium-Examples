@@ -1,0 +1,178 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(110, 30, 10000)
+        });
+
+        initBoxByCenterPoint();
+        initBoxByPoint();
+        ininBoxByPosition();
+        ininPolygonByPosition();
+
+        // 根据中心点+x,y,z 组合
+        function initBoxByCenterPoint() {
+            const center = Cesium.Cartesian3.fromDegrees(110, 30, 1000);
+            const enuMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+            const boxInstances = []; // 填充部分
+            const FILL_COLOR = Cesium.Color.fromCssColorString("rgba(53,203,196, 0.5)"); // 填充色
+
+            let xLength = 1000;
+            let yLength = 500;
+            let zLength = 500;
+
+            // 体
+            boxInstances.push(new Cesium.GeometryInstance({
+                geometry: new Cesium.BoxGeometry({
+                    vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+                    minimum: new Cesium.Cartesian3(-xLength, -yLength, -zLength),
+                    maximum: new Cesium.Cartesian3(xLength, yLength, zLength)
+                }),
+                modelMatrix: enuMatrix,
+                attributes: {
+                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(FILL_COLOR)
+                },
+                id: '局部坐标立方体',
+                datas: {
+                    name: '局部坐标立方体'
+                }
+            }));
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: boxInstances,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    translucent: true,
+                    flat: true
+                }),
+                asynchronous: false
+            }));
+
+        }
+
+        // 根据中心坐标+局部顶点坐标+三角形索引创建盒子
+        function initBoxByPoint() {
+            const positions = new Float64Array([
+                0.0, 0.0, 0.0,
+                1000.0, 0.0, 0.0,
+                0.0, 1000.0, 0.0,
+
+                0.0, 0.0, 0.0,
+                1000.0, 0.0, 0.0,
+                0.0, 0, 1000.0
+            ]);
+
+            const geometry = new Cesium.Geometry({
+                attributes: {
+                    position: new Cesium.GeometryAttribute({
+                        componentDatatype: Cesium.ComponentDatatype.DOUBLE,
+                        componentsPerAttribute: 3,
+                        values: positions
+                    })
+                },
+                indices: new Uint16Array([0, 1, 2, 3, 4, 5, 0, 5, 2]),
+                primitiveType: Cesium.PrimitiveType.TRIANGLES,
+                boundingSphere: Cesium.BoundingSphere.fromVertices(positions)
+            });
+
+            const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(110.03, 29.99, 1000));
+            let geometryInstances = [
+                new Cesium.GeometryInstance({
+                    geometry: geometry,
+                    id: 'webgl顶点',
+                    modelMatrix: modelMatrix,
+                    attributes: { color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED) }
+                })
+            ];
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: geometryInstances,
+                appearance: new Cesium.MaterialAppearance({
+                    material: Cesium.Material.fromType('Color')
+                })
+            }));
+        }
+
+        // 根据经纬度创建多边形BOX
+        function ininBoxByPosition() {
+            let obj = {
+                minx: 110.02,
+                miny: 30.02,
+                maxx: 110.04,
+                maxy: 30.06,
+                minz: 0,
+                maxz: 2000
+            }
+
+            let geometryInstances1 = [
+                new Cesium.GeometryInstance({
+                    geometry: new Cesium.RectangleGeometry({
+                        rectangle: Cesium.Rectangle.fromDegrees(obj.minx, obj.miny, obj.maxx, obj.maxy),
+                        height: obj.minz,
+                        extrudedHeight: obj.maxz,
+                        vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+                    }),
+                    id: '矩形1',
+                    attributes: { color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.RED.withAlpha(0.2)) }
+                }),
+            ]
+
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: geometryInstances1,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    translucent: true,
+                    flat: true
+                }),
+            }));
+        }
+
+        // 根据经纬度创建多边形
+        function ininPolygonByPosition() {
+            let geometryInstances1 = [
+                new Cesium.GeometryInstance({
+                    geometry: new Cesium.PolygonGeometry({
+                        polygonHierarchy: new Cesium.PolygonHierarchy(
+                            Cesium.Cartesian3.fromDegreesArrayHeights([110.01,30.01,0.0,110.015,30.015,0.0,110.015,30.015,2000.0,110.01,30.01,2000.0,110.01,30.01,0.0,])
+                        ),
+                        perPositionHeight: true, //是否使用高度
+                    }),
+                    id: '多边形',
+                    attributes: { color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.GREEN.withAlpha(1)) }
+                }),
+            ]
+
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: geometryInstances1,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    translucent: true,
+                    flat: true
+                }),
+            }));
+        }
+
+    </script>
+
+</body>
+
+</html>

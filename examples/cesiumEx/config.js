@@ -186,7 +186,7 @@ var exampleConfig = {
         name_en: "base",
         content: {
             "ma54xssp": {
-                
+
                 name: "1.1、基础",
                 name_en: "ba66se",
                 content: [
@@ -195,138 +195,138 @@ var exampleConfig = {
                         name_en: "",
                         thumbnail: "0.jpg",
                         fileName: "00"
-                    },{
-                    name: "1.1、默认设置",
-                    name_en: "1.1、默认设置",
-                    thumbnail: "1.1、默认设置.jpg",
-                    fileName: "1.1、默认设置"
-                },
-                {
-                    name: "1.2、颜色",
-                    name_en: "1.2、颜色",
-                    thumbnail: "1.2、颜色.jpg",
-                    fileName: "1.2、颜色"
-                },
-                {
-                    name: "1.3、坐标、坐标转换",
-                    name_en: "1.3、坐标、坐标转换",
-                    thumbnail: "1.3、坐标、坐标转换.jpg",
-                    fileName: "1.3、坐标、坐标转换"
-                },
-                {
-                    name: "1.4、屏幕、场景、地表坐标",
-                    name_en: "1.4、屏幕、场景、地表坐标",
-                    thumbnail: "1.4、屏幕、场景、地表坐标.jpg",
-                    fileName: "1.4、屏幕、场景、地表坐标"
-                },
-                {
-                    name: "1.5、相机",
-                    name_en: "1.5、相机",
-                    thumbnail: "1.5、相机.jpg",
-                    fileName: "1.5、相机"
-                },
-                {
-                    name: "1.6、事件",
-                    name_en: "1.6、事件",
-                    thumbnail: "1.6、事件.jpg",
-                    fileName: "1.6、事件"
-                },
-                {
-                    name: "1.7、飞行漫游",
-                    name_en: "1.7、飞行漫游",
-                    thumbnail: "1.7、飞行漫游.jpg",
-                    fileName: "1.7、飞行漫游"
-                },
-                {
-                    name: "1.8、时间运动",
-                    name_en: "1.8、时间运动",
-                    thumbnail: "1.8、时间运动.jpg",
-                    fileName: "1.8、时间运动"
-                },
-                {
-                    name: "1.9、气泡窗口",
-                    name_en: "1.9、气泡窗口",
-                    thumbnail: "1.9、气泡窗口.jpg",
-                    fileName: "1.9、气泡窗口"
-                },
-                {
-                    name: "1.10、反选遮罩",
-                    name_en: "1.10、反选遮罩",
-                    thumbnail: "1.10、反选遮罩.jpg",
-                    fileName: "1.10、反选遮罩"
-                },
-                {
-                    name: "1.11、加载shp",
-                    name_en: "1.11、加载shp",
-                    thumbnail: "1.11、加载shp.jpg",
-                    fileName: "1.11、加载shp"
-                },
-                {
-                    name: "1.12、加载mvt",
-                    name_en: "1.12、加载mvt",
-                    thumbnail: "1.12、加载mvt.jpg",
-                    fileName: "1.12、加载mvt"
-                },
-                {
-                    name: "1.13、地表透明度",
-                    name_en: "1.13、地表透明度",
-                    thumbnail: "1.13、地表透明度.jpg",
-                    fileName: "1.13、地表透明度"
-                },
-                {
-                    name: "1.14、倾斜摄影单体",
-                    name_en: "1.14、倾斜摄影单体",
-                    thumbnail: "1.14、倾斜摄影单体.jpg",
-                    fileName: "1.14、倾斜摄影单体"
-                },
-                {
-                    name: "1.15、罗盘、导航条",
-                    name_en: "1.15、罗盘、导航条",
-                    thumbnail: "1.15、罗盘、导航条.jpg",
-                    fileName: "1.15、罗盘、导航条"
-                },
-                {
-                    name: "1.16、绕点飞行",
-                    name_en: "1.16、绕点飞行",
-                    thumbnail: "1.16、绕点飞行.jpg",
-                    fileName: "1.16、绕点飞行"
-                },
-                {
-                    name: "1.17、深度检测",
-                    name_en: "1.17、深度检测",
-                    thumbnail: "1.17、深度检测.jpg",
-                    fileName: "1.17、深度检测"
-                },
-                {
-                    name: "1.18、echarts时间轴",
-                    name_en: "1.18、echarts时间轴",
-                    thumbnail: "1.18、echarts时间轴.jpg",
-                    fileName: "1.18、echarts时间轴"
-                },
-                {
-                    name: "1.19、任意坐标转换",
-                    name_en: "1.19、任意坐标转换",
-                    thumbnail: "1.19、任意坐标转换.jpg",
-                    fileName: "1.19、任意坐标转换"
-                },
-                {
-                    name: "1.20、echarts配置",
-                    name_en: "1.20、echarts配置",
-                    thumbnail: "1.20、echarts配置.jpg",
-                    fileName: "1.20、echarts配置"
-                },
-                {
-                    name: "1.22、根据点获取高度",
-                    name_en: "1.22、根据点获取高度",
-                    thumbnail: "1.22、根据点获取高度.jpg",
-                    fileName: "1.22、根据点获取高度"
-                },
-                {
-                    name: "加载超图S3M模型",
-                    name_en: "加载超图S3M模型",
-                    thumbnail: "s3m.jpg",
-                    fileName: "s3m"
-                },
+                    }, {
+                        name: "1.1、默认设置",
+                        name_en: "1.1、默认设置",
+                        thumbnail: "1.1、默认设置.jpg",
+                        fileName: "1.1、默认设置"
+                    },
+                    {
+                        name: "1.2、颜色",
+                        name_en: "1.2、颜色",
+                        thumbnail: "1.2、颜色.jpg",
+                        fileName: "1.2、颜色"
+                    },
+                    {
+                        name: "1.3、坐标、坐标转换",
+                        name_en: "1.3、坐标、坐标转换",
+                        thumbnail: "1.3、坐标、坐标转换.jpg",
+                        fileName: "1.3、坐标、坐标转换"
+                    },
+                    {
+                        name: "1.4、屏幕、场景、地表坐标",
+                        name_en: "1.4、屏幕、场景、地表坐标",
+                        thumbnail: "1.4、屏幕、场景、地表坐标.jpg",
+                        fileName: "1.4、屏幕、场景、地表坐标"
+                    },
+                    {
+                        name: "1.5、相机",
+                        name_en: "1.5、相机",
+                        thumbnail: "1.5、相机.jpg",
+                        fileName: "1.5、相机"
+                    },
+                    {
+                        name: "1.6、事件",
+                        name_en: "1.6、事件",
+                        thumbnail: "1.6、事件.jpg",
+                        fileName: "1.6、事件"
+                    },
+                    {
+                        name: "1.7、飞行漫游",
+                        name_en: "1.7、飞行漫游",
+                        thumbnail: "1.7、飞行漫游.jpg",
+                        fileName: "1.7、飞行漫游"
+                    },
+                    {
+                        name: "1.8、时间运动",
+                        name_en: "1.8、时间运动",
+                        thumbnail: "1.8、时间运动.jpg",
+                        fileName: "1.8、时间运动"
+                    },
+                    {
+                        name: "1.9、气泡窗口",
+                        name_en: "1.9、气泡窗口",
+                        thumbnail: "1.9、气泡窗口.jpg",
+                        fileName: "1.9、气泡窗口"
+                    },
+                    {
+                        name: "1.10、反选遮罩",
+                        name_en: "1.10、反选遮罩",
+                        thumbnail: "1.10、反选遮罩.jpg",
+                        fileName: "1.10、反选遮罩"
+                    },
+                    {
+                        name: "1.11、加载shp",
+                        name_en: "1.11、加载shp",
+                        thumbnail: "1.11、加载shp.jpg",
+                        fileName: "1.11、加载shp"
+                    },
+                    {
+                        name: "1.12、加载mvt",
+                        name_en: "1.12、加载mvt",
+                        thumbnail: "1.12、加载mvt.jpg",
+                        fileName: "1.12、加载mvt"
+                    },
+                    {
+                        name: "1.13、地表透明度",
+                        name_en: "1.13、地表透明度",
+                        thumbnail: "1.13、地表透明度.jpg",
+                        fileName: "1.13、地表透明度"
+                    },
+                    {
+                        name: "1.14、倾斜摄影单体",
+                        name_en: "1.14、倾斜摄影单体",
+                        thumbnail: "1.14、倾斜摄影单体.jpg",
+                        fileName: "1.14、倾斜摄影单体"
+                    },
+                    {
+                        name: "1.15、罗盘、导航条",
+                        name_en: "1.15、罗盘、导航条",
+                        thumbnail: "1.15、罗盘、导航条.jpg",
+                        fileName: "1.15、罗盘、导航条"
+                    },
+                    {
+                        name: "1.16、绕点飞行",
+                        name_en: "1.16、绕点飞行",
+                        thumbnail: "1.16、绕点飞行.jpg",
+                        fileName: "1.16、绕点飞行"
+                    },
+                    {
+                        name: "1.17、深度检测",
+                        name_en: "1.17、深度检测",
+                        thumbnail: "1.17、深度检测.jpg",
+                        fileName: "1.17、深度检测"
+                    },
+                    {
+                        name: "1.18、echarts时间轴",
+                        name_en: "1.18、echarts时间轴",
+                        thumbnail: "1.18、echarts时间轴.jpg",
+                        fileName: "1.18、echarts时间轴"
+                    },
+                    {
+                        name: "1.19、任意坐标转换",
+                        name_en: "1.19、任意坐标转换",
+                        thumbnail: "1.19、任意坐标转换.jpg",
+                        fileName: "1.19、任意坐标转换"
+                    },
+                    {
+                        name: "1.20、echarts配置",
+                        name_en: "1.20、echarts配置",
+                        thumbnail: "1.20、echarts配置.jpg",
+                        fileName: "1.20、echarts配置"
+                    },
+                    {
+                        name: "1.22、根据点获取高度",
+                        name_en: "1.22、根据点获取高度",
+                        thumbnail: "1.22、根据点获取高度.jpg",
+                        fileName: "1.22、根据点获取高度"
+                    },
+                    {
+                        name: "加载超图S3M模型",
+                        name_en: "加载超图S3M模型",
+                        thumbnail: "s3m.jpg",
+                        fileName: "s3m"
+                    },
 
                     // {
                     //     name: "相机",
@@ -1321,6 +1321,42 @@ var exampleConfig = {
                         name_en: "8.2.5、等值面",
                         thumbnail: "8.1.5、等值面.jpg",
                         fileName: "8.1.5、等值面"
+                    },
+                    {
+                        name: "8.2.6、蜂窝热力图",
+                        name_en: "8.2.6、蜂窝热力图",
+                        thumbnail: "8.2.6、蜂窝热力图.jpg",
+                        fileName: "8.2.6、蜂窝热力图"
+                    },
+                    {
+                        name: "8.2.7、体渲染",
+                        name_en: "8.2.7、体渲染",
+                        thumbnail: "8.2.7、体渲染.jpg",
+                        fileName: "8.2.7、体渲染"
+                    },
+                ]
+            },
+        }
+    },
+    "OGC": {
+        name: "9、性能优化",
+        name_en: "9、性能优化",
+        content: {
+            "map11cdddwsss3111111233231": {
+                name: "9.1、数据",
+                name_en: "9.1、数据端",
+                content: [
+                    {
+                        name: "9.1.1、Primitive",
+                        name_en: "9.1.1、Primitive",
+                        thumbnail: "9.1.1、Primitive.jpg",
+                        fileName: "9.1.1、Primitive"
+                    },
+                    {
+                        name: "9.1.2、DrawCommand",
+                        name_en: "9.1.2、DrawCommand",
+                        thumbnail: "9.1.2、DrawCommand.jpg",
+                        fileName: "9.1.2、DrawCommand"
                     },
                 ]
             },

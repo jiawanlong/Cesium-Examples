@@ -1,0 +1,152 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+    <script src="./Volume .js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(117.22603, 31.821097, 500),
+            orientation: {
+                heading: Cesium.Math.toRadians(348.3), // 水平旋转，围绕Y轴，0为正北方向
+                pitch: Cesium.Math.toRadians(-35.8),     // 上下旋转，围绕X轴，-90为俯视地面
+                roll: 0.0                             // 视口的翻滚角度，围绕Z轴，0为不翻转
+            },
+        });
+
+        function getElevationColor(elevation) {
+            // 确保高程值在0-10000范围内
+            const clampedElevation = Math.max(0, Math.min(100, elevation));
+
+            // 定义10个关键高程点的颜色
+            const colorStops = [
+                { value: 0, color: [0, 100, 0] },         // 深绿色 - 海平面
+                { value: 10, color: [34, 139, 34] },    // 森林绿
+                { value: 20, color: [152, 251, 152] },  // 浅绿色
+                { value: 30, color: [240, 230, 140] },  // 卡其色
+                { value: 40, color: [255, 215, 0] },    // 金黄色
+                { value: 50, color: [255, 165, 0] },    // 橙色
+                { value: 60, color: [255, 140, 0] },    // 深橙色
+                { value: 70, color: [255, 99, 71] },    // 番茄红
+                { value: 80, color: [255, 69, 0] },     // 红橙色
+                { value: 90, color: [255, 0, 0] },      // 红色
+                { value: 100, color: [128, 0, 0] }      // 深红色 - 最高点
+            ];
+
+            // 找到高程值所在的区间
+            for (let i = 0; i < colorStops.length - 1; i++) {
+                const currentStop = colorStops[i];
+                const nextStop = colorStops[i + 1];
+
+                if (clampedElevation >= currentStop.value && clampedElevation <= nextStop.value) {
+                    // 计算在当前区间中的比例 (0-1)
+                    const ratio = (clampedElevation - currentStop.value) /
+                        (nextStop.value - currentStop.value);
+
+                    // 对RGB三个通道分别进行插值
+                    const r = Math.round(currentStop.color[0] +
+                        ratio * (nextStop.color[0] - currentStop.color[0]));
+                    const g = Math.round(currentStop.color[1] +
+                        ratio * (nextStop.color[1] - currentStop.color[1]));
+                    const b = Math.round(currentStop.color[2] +
+                        ratio * (nextStop.color[2] - currentStop.color[2]));
+
+                    // 返回RGB颜色字符串
+                    return `rgb(${r}, ${g}, ${b},0.3)`;
+                }
+            }
+
+            // 如果高程值超出范围，返回最后一个颜色
+            const lastStop = colorStops[colorStops.length - 1];
+            return `rgb(${lastStop.color[0]}, ${lastStop.color[1]}, ${lastStop.color[2]},0.3)`;
+        }
+
+
+
+        ininPolygonByPosition();
+
+        // 根据经纬度创建多边形
+        function ininPolygonByPosition() {
+            let geometryInstances1 = []
+
+            aaa.x.forEach((element, index) => {
+
+                const center = Cesium.Cartesian3.fromDegrees(element, aaa.y[index], aaa.z[index]);
+                const enuMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(center);
+
+                const boxInstances = []; // 填充部分
+                const FILL_COLOR = Cesium.Color.fromCssColorString(getElevationColor(aaa.values[index]))
+
+                let xLength = 1.5;
+                let yLength = 1.5;
+                let zLength = 1.5;
+
+                geometryInstances1.push(
+                    new Cesium.GeometryInstance({
+                        geometry: new Cesium.BoxGeometry({
+                            vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT,
+                            minimum: new Cesium.Cartesian3(-xLength, -yLength, -zLength),
+                            maximum: new Cesium.Cartesian3(xLength, yLength, zLength)
+                        }),
+                        modelMatrix: enuMatrix,
+                        attributes: {
+                            color: Cesium.ColorGeometryInstanceAttribute.fromColor(FILL_COLOR)
+                        },
+                    })
+                )
+            });
+
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: geometryInstances1,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    translucent: true,
+                    flat: true
+                }),
+            }));
+        }
+
+
+        const tileset = new Cesium.Cesium3DTileset({
+            url: "https://data.mars3d.cn/3dtiles/qx-teh/tileset.json",
+        });
+
+        tileset.readyPromise
+            .then(function (tileset) {
+                viewer.scene.primitives.add(tileset);
+                // viewer.zoomTo(tileset)
+
+                var r = 255;
+                var g = 255;
+                var b = 255;
+                var a = 0.75;
+                tileset.style = new Cesium.Cesium3DTileStyle({ color: "color('rgba(" + r + "," + g + "," + b + ", " + a + ")')" })
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    </script>
+
+</body>
+
+</html>
