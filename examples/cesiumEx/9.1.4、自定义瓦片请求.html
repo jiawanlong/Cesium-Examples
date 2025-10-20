@@ -1,0 +1,58 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        class CustomImageryProvider extends Cesium.UrlTemplateImageryProvider {
+            constructor(options = {}) {
+                super(options)
+            }
+            requestImage(x, y, level, request) {
+                const rectangle = this._tilingScheme.tileXYToRectangle(x, y, level);
+                const west = Cesium.Math.toDegrees(rectangle.west);
+                const south = Cesium.Math.toDegrees(rectangle.south);
+                const east = Cesium.Math.toDegrees(rectangle.east);
+                const north = Cesium.Math.toDegrees(rectangle.north);
+
+                // 2. 构建带bbox参数的请求URL（格式需与服务器约定）
+                // 示例URL：/api/image?bbox=west,south,east,north&format=png
+                const bbox = [west, south, east, north].join(',');
+                console.log(level, '-------------', x, y)
+                console.log(bbox)
+                return Promise.resolve();
+            }
+        }
+
+        const imageryProvider = new CustomImageryProvider({
+            url: '你的实际地图URL', // 需要替换为真实URL
+            minimumLevel: 1,
+            maximumLevel: 18, // 通常最大级别不会到111
+        });
+
+        let layer = viewer.imageryLayers.addImageryProvider(imageryProvider);
+    </script>
+
+</body>
+
+</html>

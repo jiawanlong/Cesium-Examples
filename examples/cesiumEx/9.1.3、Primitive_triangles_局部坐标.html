@@ -1,0 +1,126 @@
+<!--********************************************************************
+* by jiawanlong
+*********************************************************************-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./../../libs/cesium/Cesium1.98/Widgets/widgets.css">
+    <script type="text/javascript" src="./../../libs/cesium/Cesium1.98/Cesium.js"></script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #fff; width: 100%; height: 100%; position: absolute; top: 0">
+    <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
+
+    <script>
+        window.viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "credit": "安徽",
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
+
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(110, 30, 10000)
+        });
+
+        initBoxByPoint();
+
+        function initBoxByPoint() {
+            const vertices = new Float64Array([
+                // 前
+                0, 0, -100, // E点
+                100, -100, 100, //A点
+                -100, -100, 100, //B点
+                // 后
+                0, 0, -100, // E点
+                -100, 100, 100, //C点
+                100, 100, 100, //D点
+                // 左
+                0, 0, -100, // E点
+                -100, -100, 100, //B点
+                -100, 100, 100, //C点
+                // 右
+                0, 0, -100, // E点
+                100, 100, 100, //D点
+                100, -100, 100, //A点
+                // 上
+                100, -100, 100, //A点
+                -100, -100, 100, //B点
+                100, 100, 100, //D点
+                
+                -100, -100, 100,//B点
+                100, 100, 100, //D点
+                -100, 100, 100, //C点
+            ])
+            const triangles = [
+                // 每个面由 3 个点组成
+                [new Cesium.Cartesian3(0, 0, -100), new Cesium.Cartesian3(100, -100, 100), new Cesium.Cartesian3(-100, -100, 100)], // 前
+                [new Cesium.Cartesian3(0, 0, -100), new Cesium.Cartesian3(-100, 100, 100), new Cesium.Cartesian3(100, 100, 100)],   // 后
+                [new Cesium.Cartesian3(0, 0, -100), new Cesium.Cartesian3(-100, -100, 100), new Cesium.Cartesian3(-100, 100, 100)], // 左
+                [new Cesium.Cartesian3(0, 0, -100), new Cesium.Cartesian3(100, 100, 100), new Cesium.Cartesian3(100, -100, 100)],   // 右
+                [new Cesium.Cartesian3(100, -100, 100), new Cesium.Cartesian3(-100, -100, 100), new Cesium.Cartesian3(100, 100, 100)], // 上1
+                [new Cesium.Cartesian3(-100, -100, 100), new Cesium.Cartesian3(100, 100, 100), new Cesium.Cartesian3(-100, 100, 100)], // 上2
+            ]
+
+            constcomputeNormal = (p0, p1, p2) => { // 三角形法线计算
+                const d1 = Cesium.Cartesian3.subtract(p1, p0, new Cesium.Cartesian3())
+                const d2 = Cesium.Cartesian3.subtract(p2, p0, new Cesium.Cartesian3())
+                const normal = Cesium.Cartesian3.cross(d1, d2, new Cesium.Cartesian3())
+                return Cesium.Cartesian3.normalize(normal, new Cesium.Cartesian3())
+            }
+            let normals = []
+            for (const [p0, p1, p2] of triangles) {    // 每个三角形 3 个顶点的法线相同
+                const normal = constcomputeNormal(p0, p1, p2)
+                normals.push(normal.x, normal.y, normal.z, normal.x, normal.y, normal.z, normal.x, normal.y, normal.z)
+            }
+
+            const boundingSphere = Cesium.BoundingSphere.fromVertices(vertices);
+            const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(114.347137, 30.541429, 200))
+            const geometry = new Cesium.Geometry({
+                attributes: {
+                    position: new Cesium.GeometryAttribute({
+                        componentDatatype: Cesium.ComponentDatatype.DOUBLE,
+                        componentsPerAttribute: 3,
+                        values: vertices
+                    }),
+                    normal: new Cesium.GeometryAttribute({
+                        componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                        componentsPerAttribute: 3,
+                        values: new Float64Array(normals)
+                    })
+                },
+                primitiveType: Cesium.PrimitiveType.TRIANGLES,
+                boundingSphere
+            })
+            const instance = new Cesium.GeometryInstance({
+                geometry: geometry,
+                modelMatrix,
+            })
+            viewer.scene.primitives.add(new Cesium.Primitive({
+                geometryInstances: instance,
+                asynchronous: false, // 关闭异步
+                appearance: new Cesium.MaterialAppearance({
+                    material: Cesium.Material.fromType('Color', {
+                        color: Cesium.Color.fromCssColorString(`rgba(68,138,145, 1)`)
+                    }),
+                    faceForward: true, // 确保法线朝向正确
+                }),
+                compressVertices: false,
+            }))
+            const worldBoundingSphere = Cesium.BoundingSphere.transform(geometry.boundingSphere, modelMatrix, new Cesium.BoundingSphere());
+            viewer.camera.flyToBoundingSphere(worldBoundingSphere);
+
+
+        }
+
+
+    </script>
+
+</body>
+
+</html>
