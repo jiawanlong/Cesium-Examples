@@ -17,8 +17,10 @@
 
         // http://cesium.xin/cesium/cn/Documentation1.95/Viewer.html#.ConstructorOptions
 
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc'
         const viewer = new Cesium.Viewer('map', {
+               imageryProvider: false,
+            baseLayerPicker: false,
+
             animation: false,//是否创建动画小器件，左下角仪表  
             baseLayerPicker: false,//是否显示图层选择器  
             fullscreenButton: false,//是否显示全屏按钮  
@@ -98,6 +100,10 @@
         //     }
         // });
 
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
 
         const imageryProvider = new Cesium.TileCoordinatesImageryProvider({
             color: Cesium.Color.RED

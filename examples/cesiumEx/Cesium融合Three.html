@@ -30,8 +30,6 @@
         }
     </script>
     <script type="module">
-        Cesium.Ion.defaultAccessToken =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc";
 
         import * as THREE from 'three'
         const cesiumBox = document.getElementById('box')
@@ -52,12 +50,17 @@
         // 初始化Cesium
         function initCesium() {
             const viewer = new Cesium.Viewer(cesiumBox, { baseLayerPicker: false, baseLayer: false, infoBox: false })
-            viewer.imageryLayers.addImageryProvider(
-                new Cesium.WebMapTileServiceImageryProvider({
-                    url: "https://t0.tianditu.gov.cn/img_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+            // viewer.imageryLayers.addImageryProvider(
 
-                })
-            )
+            //     new Cesium.WebMapTileServiceImageryProvider({
+            //         url: "https://t0.tianditu.gov.cn/img_w/wmts?tk=c4e3a9d54b4a79e885fff9da0fca712a&service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles",
+
+            //     })
+            // )
+            var xyz = new Cesium.UrlTemplateImageryProvider({
+                "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+            })
+            viewer.imageryLayers.addImageryProvider(xyz)
 
             viewer.camera.flyTo({
                 destination: Cesium.Cartesian3.fromDegrees((minWGS84[0] + maxWGS84[0]) / 2, (minWGS84[1] + maxWGS84[1]) / 2 - 1, 200000),

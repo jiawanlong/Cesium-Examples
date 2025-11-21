@@ -16,8 +16,22 @@
     <script type="text/javascript">
 
         Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc'
-        const viewer1 = new Cesium.Viewer('map1', {});
-        const viewer2 = new Cesium.Viewer('map2', {});
+        const viewer1 = new Cesium.Viewer('map1', {
+                        imageryProvider: false,
+            baseLayerPicker: false,
+        });
+         var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer1.imageryLayers.addImageryProvider(xyz)
+        const viewer2 = new Cesium.Viewer('map2', {
+                        imageryProvider: false,
+            baseLayerPicker: false,
+        });
+         var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer2.imageryLayers.addImageryProvider(xyz)
         let handler, handler1;
  
         setTimeout(() => {

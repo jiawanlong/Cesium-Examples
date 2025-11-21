@@ -15,13 +15,19 @@
     <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
     <script type="text/javascript">
 
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc'
-        const viewer = new Cesium.Viewer('map', {});
+        const viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
 
         // Cesium地形
-        viewer.terrainProvider = Cesium.createWorldTerrain({
-            requestWaterMask: true, // 请求水体效果所需要的海岸线数据
-            requestVertexNormals: true// 请求地形照明数据
+        viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
+            url: 'http://data.mars3d.cn/terrain'
         });
         // 深度监测
         viewer.scene.globe.depthTestAgainstTerrain = true;

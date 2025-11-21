@@ -28,10 +28,15 @@ https://blog.csdn.net/dagedezhiyin/article/details/146601505
 
         function init() { }
 
-        Cesium.Ion.defaultAccessToken =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc";
+        const viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
 
-        let viewer = new Cesium.Viewer("map", {});
+        var xyz = new Cesium.UrlTemplateImageryProvider({
+            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+        })
+        viewer.imageryLayers.addImageryProvider(xyz)
         viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
 
         // // 添加底图

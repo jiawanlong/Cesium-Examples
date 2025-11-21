@@ -14,8 +14,12 @@
     <div id="map" style="margin: 0 auto; width: 100%; height: 100%"></div>
     <script type="text/javascript">
 
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOWM5N2FlYy0wNTIyLTRhZDAtYTM2Yi04ZGEzYzMzNTRjYmQiLCJpZCI6NTcwNzEsImlhdCI6MTYyMjAxMjY3MH0.IRCEryIGGPZeCGqJ8lpMESuZO9DTIlLnF-WS-w9YYzc'
-        const viewer = new Cesium.Viewer('map', {});
+        const viewer = new Cesium.Viewer('map', {
+            imageryProvider: false,
+            baseLayerPicker: false,
+        });
+
+   
         // 开启帧率
         viewer.scene.debugShowFramesPerSecond = true;
 
@@ -41,6 +45,43 @@
             maximumLevel: maxLevel
         });
         viewer.imageryLayers.addImageryProvider(wmts)
+
+
+        // var _url = 'https://gis.sinica.edu.tw/ccts/file-exists.php?img=China_Map_1903-png-{TileMatrix}-{TileCol}-{TileRow}';
+        // var wmts = new Cesium.WebMapTileServiceImageryProvider({
+        //     url: _url,
+        //     layer: 'China_Map_1903',
+        //     credit: 'op1111ts.credit',
+        //     style: 'default',
+        //     format: 'image/png',
+        //     tileMatrixSetID: 'GoogleMapsCompatible',
+ 
+        // });
+        // viewer.imageryLayers.addImageryProvider(wmts)
+
+        
+
+
+        // var maxLevel = 18;
+        // var matrixIds = new Array(maxLevel);
+        // for (var z = 0; z <= maxLevel; z++) {
+        //     matrixIds[z] = (z + 1).toString();
+        // }
+        // var _url = 'https://iserver.supermap.io/iserver/services/map-world/wmts100';
+        // var wmts = new Cesium.WebMapTileServiceImageryProvider({
+        //     url: _url,
+        //     layer: '世界地图_Day',
+        //     credit: 'op1111ts.credit',
+        //     style: 'default',
+        //        format: "image/png",
+        //     tileMatrixSetID: 'Custom_世界地图_Day',
+        //      tileMatrixLabels: matrixIds,
+        //      tilingScheme: new Cesium.GeographicTilingScheme(), //WebMercatorTilingScheme、GeographicTilingScheme
+ 
+        // });
+        // viewer.imageryLayers.addImageryProvider(wmts)
+
+
 
 
         // server服务

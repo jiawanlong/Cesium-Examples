@@ -40,6 +40,8 @@
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjYzOTI5NC0yM2QyLTQyOTgtYWM5OS1lM2MwNTYwMGEzMjciLCJpZCI6ODQ1MjYsImlhdCI6MTY0NjM1ODM5OX0.BzsVR7Lt9RhsCia-R7E64KunaAME0HGD7Sv2-xF-RIQ';
 
     var viewer = new Cesium.Viewer('cesiumContainer', {
+   imageryProvider: false,
+            baseLayerPicker: false,
 
    
         imageryProvider : new Cesium.ArcGisMapServerImageryProvider({
