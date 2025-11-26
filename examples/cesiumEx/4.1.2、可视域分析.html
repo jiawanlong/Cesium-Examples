@@ -27,7 +27,7 @@
         });
 
         var xyz = new Cesium.UrlTemplateImageryProvider({
-            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+            "url": '//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
         })
         viewer.imageryLayers.addImageryProvider(xyz)
 
@@ -36,7 +36,7 @@
 
         // 加载默认地形
         viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-            url: 'http://data.mars3d.cn/terrain'
+            url: '//data.mars3d.cn/terrain'
         });
 
         // 深度监测

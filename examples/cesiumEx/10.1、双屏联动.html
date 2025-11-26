@@ -21,7 +21,7 @@
             baseLayerPicker: false,
         });
          var xyz = new Cesium.UrlTemplateImageryProvider({
-            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+            "url": '//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
         })
         viewer1.imageryLayers.addImageryProvider(xyz)
         const viewer2 = new Cesium.Viewer('map2', {
@@ -29,7 +29,7 @@
             baseLayerPicker: false,
         });
          var xyz = new Cesium.UrlTemplateImageryProvider({
-            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+            "url": '//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
         })
         viewer2.imageryLayers.addImageryProvider(xyz)
         let handler, handler1;

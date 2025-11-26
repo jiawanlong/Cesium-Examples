@@ -20,13 +20,13 @@
         });
 
         var xyz = new Cesium.UrlTemplateImageryProvider({
-            "url": '///data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
+            "url": '//data.mars3d.cn/tile/img/{z}/{x}/{y}.jpg'
         })
         viewer.imageryLayers.addImageryProvider(xyz)
 
         // 加载地形
         viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
-            url: 'http://data.mars3d.cn/terrain'
+            url: '//data.mars3d.cn/terrain'
         });
 
         // 监听地形提供者的ready事件
