@@ -109,5 +109,4 @@
 - 捐赠列表遇到周末或者节假日可能会延迟。 证书详情在源代码donate详情下，欢迎监督。
 - 这个世界并不完美，但仍然值得我们去爱。
 
-<h3 style="color:red;">2025.12.9后的打赏还在我的账号，目前暂未捐赠，如有靠谱的捐赠渠道，请联系我！！！</h3>
 <h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/index.html">捐赠证书详情</a> </h3>
