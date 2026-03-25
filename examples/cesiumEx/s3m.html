@@ -32,6 +32,11 @@
         ];
         viewer.scene.open(scenes[0]);
 
+        var imageryProvider = new SuperMap3D.SuperMapImageryProvider({
+            url: 'https://iserver.supermap.io/iserver/services/map-world/rest/maps/World'
+        });
+        viewer.imageryLayers.addImageryProvider(imageryProvider);
+
     </script>
 </body>
 
