@@ -1,9 +1,6 @@
-<h1 align="center">需要进微信群的请加我好友：trampjwl</h1>
-<h2 align="center">----------------------------------------------------------</h2>
-<h2 align="center">航天宏图 还我工资！</h2>
-<h2 align="center">拖欠我的是工资，不是绩效，不是奖金。我走的正常离职，不是被裁，也不是被迫，我只想要回属于我的工资。</h2>
-<h2 align="center">----------------------------------------------------------</h2>
-
+<div align="center">
+<img src="https://jiawanlong.github.io/gis.jpg">
+</div>
 <h1 align="center">Cesium-Examples</h1>
 <h2 align="center">⭐⭐⭐开源不易，求个star⭐⭐⭐</h2>
 <h2 align="center">在线示例 <a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/">https://jiawanlong.github.io/Cesium-Examples/</a> </h2>
@@ -12,6 +9,8 @@
 <h2 align="center">100＋Three.js示例 <a target="_blank" href="https://github.com/jiawanlong/ThreeJs-Examples/">https://github.com/jiawanlong/ThreeJs-Examples/</a> </h2>
 
  ![Stars](https://img.shields.io/github/stars/jiawanlong/Cesium-Examples.svg?) ![Forks](https://img.shields.io/github/forks/jiawanlong/Cesium-Examples.svg?style=social) ![Contributors](https://img.shields.io/github/contributors/jiawanlong/Cesium-Examples.svg)![Release](https://img.shields.io/github/v/release/jiawanlong/Cesium-Examples.svg)
+
+<h1 align="center">需要进微信群的请加我好友：trampjwl</h1>
 
 ## Cesium2026年最新的学习示例demos，每一个都是**原生**示例。
 
@@ -54,6 +53,10 @@
 ### 微 信：trampjwl
 
 ### qq群：798099786
+
+
+<img src="https://jiawanlong.github.io/gis.jpg">
+
 
 ## 打赏
 <img src="https://jiawanlong.github.io/ds.jpg">
@@ -127,8 +130,9 @@
 | Vv            | 5   | 2026.05.14 | 
 | 星空            | 2   | 2026.05.14 | 
 | 涛老猫            | 5   | 2026.05.22 | 
-
-
+| 陈星            | 50   | 2026.06.01 | 
+| 一只淘气包            | 10   | 2026.06.04 | 
+| WindyDawn            | 50   | 2026.06.16 | 
 
 ### 关于打赏
 - 您的每一笔打赏，我都会原封不动以**您的名义**捐赠到~~您腾讯公益。~~
@@ -141,3 +145,6 @@
 <h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/index.html">捐赠证书详情（腾讯公益：2025.02.17-2026.01.04）</a> </h3>
 <h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/index1.html">助学明细（小英定向助学：2026.01.15后）</a> </h3>
 <h3 ><a target="_blank" href="https://jiawanlong.github.io/Cesium-Examples/donate/love/details.et">助学明细Excel（小英定向助学：2026.01.15后）</a> </h3>
+<div align="center">
+<img src="https://jiawanlong.github.io/gis.jpg">
+</div>
